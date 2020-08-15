@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+import 'package:notado/packages/packages.dart';
 
 abstract class LoginState extends Equatable {
   const LoginState();
@@ -7,7 +7,7 @@ abstract class LoginState extends Equatable {
   List<Object> get props => [];
 }
 
-class LoginInitial extends LoginState {}
+// class LoginInitial extends LoginState {}
 
 class LoginInProgress extends LoginState {}
 
@@ -26,3 +26,20 @@ class LoginFailure extends LoginState {
   @override
   List<Object> get props => [message];
 }
+
+// class RegistrationFailure extends LoginState {
+//   final String message;
+
+//   RegistrationFailure(this.message);
+
+//   @override
+//   List<Object> get props => [message];
+// }
+
+class NotVerified extends LoginState {}
+
+class VerificationFailure extends LoginState {}
+
+class RegistrationSuccess extends LoginState {}
+
+class RegistrationProgress extends LoginState {}

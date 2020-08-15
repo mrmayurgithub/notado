@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:meta/meta.dart';
+import 'package:notado/packages/packages.dart';
 
 @immutable
 abstract class AuthenticationState extends Equatable {
@@ -20,5 +18,5 @@ class Authenticated extends AuthenticationState {
 
 class Unauthenticated extends AuthenticationState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }

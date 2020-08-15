@@ -1,5 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:notado/packages/packages.dart';
 
 abstract class LoginEvent extends Equatable {
   const LoginEvent();
@@ -29,6 +28,11 @@ class SubmitButtonPressed extends LoginEvent {
   @override
   List<Object> get props => [email, password];
 }
+
+//TODO: Apply is verified
+class checkVerification extends LoginEvent {}
+
+// class NeedsVerification extends LoginEvent {}
 
 class ForgetPassword extends LoginEvent {}
 

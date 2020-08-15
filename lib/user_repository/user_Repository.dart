@@ -1,5 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:notado/packages/packages.dart';
 
 class UserRepository {
   final FirebaseAuth _firebaseAuth;
@@ -31,11 +30,13 @@ class UserRepository {
   }
 
   Future<void> signOut() async {
-    return Future.wait([
-      _firebaseAuth.signOut(),
-      //TODO: GoogleSignout or Not
-      // _googleSignIn.signOut(),
-    ]);
+    print('vkcxvkjxbcvjk.............bsdbv.......................hdsclchl');
+
+    final _firebaseInstance = FirebaseAuth.instance;
+    return await _firebaseInstance.signOut();
+    // return await Future.wait([
+    //   _firebaseInstance.signOut(),
+    // ]);
   }
 
   Future<void> signInWithCredentials({String email, String password}) async {
@@ -45,20 +46,30 @@ class UserRepository {
     );
   }
 
+  // FirebaseUser _newuser;
   Future<void> signUp({String email, String password}) async {
-    return await _firebaseAuth.createUserWithEmailAndPassword(
+    final _firebaseInstance = FirebaseAuth.instance;
+    await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
-    try {
-      FirebaseUser user = await _firebaseAuth.currentUser();
+    FirebaseUser user = await _firebaseInstance.currentUser();
 
-      await user.sendEmailVerification();
-      return user.uid;
-    } catch (e) {
-      print("An error occured while trying to send email        verification");
-      print(e.message);
-    }
+    // return await user.sendEmailVerification();
+    return await user.sendEmailVerification();
+  }
+
+  Future<void> sendVerificationEmail() async {
+    final _firebaseAuthInstance = FirebaseAuth.instance;
+    final FirebaseUser user = await _firebaseAuthInstance.currentUser();
+    return await user.sendEmailVerification();
+  }
+
+  Future<bool> isEmailVerified() async {
+    final _firebaseInstance = FirebaseAuth.instance;
+    FirebaseUser user = await _firebaseInstance.currentUser();
+    user.reload();
+    return user.isEmailVerified;
   }
 
   Future<bool> isSignedIn() async {
@@ -66,7 +77,11 @@ class UserRepository {
     return currentUser != null;
   }
 
-  Future<FirebaseUser> getUser() async {
-    return (await _firebaseAuth.currentUser());
+  Future<String> getUser() async {
+    final _firebaseInstance = FirebaseAuth.instance;
+    FirebaseUser user = await _firebaseInstance.currentUser();
+    return ((await user.isEmailVerified)).toString();
   }
+
+  //TODO: implement database Service
 }

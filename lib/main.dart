@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notado/authentication/authentication_bloc.dart';
 import 'package:notado/screens/home/home_screen.dart';
 import 'package:notado/screens/login/login_screen.dart';
+import 'package:notado/screens/register/register_screen.dart';
+import 'package:notado/screens/verification/verification.dart';
 import 'package:notado/user_repository/user_Repository.dart';
 import 'screens/splash/splash_screen.dart';
 
@@ -41,13 +43,25 @@ class _AppState extends State<App> {
     return BlocProvider(
       create: (BuildContext context) => _authenticationBloc,
       child: MaterialApp(
+        // routes: {
+        //   './RegisterScreen': (context) =>
+        //       RegisterScreen(userRepository: _userRepository),
+        //   './LoginScreen': (context) =>
+        //       LoginScreen(userRepository: _userRepository),
+        //   './VerificationScreen': (context) =>
+        //       VerificationScreen(userRepository: _userRepository),
+        //   './HomeScreen': (context) => BlocProvider.value(
+        //         value: _authenticationBloc,
+        //         child: HomeScreen(userRepository: _userRepository),
+        //       ),
+        // },
         theme: ThemeData.light().copyWith(
           appBarTheme: AppBarTheme().copyWith(color: Colors.purple),
         ),
         debugShowCheckedModeBanner: false,
         home: BlocBuilder(
           cubit: _authenticationBloc,
-          builder: (context, state) {
+          builder: (BuildContext context, AuthenticationState state) {
             if (state is Uninitialized) {
               //Show the Splash Screen when app is being started
               return SplashScreen();
@@ -58,6 +72,7 @@ class _AppState extends State<App> {
               //Show the Login Screen when the user hasn't loggedin
               return LoginScreen(userRepository: _userRepository);
             }
+            return Container();
           },
         ),
       ),

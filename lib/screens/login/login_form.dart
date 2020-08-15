@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notado/packages/packages.dart';
 import 'package:notado/authentication/authentication_bloc.dart';
+import 'package:notado/constants/constants.dart';
 import 'package:notado/login/bloc.dart';
 import 'package:notado/screens/home/home_screen.dart';
 import 'package:notado/screens/register/register_screen.dart';
+import 'package:notado/screens/verification/verification.dart';
 import 'package:notado/user_repository/user_Repository.dart';
 
 class LoginForm extends StatefulWidget {
@@ -21,6 +23,9 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController _passwordController = TextEditingController();
   // ignore: unused_field
   LoginBloc _loginBloc;
+  bool isPassValid = false;
+  bool isEmailValid = false;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -52,8 +57,9 @@ class _LoginFormState extends State<LoginForm> {
     final loginScreentextPadH = 8 / h;
     final loginScreentextPadV = 8 / w;
     final mainColumnPadding = 25 / w;
-    final fieldPad = 20 / h;
-    return BlocListener(
+    final fieldPad = 23 / h;
+    return BlocListener<LoginBloc, LoginState>(
+      cubit: _loginBloc,
       listener: (BuildContext context, state) {
         if (state is LoginFailure) {
           Scaffold.of(context)
@@ -67,8 +73,51 @@ class _LoginFormState extends State<LoginForm> {
                 backgroundColor: Colors.red,
               ),
             );
+        } else if (state is NotVerified) {
+          //TODO: Add verification code
+          //TODO: Add navigation to another screen that shows email is not verified
+/*********************************************************************************** */
+          //This should be shown on Registration Screen
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: AlertDialog(
+                content: Column(
+                  children: <Widget>[
+                    Text('Please Verify your email'),
+                    GestureDetector(
+                      onTap: () => BlocProvider.of<LoginBloc>(context)
+                          .add(checkVerification()),
+                      child: Text('Done', style: TextStyle(color: Colors.blue)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else if (state is VerificationFailure) {
+          // Add code
+          Scaffold.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text('Verification Failure'), Icon(Icons.error)],
+                ),
+                backgroundColor: Colors.red,
+              ),
+            );
         } else if (state is LoginSuccess) {
-          return BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
+          print("Login success stte");
+          // return BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return HomeScreen(userRepository: widget.userRepository);
+              },
+            ),
+          );
         } else if (state is LoginInProgress) {
           Scaffold.of(context)
             ..hideCurrentSnackBar()
@@ -90,63 +139,94 @@ class _LoginFormState extends State<LoginForm> {
         builder: (context, state) {
           return Padding(
             padding: EdgeInsets.all(mainColumnPadding * width),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Welcome Text widget
-                WelcomeText(fieldPad: fieldPad, height: height),
-                SizedBox(height: fieldPad * height),
-                // TextField for email
-                emailTextField(),
-                SizedBox(height: fieldPad * height),
-                //TextField for password
-                passwordTextField(),
-                SizedBox(height: fieldPad * height),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    GestureDetector(
-                      //TODO: Implement forgot password here
-                      //TODO: add Forgotpassword state
-                      onTap: () => {},
-                      child: Text(
-                        'Forgot Password',
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: fieldPad * height),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: fieldPad * height),
-                  child: Column(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Welcome Text widget
+                  WelcomeText(fieldPad: 18 / h, height: height),
+                  SizedBox(height: fieldPad * height),
+                  // TextField for email
+                  emailTextField(),
+                  SizedBox(height: fieldPad * height),
+                  //TextField for password
+                  passwordTextField(),
+                  SizedBox(height: fieldPad * height),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       GestureDetector(
-                        //TODO: Implement Bloc for logging in
-                        onTap: () {},
-                        child: LoginButton(),
-                      ),
-                      SizedBox(height: fieldPad * height),
-                      GestureDetector(
-                        onTap: () => {
-                          //TODO: Implement googleLogin here
-                        },
-                        child: GoogleSigninButton(
-                          buttonHeight: buttonHeight,
-                          height: height,
-                          buttonWidth: buttonWidth,
-                          width: width,
-                          loginScreentextPadV: loginScreentextPadV,
-                          loginScreentextPadH: loginScreentextPadH,
+                        //TODO: Implement forgot password here
+                        //TODO: add Forgotpassword state
+                        onTap: () => {},
+                        child: Text(
+                          'Forgot Password',
+                          style: TextStyle(color: Colors.blue),
                         ),
                       ),
-                      SizedBox(height: fieldPad * height),
-                      // Create Account button
-                      CreateAccountButton(widget: widget),
                     ],
                   ),
-                ),
-              ],
+                  SizedBox(height: fieldPad * height),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: fieldPad * height),
+                    child: Column(
+                      children: <Widget>[
+                        GestureDetector(
+                          //Adding event to SubmitButtonPressed
+                          onTap: () {
+                            //TODO: Check is it correct or not
+                            if (_formKey.currentState.validate()) {
+                              // The code below was for creating an account
+                              // BlocProvider.of<LoginBloc>(context).add(
+                              //   SubmitButtonPressed(
+                              //     email: _emailController.text,
+                              //     password: _passwordController.text,
+                              //   ),);
+                              // Adding event LoginButtonPressed to iniitiate login
+                              BlocProvider.of<LoginBloc>(context).add(
+                                LoginButtonPressed(
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                ),
+                              );
+                            } else {
+                              //TODO: Implement else function
+                            }
+                          },
+                          child: LoginButton(
+                            buttonHeight: buttonHeight,
+                            height: height,
+                            buttonWidth: buttonWidth,
+                            width: width,
+                            loginScreentextPadV: loginScreentextPadV,
+                            loginScreentextPadH: loginScreentextPadH,
+                          ),
+                        ),
+                        SizedBox(height: fieldPad * height),
+                        GestureDetector(
+                          onTap: () => {
+                            //Added event LoginWithGoogle
+                            BlocProvider.of<LoginBloc>(context)
+                                .add(LoginWithGoogle()),
+                          },
+                          child: GoogleSigninButton(
+                            buttonHeight: buttonHeight,
+                            height: height,
+                            buttonWidth: buttonWidth,
+                            width: width,
+                            loginScreentextPadV: loginScreentextPadV,
+                            loginScreentextPadH: loginScreentextPadH,
+                          ),
+                        ),
+                        SizedBox(height: fieldPad * height),
+                        // Create Account button
+                        CreateAccountButton(widget: widget),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -158,7 +238,7 @@ class _LoginFormState extends State<LoginForm> {
     return TextFormField(
       obscureText: true,
       obscuringCharacter: '#',
-      autovalidate: true,
+      // autovalidate: true,
       autocorrect: false,
       validator: (_) {
         //validating password
@@ -167,18 +247,24 @@ class _LoginFormState extends State<LoginForm> {
             : null;
       },
       controller: _passwordController,
-      decoration: inputDecoration(),
+      decoration: inputDecoration().copyWith(
+        hintText: 'Password', prefixIcon: Icon(Icons.lock_outline),
+        // errorText: _passwordController.text.length > 6
+        //     ? null
+        //     : 'Your password should have atleast 6 characters',
+      ),
     );
   }
 
   TextFormField emailTextField() {
     return TextFormField(
+      keyboardType: TextInputType.emailAddress,
       controller: _emailController,
-      autovalidate: true,
+      // autovalidate: true,
       autocorrect: false,
       validator: (_) {
         //validating email
-        return _emailController.text.contains("@") ? 'Invalid Email' : null;
+        return _emailController.text.contains("@") ? null : 'Invalid Email';
       },
       decoration: inputDecoration(),
     );
@@ -186,17 +272,21 @@ class _LoginFormState extends State<LoginForm> {
 
   InputDecoration inputDecoration() {
     return InputDecoration(
-      prefixIcon: Icon(Icons.mail_outline),
-      hintText: 'Enter your Email',
+      // errorText:
+      //     _emailController.text.contains('@') ? null : 'Enter a correct email',
+      prefixIcon: Icon(Icons.mail_outline, size: 27),
+      hintText: 'Email',
       hintStyle: hintStyle(),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(loginPageRadius),
+        borderSide: BorderSide(color: Colors.black12),
+      ),
       enabledBorder: OutlineInputBorder(
-        //TODO: Make aa loginPageRadius const in constants.dart file
-        borderRadius: BorderRadius.circular(7),
+        borderRadius: BorderRadius.circular(loginPageRadius),
         borderSide: BorderSide(color: Colors.black12),
       ),
       focusedBorder: OutlineInputBorder(
-        //TODO: Make aa loginPageRadius const in constants.dart file
-        borderRadius: BorderRadius.circular(7),
+        borderRadius: BorderRadius.circular(loginPageRadius),
         borderSide: BorderSide(color: Colors.blue),
       ),
     );
@@ -204,9 +294,7 @@ class _LoginFormState extends State<LoginForm> {
 
   TextStyle hintStyle() {
     return TextStyle(
-      color: Colors.black54,
-      fontWeight: FontWeight.w300,
-    );
+        color: Colors.black54, fontWeight: FontWeight.w300, fontSize: 16);
   }
 }
 
@@ -226,12 +314,12 @@ class CreateAccountButton extends StatelessWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return RegisterScreen(
-                userRepository: widget.userRepository,
-              );
+              return RegisterScreen(userRepository: widget.userRepository);
             },
           ),
         );
+
+        // Navigator.pushReplacementNamed(context, './RegisterScreen');
       },
     );
   }
@@ -287,13 +375,25 @@ class GoogleSigninButton extends StatelessWidget {
 class LoginButton extends StatelessWidget {
   const LoginButton({
     Key key,
+    @required this.buttonHeight,
+    @required this.height,
+    @required this.buttonWidth,
+    @required this.width,
+    @required this.loginScreentextPadV,
+    @required this.loginScreentextPadH,
   }) : super(key: key);
+  final double buttonHeight;
+  final double height;
+  final double buttonWidth;
+  final double width;
+  final double loginScreentextPadV;
+  final double loginScreentextPadH;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height / 16,
-      width: MediaQuery.of(context).size.width / 1.5,
+      height: buttonHeight * height,
+      width: buttonWidth * width,
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -303,8 +403,7 @@ class LoginButton extends StatelessWidget {
           ),
         ],
         color: Colors.blue,
-        //TODO: change 7 to loginPageRadius that is in constants
-        borderRadius: BorderRadius.circular(7),
+        borderRadius: BorderRadius.circular(loginPageRadius),
       ),
       child: Center(
         child: Text(

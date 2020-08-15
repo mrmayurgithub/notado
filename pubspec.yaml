@@ -31,12 +31,12 @@ dependencies:
   curved_navigation_bar: ^0.3.3
   provider: ^4.3.1
   image_picker: ^0.6.7+4
-  audio_recorder: ^1.0.2
+  # audio_recorder: ^1.0.2
   font_awesome_flutter: ^8.8.1
   shared_preferences: ^0.5.1
   intl: ^0.16.1
   google_sign_in: ^4.5.1
-  flutter_signin_button: ^1.0.0
+  # flutter_signin_button: ^1.0.0
   firebase_auth: ^0.16.1
   async_loader: ^0.1.1
   firebase_storage: ^3.1.6
@@ -49,15 +49,17 @@ dependencies:
   bloc: ^6.0.0
   meta: ^1.1.8
   uuid: ^2.1.0
-  formz: ^0.2.0
+  extended_text_field: ^4.0.0
+  email_validator: ^1.0.5
+  # formz: ^0.2.0
   # authentication_repository:
   #   path: packages/authentication_repository
   # user_repository:
   #   path: packages/user_repository
-  authentication_repository:
-    path: packages/authentication_repository
-  user_repository:
-    path: packages/user_repository
+  # authentication_repository:
+  #   path: packages/authentication_repository
+  # user_repository:
+  #   path: packages/user_repository
 
 dev_dependencies:
   flutter_test:
@@ -73,9 +75,8 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
