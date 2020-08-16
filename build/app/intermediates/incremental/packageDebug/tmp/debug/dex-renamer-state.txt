@@ -1,4 +1,4 @@
-#Sat Aug 15 20:56:00 IST 2020
+#Sun Aug 16 16:23:31 IST 2020
 base.2=C\:\\apps\\notado\\build\\app\\intermediates\\dex\\debug\\mergeExtDexDebug\\out\\classes2.dex
 base.1=C\:\\apps\\notado\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\out\\classes.dex
 base.0=C\:\\apps\\notado\\build\\app\\intermediates\\dex\\debug\\mergeExtDexDebug\\out\\classes.dex

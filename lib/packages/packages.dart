@@ -24,3 +24,4 @@ export 'package:equatable/equatable.dart';
 export 'package:meta/meta.dart';
 export 'package:uuid/uuid.dart';
 export 'package:email_validator/email_validator.dart';
+export 'package:convex_bottom_bar/convex_bottom_bar.dart';

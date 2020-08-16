@@ -11,8 +11,10 @@ List<File> images = [];
 
 class AddNote extends StatefulWidget {
   final UserRepository userRepository;
+  final List<DrawModel> drawModel;
 
-  const AddNote({Key key, @required this.userRepository}) : super(key: key);
+  const AddNote({Key key, @required this.userRepository, this.drawModel})
+      : super(key: key);
 
   @override
   _AddNoteState createState() => _AddNoteState();
@@ -26,6 +28,8 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
   bool isItalic = false;
   bool isBold = false;
   bool isTextHigh = false;
+  bool isTextUnderlined = false;
+  bool underlinePressed = false;
   bool boldPressed = false;
   bool italicPressed = false;
   bool textsizePressed = false;
@@ -34,7 +38,14 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
   var choiceSize = 20 / 1001.0694778740428;
   bool addImageChoice = false;
   AnimationController _controller;
-  DrawModel drawModel;
+  final bottomBarIconSize = 30.0;
+  bool alignActive = true;
+  bool leftAlign = true;
+  bool centerAlign = false;
+  bool rightAlign = false;
+  TextAlign align = TextAlign.left;
+
+  // List<DrawModel> drawModel = [];
   final picker = ImagePicker();
 
   void changeColor(Color color) {
@@ -97,7 +108,7 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    drawModel = DrawModel();
+    // drawModel = <DrawModel>[];
     // initializing the animation contoller variable _controller
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
@@ -179,8 +190,10 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
         ],
       ),
       bottomNavigationBar: buildBottomAppBar(),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      // floatingActionButton: FloatingActionButton(onPressed: () {}),
       floatingActionButton: SpeedDial(
-        elevation: 4.0,
+        elevation: 0.0,
         overlayColor: Colors.transparent,
         overlayOpacity: 0.0,
         shape: CircleBorder(
@@ -233,133 +246,141 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                 padding: EdgeInsets.all(0),
                 height: height,
                 color: Colors.white,
-                child: Stack(
-                  children: <Widget>[
-                    SingleChildScrollView(
-                      child: Form(
-                        key: formKey,
-                        child: Column(
-                          children: <Widget>[
-                            images.length != 0
-                                // List view for images
-                                ? Column(
-                                    children: <Widget>[
-                                      for (int i = 0; i < images.length; i++)
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  ImageColumnPad * width),
-                                          child: Dismissible(
-                                            key: ObjectKey(images[i]),
-                                            onDismissed: (direction) {
-                                              var item = images.elementAt(i);
-                                              deleteItem(i);
-                                              Scaffold.of(context).showSnackBar(
-                                                SnackBar(
-                                                  shape:
-                                                      RoundedRectangleBorder(),
-                                                  content: Text("Item deleted",
-                                                      style: TextStyle(
-                                                          fontSize: 15)),
-                                                  action: SnackBarAction(
-                                                    label: "UNDO",
-                                                    onPressed: () {
-                                                      undoDeletion(i, item);
-                                                    },
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            child: GestureDetector(
-                                              onTap: () => {
-                                                //TODO: Implement delete function here
-                                              },
-                                              child: Center(
-                                                child: Image.file(
-                                                  images[i],
-                                                  fit: BoxFit.contain,
-                                                ),
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: <Widget>[
+                        // widget.drawModel != null
+                        //     ? null
+                        //     //TODO: Implement it
+                        //     // Transform.scale(
+                        //     //     scale: 0.5,
+                        //     //     child: Scaffold(
+                        //     //       body: Container(
+                        //     //         child: CustomPaint(
+                        //     //           painter: Draw(
+                        //     //               points: widget
+                        //     //                   .drawModel[
+                        //     //                       widget.drawModel.length - 1]
+                        //     //                   .points),
+                        //     //         ),
+                        //     //       ),
+                        //     //     ),
+                        //     //   )
+                        //     : SizedBox(height: 10),
+                        images.length != 0
+                            // List view for images
+                            ? Column(
+                                children: <Widget>[
+                                  for (int i = 0; i < images.length; i++)
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: ImageColumnPad * width),
+                                      child: Dismissible(
+                                        key: ObjectKey(images[i]),
+                                        onDismissed: (direction) {
+                                          var item = images.elementAt(i);
+                                          deleteItem(i);
+                                          Scaffold.of(context).showSnackBar(
+                                            SnackBar(
+                                              shape: RoundedRectangleBorder(),
+                                              content: Text("Item deleted",
+                                                  style:
+                                                      TextStyle(fontSize: 15)),
+                                              action: SnackBarAction(
+                                                label: "UNDO",
+                                                onPressed: () {
+                                                  undoDeletion(i, item);
+                                                },
                                               ),
+                                            ),
+                                          );
+                                        },
+                                        child: GestureDetector(
+                                          onTap: () => {
+                                            //TODO: Implement delete function here
+                                          },
+                                          child: Center(
+                                            child: Image.file(
+                                              images[i],
+                                              fit: BoxFit.contain,
                                             ),
                                           ),
                                         ),
-                                    ],
-                                  )
-                                : SizedBox(height: 2),
-                            Card(
-                              elevation: 0.0,
-                              shadowColor: Colors.white,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: PadH * width * 3,
-                                    vertical: PadV * height * 3),
-
-                                // child: Text.rich(
-                                //   TextSpan(
-                                //     text: 'fvdjs',
-                                //     children: [
-                                //       for (int i = 0; i < images.length; i++)
-                                //         WidgetSpan(
-                                //           child: Container(
-                                //             child: Image.file(images[i]),
-                                //           ),
-                                //         ),
-                                //     ],
-                                //   ),
-                                // ),
-                                // TODO: Maybe use RawKeyboardListner
-                                child: TextFormField(
-                                  autofocus: true,
-                                  maxLines: 40,
-                                  scrollPhysics: BouncingScrollPhysics(),
-                                  controller: noteController,
-                                  enableInteractiveSelection: true,
-                                  initialValue: initialText,
-                                  textCapitalization:
-                                      TextCapitalization.sentences,
-                                  onSaved: (s) => {
-                                    //TODO: implement notes.notes = s, noteController.text
-                                  },
-                                  validator: (s) => s.length > 0
-                                      ? null
-                                      : 'Note can\'t be empty',
-                                  // onChanged: (value) => {
-                                  //   initialText = noteController.text,
-                                  //   print(noteController.text),
-                                  // },
-
-                                  style: TextStyle(
-                                    fontSize: isTextHigh == false ? 15 : 19,
-                                    letterSpacing: 0.7,
-                                    fontStyle: isItalic == false
-                                        ? null
-                                        : FontStyle.italic,
-                                    fontWeight: isBold == false
-                                        ? FontWeight.w300
-                                        : FontWeight.bold,
-                                  ),
-                                  decoration: InputDecoration.collapsed(
-                                    hintText: 'Write Note',
-                                    hintStyle: TextStyle(
-                                      letterSpacing: 0.7,
-                                      fontWeight: isBold == false
-                                          ? FontWeight.w300
-                                          : FontWeight.bold,
-                                      fontStyle: isItalic == false
-                                          ? null
-                                          : FontStyle.italic,
-                                      color: addNoteColor,
-                                      fontSize: isTextHigh == false ? 15 : 19,
+                                      ),
                                     ),
-                                  ),
+                                ],
+                              )
+                            : SizedBox(height: 2),
+                        Card(
+                          elevation: 0.0,
+                          shadowColor: Colors.white,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: PadH * width * 3,
+                              vertical: PadV * height * 3,
+                            ),
+
+                            // TODO: Maybe use RawKeyboardListner
+                            child: TextFormField(
+                              textAlign: align,
+                              autofocus: false,
+                              maxLines: 10,
+                              scrollPhysics: BouncingScrollPhysics(),
+                              controller: noteController,
+                              enableInteractiveSelection: true,
+                              initialValue: initialText,
+                              textCapitalization: TextCapitalization.sentences,
+                              onSaved: (s) => {
+                                //TODO: implement notes.notes = s, noteController.text
+                              },
+                              validator: (s) =>
+                                  s.length > 0 ? null : 'Note can\'t be empty',
+                              // onChanged: (value) => {
+                              //   initialText = noteController.text,
+                              //   print(noteController.text),
+                              // },
+
+                              style: TextStyle(
+                                fontSize: isTextHigh == false ? 17 : 20,
+                                letterSpacing: 0.7,
+                                fontStyle:
+                                    isItalic == false ? null : FontStyle.italic,
+                                fontWeight: isBold == false
+                                    ? FontWeight.w300
+                                    : FontWeight.bold,
+                                decoration: underlinePressed
+                                    ? TextDecoration.underline
+                                    : null,
+                              ),
+                              decoration: InputDecoration.collapsed(
+                                hintText: 'Write Note',
+                                hintStyle: TextStyle(
+                                  letterSpacing: 0.7,
+                                  fontWeight: isBold == false
+                                      ? FontWeight.w300
+                                      : FontWeight.bold,
+                                  fontStyle: isItalic == false
+                                      ? null
+                                      : FontStyle.italic,
+                                  color: addNoteColor,
+                                  fontSize: isTextHigh == false ? 15 : 19,
+                                  // decoration: underlinePressed
+                                  //     ? TextDecoration.underline
+                                  //     : null,
+                                  decoration: underlinePressed
+                                      ? TextDecoration.underline
+                                      : null,
                                 ),
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -371,10 +392,14 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
 
   BottomAppBar buildBottomAppBar() {
     return BottomAppBar(
-      child: Container(
-        height: 50,
+      elevation: 10.0,
+      // color: Colors.transparent,
+      shape: CircularNotchedRectangle(),
+      notchMargin: -10,
+      child: Padding(
+        padding: EdgeInsets.all(5.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             GestureDetector(
               onTap: () => setState(
@@ -391,7 +416,7 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                 child: Icon(
                   Icons.format_italic,
                   color: italicPressed ? Colors.black : Colors.black45,
-                  size: 37,
+                  size: bottomBarIconSize,
                 ),
               ),
             ),
@@ -411,7 +436,7 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                 child: Icon(
                   Icons.format_bold,
                   color: boldPressed ? Colors.black : Colors.black45,
-                  size: 37,
+                  size: bottomBarIconSize,
                 ),
               ),
             ),
@@ -430,7 +455,113 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                 child: Icon(
                   Icons.format_size,
                   color: textsizePressed ? Colors.black : Colors.black45,
-                  size: 37,
+                  size: bottomBarIconSize,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () => setState(
+                () {
+                  isTextUnderlined = !isTextUnderlined;
+                  if (isTextUnderlined)
+                    underlinePressed = true;
+                  else
+                    underlinePressed = false;
+                },
+              ),
+              child: Container(
+                padding: EdgeInsets.all(3),
+                child: Icon(
+                  Icons.format_underlined,
+                  color: underlinePressed ? Colors.black : Colors.black45,
+                  size: bottomBarIconSize,
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(3),
+              child: IconButton(
+                onPressed: () => setState(
+                  () {
+                    if (alignActive == false) {
+                      alignActive = true;
+                      centerAlign = false;
+                      rightAlign = false;
+                      leftAlign = true;
+                      align = TextAlign.left;
+                    } else {
+                      alignActive = false;
+                      align = TextAlign.left;
+                    }
+                  },
+                ),
+                icon: Icon(
+                  Icons.format_align_left,
+                  color: leftAlign ? Colors.black : Colors.black45,
+                  size: bottomBarIconSize,
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(3),
+              child: IconButton(
+                onPressed: () => setState(
+                  () {
+                    if (alignActive == false) {
+                      alignActive = true;
+                      centerAlign = true;
+                      rightAlign = false;
+                      leftAlign = false;
+                      align = TextAlign.center;
+                    } else {
+                      alignActive = false;
+                      align = TextAlign.left;
+                      centerAlign = false;
+                    }
+                  },
+                ),
+                icon: Icon(
+                  Icons.format_align_center,
+                  color: centerAlign ? Colors.black : Colors.black45,
+                  size: bottomBarIconSize,
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(3),
+              child: IconButton(
+                onPressed: () => setState(
+                  () {
+                    if (alignActive == false) {
+                      alignActive = true;
+                      centerAlign = false;
+                      rightAlign = true;
+                      leftAlign = false;
+                      align = TextAlign.right;
+                    } else {
+                      alignActive = false;
+                      align = TextAlign.left;
+                      rightAlign = false;
+                    }
+                  },
+                ),
+                icon: Icon(
+                  Icons.format_align_right,
+                  color: rightAlign ? Colors.black : Colors.black45,
+                  size: bottomBarIconSize,
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(3),
+              child: IconButton(
+                onPressed: () => setState(
+                  () {},
+                ),
+                icon: Icon(
+                  Icons.check_box,
+                  color: rightAlign ? Colors.black : Colors.black45,
+                  size: bottomBarIconSize,
                 ),
               ),
             ),
@@ -443,8 +574,8 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
   Route _createRoute() {
     return PageRouteBuilder(
       transitionDuration: Duration(milliseconds: 440),
-      pageBuilder: (context, animation, secondaryAnimation) => DrawScreen(
-          userRepository: widget.userRepository, drawModel: drawModel),
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          DrawScreen(userRepository: widget.userRepository),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0, 1);
         var end = Offset.zero;
@@ -474,4 +605,27 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
       images.insert(index, item);
     });
   }
+}
+
+class Draw extends CustomPainter {
+  List<Offset> points;
+  // List<List<Offset>> points;
+  Draw({@required this.points});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = brushColor
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = brushWidth;
+
+    for (int i = 0; i < points.length - 1; i++) {
+      if (points[i] != null && points[i + 1] != null) {
+        canvas.drawLine(points[i], points[i + 1], paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(Draw oldDelegate) => oldDelegate.points != points;
 }
