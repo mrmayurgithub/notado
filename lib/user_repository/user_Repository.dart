@@ -3,6 +3,7 @@ import 'package:notado/packages/packages.dart';
 class UserRepository {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
+  String userName = '';
 
   UserRepository({FirebaseAuth firebaseAuth, GoogleSignIn googleSignin})
       : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
@@ -80,7 +81,8 @@ class UserRepository {
   Future<String> getUser() async {
     final _firebaseInstance = FirebaseAuth.instance;
     FirebaseUser user = await _firebaseInstance.currentUser();
-    return ((await user.isEmailVerified)).toString();
+    // return ((await user.isEmailVerified)).toString();
+    return user.displayName;
   }
 
   //TODO: implement database Service

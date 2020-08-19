@@ -53,6 +53,8 @@ dependencies:
   extended_text_field: ^4.0.0
   email_validator: ^1.0.5
   convex_bottom_bar: ^2.4.1
+  flutter_material_color_picker: ^1.0.5
+
   # formz: ^0.2.0
   # authentication_repository:
   #   path: packages/authentication_repository

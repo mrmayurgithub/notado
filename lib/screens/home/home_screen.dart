@@ -20,6 +20,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String userCard;
+  getUserEmail() async {
+    userCard = await widget.userRepository.getUser();
+  }
+
+  @override
+  void initState() {
+    getUserEmail();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,18 +141,35 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              FlatButton(
-                color: Colors.blue,
-                onPressed: () async {
-                  print((await widget.userRepository.getUser()).toString());
-                },
-                child: Text('check user'),
+          body: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.all(14.0),
+              child: Column(
+                children: [
+                  Card(
+                    color: Colors.green[300],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Container(
+                      height: 150,
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: EdgeInsets.all(18.0),
+                        child: Text('$userCard',
+                            style: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.w400)),
+                      ),
+                    ),
+                  ),
+                  GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
