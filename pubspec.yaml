@@ -34,6 +34,7 @@ dependencies:
   # audio_recorder: ^1.0.2
   font_awesome_flutter: ^8.8.1
   shared_preferences: ^0.5.1
+  flutter_markdown: ^0.4.3
   intl: ^0.16.1
   google_sign_in: ^4.5.1
   # flutter_signin_button: ^1.0.0
@@ -51,6 +52,9 @@ dependencies:
   uuid: ^2.1.0
   extended_text_field: ^4.0.0
   email_validator: ^1.0.5
+  convex_bottom_bar: ^2.4.1
+  flutter_material_color_picker: ^1.0.5
+
   # formz: ^0.2.0
   # authentication_repository:
   #   path: packages/authentication_repository
