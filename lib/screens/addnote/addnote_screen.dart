@@ -33,6 +33,7 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
   bool isTextHigh = false;
   bool isTextUnderlined = false;
   bool underlinePressed = false;
+  bool strikeThroughPressed = false;
   bool boldPressed = false;
   bool italicPressed = false;
   bool textsizePressed = false;
@@ -42,22 +43,14 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
   bool addImageChoice = false;
   AnimationController _controller;
   final bottomBarIconSize = 30.0;
-  bool alignActive = true;
-  bool leftAlign = true;
-  bool centerAlign = false;
-  bool rightAlign = false;
-  TextAlign align = TextAlign.left;
-  AnimationController _FABcontroller;
-  // List<DrawModel> drawModel = [];
   final picker = ImagePicker();
   ColorSwatch _mainColor = Colors.blue;
   Color _shadeColor = Colors.blue[800];
   ColorSwatch _tempMainColor;
-  Color _tempShadeColor;
-
-  void changeColor(Color color) {
-    ///TODO: implement color change of the screen
-  }
+  Color oldColor;
+  Color mainColor = Colors.white;
+  Color permanentColor;
+  TextAlign align = TextAlign.left;
 
   void _openDialog(String title, Widget content) {
     showDialog(
@@ -76,8 +69,11 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
               child: Text('SUBMIT'),
               onPressed: () {
                 Navigator.of(context).pop();
-                setState(() => _mainColor = _tempMainColor);
-                setState(() => _shadeColor = _tempShadeColor);
+                setState(() {
+                  oldColor = mainColor;
+                  mainColor = permanentColor;
+                });
+                // setState(() => _shadeColor = _tempShadeColor);
               },
             ),
           ],
@@ -86,14 +82,26 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
     );
   }
 
+  // void _openColorPicker() async {
+  //   _openDialog(
+  //     "Color picker",
+  //     MaterialColorPicker(
+  //       selectedColor: _shadeColor,
+  //       onColorChange: (color) => setState(() => _tempShadeColor = color),
+  //       onMainColorChange: (color) => setState(() => mainColor = color),
+  //       onBack: () => print("Back button pressed"),
+  //     ),
+  //   );
+  // }
+
   void _openColorPicker() async {
     _openDialog(
-      "Color picker",
+      "Choose a color",
       MaterialColorPicker(
-        selectedColor: _shadeColor,
-        onColorChange: (color) => setState(() => _tempShadeColor = color),
-        onMainColorChange: (color) => setState(() => _tempMainColor = color),
-        onBack: () => print("Back button pressed"),
+        selectedColor: _mainColor,
+        allowShades: false,
+        onMainColorChange: (color) => setState(() => permanentColor = color),
+        // onBack: () => print("Back button pressed"),
       ),
     );
   }
@@ -192,10 +200,7 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
       duration: const Duration(seconds: 2),
       vsync: this,
     )..repeat(reverse: false);
-    _FABcontroller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 200),
-    );
+
     super.initState();
   }
 
@@ -236,7 +241,7 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
       key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: mainColor,
         title: Text(
           'Add your Note',
           style: TextStyle(
@@ -274,10 +279,10 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
+        // shape: CircularNotchedRectangle(),
         // shape: AutomaticNotchedShape(),
         elevation: 10,
-        // color: Colors.green[200],
+        color: mainColor,
         notchMargin: 8,
         child: Container(
           height: 50,
@@ -293,179 +298,191 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                   _scaffoldKey.currentState.showBottomSheet(
                     (context) => Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        // color: Colors.red,
+                        // borderRadius: BorderRadius.circular(10),
+                        color: mainColor,
                       ),
-                      height: 190,
+                      height: 200,
                       child: Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(11),
                             child: Text(
                               'Select Style',
                               style: TextStyle(
+                                letterSpacing: 0.7,
                                 fontSize: 15,
-                                fontWeight: FontWeight.w300,
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.format_bold,
-                                  color: boldPressed
-                                      ? Colors.black
-                                      : Colors.black45,
-                                  size: bottomBarIconSize,
+                              Container(
+                                width: 80,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                onPressed: () => setState(
-                                  () {
-                                    isBold = !isBold;
-                                    if (isBold) {
-                                      boldPressed = true;
-                                    } else {
-                                      boldPressed = false;
-                                    }
-                                  },
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () =>
-                                    _scaffoldKey.currentState.setState(() {
-                                  isItalic = !isItalic;
-                                  if (isItalic)
-                                    italicPressed = true;
-                                  else
-                                    italicPressed = false;
-                                }),
-                                // setState(
-                                //   () {
-                                //     isItalic = !isItalic;
-                                //     if (isItalic)
-                                //       italicPressed = true;
-                                //     else
-                                //       italicPressed = false;
-                                //   },
-                                // ),
-                                icon: Icon(
-                                  Icons.format_italic,
-                                  color: italicPressed
-                                      ? Colors.black
-                                      : Colors.black45,
-                                  size: bottomBarIconSize,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.format_bold,
+                                    color: boldPressed
+                                        ? Colors.black
+                                        : Colors.black45,
+                                    size: bottomBarIconSize,
+                                  ),
+                                  onPressed: () => setState(
+                                    () {
+                                      isBold = !isBold;
+                                      if (isBold) {
+                                        boldPressed = true;
+                                      } else {
+                                        boldPressed = false;
+                                      }
+                                      Navigator.pop(context);
+                                    },
+                                  ),
                                 ),
                               ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.format_underlined,
-                                  color: underlinePressed
-                                      ? Colors.black
-                                      : Colors.black45,
-                                  size: bottomBarIconSize,
+                              Container(
+                                width: 80,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                onPressed: () => setState(
-                                  () {
-                                    isTextUnderlined = !isTextUnderlined;
-                                    if (isTextUnderlined)
-                                      underlinePressed = true;
-                                    else
-                                      underlinePressed = false;
-                                  },
+                                child: IconButton(
+                                  onPressed: () => setState(
+                                    () {
+                                      isItalic = !isItalic;
+                                      if (isItalic)
+                                        italicPressed = true;
+                                      else
+                                        italicPressed = false;
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  // _scaffoldKey.currentState.setState(() {
+                                  //   isItalic = !isItalic;
+                                  //   if (isItalic)
+                                  //     italicPressed = true;
+                                  //   else
+                                  //     italicPressed = false;
+                                  //   Navigator.pop(context);
+                                  // }),
+                                  icon: Icon(
+                                    Icons.format_italic,
+                                    color: italicPressed
+                                        ? Colors.black
+                                        : Colors.black45,
+                                    size: bottomBarIconSize,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 80,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.format_underlined,
+                                    color: underlinePressed
+                                        ? Colors.black
+                                        : Colors.black45,
+                                    size: bottomBarIconSize,
+                                  ),
+                                  onPressed: () => setState(
+                                    () {
+                                      isTextUnderlined = !isTextUnderlined;
+                                      if (isTextUnderlined)
+                                        underlinePressed = true;
+                                      else
+                                        underlinePressed = false;
+                                      Navigator.pop(context);
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
                           ),
+                          SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.format_size,
-                                  color: textsizePressed
-                                      ? Colors.black
-                                      : Colors.black45,
-                                  size: bottomBarIconSize,
+                              Container(
+                                width: 80,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                onPressed: () => setState(
-                                  () {
-                                    isTextHigh = !isTextHigh;
-                                    if (isTextHigh)
-                                      textsizePressed = true;
-                                    else
-                                      textsizePressed = false;
-                                  },
-                                ),
-                              ),
-                              // IconButton(
-                              //   onPressed: () => setState(
-                              //     () {
-                              //       if (alignActive == false) {
-                              //         alignActive = true;
-                              //         centerAlign = false;
-                              //         rightAlign = false;
-                              //         leftAlign = true;
-                              //         align = TextAlign.left;
-                              //       } else {
-                              //         alignActive = false;
-                              //         align = TextAlign.left;
-                              //       }
-                              //     },
-                              //   ),
-                              //   icon: Icon(
-                              //     Icons.format_align_left,
-                              //     color:
-                              //         leftAlign ? Colors.black : Colors.black45,
-                              //     size: bottomBarIconSize,
-                              //   ),
-                              // ),
-                              IconButton(
-                                onPressed: () => setState(
-                                  () {
-                                    if (alignActive == false) {
-                                      alignActive = true;
-                                      centerAlign = true;
-                                      rightAlign = false;
-                                      leftAlign = false;
-                                      align = TextAlign.center;
-                                    } else {
-                                      alignActive = false;
-                                      align = TextAlign.left;
-                                      centerAlign = false;
-                                    }
-                                  },
-                                ),
-                                icon: Icon(
-                                  Icons.format_align_center,
-                                  color: centerAlign
-                                      ? Colors.black
-                                      : Colors.black45,
-                                  size: bottomBarIconSize,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.format_size,
+                                    color: textsizePressed
+                                        ? Colors.black
+                                        : Colors.black45,
+                                    size: bottomBarIconSize,
+                                  ),
+                                  onPressed: () => setState(
+                                    () {
+                                      isTextHigh = !isTextHigh;
+                                      if (isTextHigh)
+                                        textsizePressed = true;
+                                      else
+                                        textsizePressed = false;
+                                      Navigator.pop(context);
+                                    },
+                                  ),
                                 ),
                               ),
-                              IconButton(
-                                onPressed: () => setState(
-                                  () {
-                                    if (alignActive == false) {
-                                      alignActive = true;
-                                      centerAlign = false;
-                                      rightAlign = true;
-                                      leftAlign = false;
-                                      align = TextAlign.right;
-                                    } else {
-                                      alignActive = false;
-                                      align = TextAlign.left;
-                                      rightAlign = false;
-                                    }
-                                  },
+                              Container(
+                                width: 80,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                icon: Icon(
-                                  Icons.format_align_right,
-                                  color: rightAlign
-                                      ? Colors.black
-                                      : Colors.black45,
-                                  size: bottomBarIconSize,
+                                child: IconButton(
+                                  onPressed: () => setState(
+                                    () {
+                                      if (align == TextAlign.center) {
+                                        align = TextAlign.left;
+                                      } else {
+                                        align = TextAlign.center;
+                                      }
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  icon: Icon(
+                                    Icons.format_align_center,
+                                    color: Colors.black45,
+                                    size: bottomBarIconSize,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 80,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: IconButton(
+                                  onPressed: () => setState(
+                                    () {
+                                      if (align == TextAlign.right) {
+                                        align = TextAlign.left;
+                                      } else {
+                                        align = TextAlign.right;
+                                      }
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  icon: Icon(
+                                    Icons.format_align_right,
+                                    color: Colors.black45,
+                                    size: bottomBarIconSize,
+                                  ),
                                 ),
                               ),
                             ],
@@ -473,12 +490,13 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                           Container(
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .bottomSheetTheme
-                                  .backgroundColor,
-                              boxShadow: [
-                                BoxShadow(color: Colors.grey[100]),
-                              ],
+                              // color: Theme.of(context)
+                              //     .bottomSheetTheme
+                              //     .backgroundColor,
+                              color: mainColor,
+                              // boxShadow: [
+                              //   BoxShadow(color: Colors.grey[100]),
+                              // ],
                             ),
                             child: IconButton(
                               icon: Icon(Icons.arrow_drop_down, size: 30),
@@ -498,127 +516,116 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
               IconButton(
                   icon: Icon(Icons.format_list_numbered), onPressed: null),
               IconButton(
-                  icon: Icon(Icons.format_color_fill),
-                  onPressed: () => _openColorPicker()),
+                icon: Icon(Icons.format_color_fill),
+                onPressed: () => _scaffoldKey.currentState.showSnackBar(
+                  SnackBar(
+                    content: AlertDialog(
+                      content: Container(
+                        height: 300,
+                        child: GridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 5,
+                          children: [
+                            GestureDetector(
+                              child: CircleAvatar(
+                                radius: 10,
+                                backgroundColor: Colors.orange,
+                              ),
+                            ),
+                            GestureDetector(
+                              child: CircleAvatar(
+                                radius: 10,
+                                backgroundColor: Colors.pink,
+                              ),
+                            ),
+                            GestureDetector(
+                              child: CircleAvatar(
+                                radius: 10,
+                                backgroundColor: Colors.purple,
+                              ),
+                            ),
+                            GestureDetector(
+                              child: CircleAvatar(
+                                radius: 10,
+                                backgroundColor: Colors.deepPurple,
+                              ),
+                            ),
+                            GestureDetector(
+                              child: CircleAvatar(
+                                radius: 10,
+                                backgroundColor: Colors.blue,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                // _openColorPicker()
+              ),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        elevation: 10,
-        onPressed: () {},
-        child: SpeedDial(
-          overlayColor: Colors.transparent,
-          overlayOpacity: 0.0,
-          curve: Curves.bounceInOut,
-          elevation: 0.0,
-          // backgroundColor: Colors.transparent,
-          // child: ShaderMask(
-          //   shaderCallback: (Rect bounds) {
-          //     return LinearGradient(
-          //       colors: <Color>[
-          //         Colors.red,
-          //         Colors.blue,
-          //         //Colors.yellow,
-          //         Colors.deepOrange,
-          //       ],
-          //       // tileMode: TileMode.repeated,
-          //     ).createShader(bounds);
-          //   },
-          //   child: Icon(Icons.edit),
-          // ),
-          animatedIcon: AnimatedIcons.event_add,
-          backgroundColor: Colors.green,
-          children: [
-            SpeedDialChild(
-              child: Icon(FontAwesomeIcons.adobe),
-              label: 'Draw',
-              labelStyle: speedialTextSize(speedDialtext, height),
-              onTap: () => Navigator.push(context, _createRoute()),
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.add_a_photo),
-              label: 'Insert Image',
-              labelStyle: speedialTextSize(speedDialtext, height),
-              onTap: () {
-                _showDialogBox(context, choiceSize * height);
-              },
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.mic),
-              label: 'Add voice note',
-              labelStyle: speedialTextSize(speedDialtext, height),
-              onTap: () => print('SECOND CHILD'),
-            ),
-          ],
-        ),
+      floatingActionButton: SpeedDial(
+        //TODO: implement the bottomSheet pop thing
+        // onPress: () => {
+        //   Navigator.pop(context),
+        // },
+        marginBottom: 30,
+        overlayColor: Colors.black,
+        overlayOpacity: 0.5,
+        curve: Curves.bounceInOut,
+        elevation: 10.0,
+        // backgroundColor: Colors.transparent,
+        // child: ShaderMask(
+        //   shaderCallback: (Rect bounds) {
+        //     return LinearGradient(
+        //       colors: <Color>[
+        //         Colors.red,
+        //         Colors.blue,
+        //         //Colors.yellow,
+        //         Colors.deepOrange,
+        //       ],
+        //       // tileMode: TileMode.repeated,
+        //     ).createShader(bounds);
+        //   },
+        //   child: Icon(Icons.edit),
+        // ),
+        animatedIcon: AnimatedIcons.event_add,
+        foregroundColor:
+            mainColor == Colors.white ? Colors.green : Colors.white,
+        backgroundColor: mainColor,
+        children: [
+          SpeedDialChild(
+            backgroundColor: Colors.green,
+            child: Icon(FontAwesomeIcons.adobe),
+            // label: 'Draw',
+            labelStyle: speedialTextSize(speedDialtext, height),
+            onTap: () => Navigator.push(context, _createRoute()),
+          ),
+          SpeedDialChild(
+            backgroundColor: Colors.green,
+
+            child: Icon(Icons.add_a_photo),
+            // label: 'Insert Image',
+            labelStyle: speedialTextSize(speedDialtext, height),
+            onTap: () {
+              _showDialogBox(context, choiceSize * height);
+            },
+          ),
+          SpeedDialChild(
+            backgroundColor: Colors.green,
+
+            child: Icon(Icons.mic),
+            // label: 'Add voice note',
+            labelStyle: speedialTextSize(speedDialtext, height),
+            onTap: () => print('SECOND CHILD'),
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      // floatingActionButton: Stack(
-      //   overflow: Overflow.visible,
-      //   alignment: Alignment.center,
-      //   children: List<Widget>.generate(3, (int index) {
-      //     Widget child = Container(
-      //         decoration: BoxDecoration(
-      //           shape: BoxShape.circle,
-      //         ),
-      //         alignment: FractionalOffset.topCenter,
-      //         child: ScaleTransition(
-      //             scale: CurvedAnimation(
-      //               parent: _FABcontroller,
-      //               curve: Interval(0.0, 1.0 - index / icons.length / 2.0,
-      //                   curve: Curves.easeOut),
-      //             ),
-      //             child: FloatingActionButton(
-      //               heroTag: null,
-      //               backgroundColor: Colors.green,
-      //               // mini: true,
-      //               child: Icon(icons[index]),
-      //               onPressed: () {
-      //                 if (index == 0)
-      //                   _showDialogBox(context, choiceSize * height);
-      //                 else if (index == 1)
-      //                   print('SECOND CHILD');
-      //                 else if (index == 2)
-      //                   Navigator.push(context, _createRoute());
-      //               },
-      //             )));
-      //     return Positioned(
-      //       bottom: (50.0 + 20.0) * (index + 1),
-      //       child: child,
-      //     );
-      //   }).toList()
-      //     ..add(
-      //       new FloatingActionButton(
-      //         heroTag: null,
-      //         child: new AnimatedBuilder(
-      //           animation: _FABcontroller,
-      //           builder: (BuildContext context, Widget child) {
-      //             return new Transform(
-      //               transform: new Matrix4.rotationZ(
-      //                   _FABcontroller.value * 0.5 * math.pi),
-      //               alignment: FractionalOffset.center,
-      //               child: new Icon(
-      //                 _FABcontroller.isDismissed
-      //                     ? Icons.more_vert
-      //                     : Icons.close,
-      //               ),
-      //             );
-      //           },
-      //         ),
-      //         onPressed: () {
-      //           if (_FABcontroller.isDismissed) {
-      //             _FABcontroller.forward();
-      //           } else {
-      //             _FABcontroller.reverse();
-      //           }
-      //         },
-      //       ),
-      //     ),
-      // ),
       body: Builder(
         builder: (context) => Column(
           children: [
@@ -626,7 +633,7 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
               child: Container(
                 padding: EdgeInsets.all(0),
                 height: height,
-                color: Colors.white,
+                color: mainColor,
                 child: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
                   child: Form(
@@ -696,8 +703,9 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                               )
                             : SizedBox(height: 2),
                         Card(
+                          color: mainColor,
                           elevation: 0.0,
-                          shadowColor: Colors.white,
+                          shadowColor: mainColor,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: PadH * width * 3,
@@ -707,6 +715,11 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                             // TODO: Maybe use RawKeyboardListner
                             child: TextFormField(
                               textAlign: align,
+                              // centerAlign == true
+                              //     ? TextAlign.center
+                              //     : rightAlign == true
+                              //         ? TextAlign.right
+                              //         : TextAlign.left,
                               autofocus: false,
                               maxLines: 4,
                               scrollPhysics: BouncingScrollPhysics(),
@@ -726,16 +739,26 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
 
                               style: TextStyle(
                                 fontSize: isTextHigh == false ? 17 : 20,
-                                letterSpacing: 0.7,
+                                letterSpacing: 0.9,
                                 fontStyle:
                                     isItalic == false ? null : FontStyle.italic,
                                 fontWeight: isBold == false
                                     ? FontWeight.w300
-                                    : FontWeight.bold,
+                                    : FontWeight.w600,
                                 decoration: underlinePressed
                                     ? TextDecoration.underline
                                     : null,
+                                //TODO: implement lineThrough
+                                // decoration: TextDecoration.combine([
+                                //   underlinePressed
+                                //       ? TextDecoration.underline
+                                //       : null,
+                                //   strikeThroughPressed
+                                //       ? TextDecoration.lineThrough
+                                //       : null,
+                                // ]),
                               ),
+
                               decoration: InputDecoration.collapsed(
                                 hintText: 'Write Note',
                                 hintStyle: TextStyle(
@@ -748,12 +771,19 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                                       : FontStyle.italic,
                                   color: addNoteColor,
                                   fontSize: isTextHigh == false ? 15 : 19,
-                                  // decoration: underlinePressed
-                                  //     ? TextDecoration.underline
-                                  //     : null,
                                   decoration: underlinePressed
                                       ? TextDecoration.underline
                                       : null,
+                                  // decoration: TextDecoration.combine(
+                                  //   [
+                                  //     underlinePressed
+                                  //         ? TextDecoration.underline
+                                  //         : null,
+                                  //     strikeThroughPressed
+                                  //         ? TextDecoration.lineThrough
+                                  //         : null,
+                                  //   ],
+                                  // ),
                                 ),
                               ),
                             ),

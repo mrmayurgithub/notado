@@ -20,6 +20,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   String userCard;
   getUserEmail() async {
     userCard = await widget.userRepository.getUser();
@@ -34,141 +36,138 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      resizeToAvoidBottomPadding: false,
+      floatingActionButton: FAB(widget: widget),
+      appBar: appbar(context),
+      drawer: Drawer(
+        elevation: 0.0,
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          color: Colors.white,
+          child: ListView(
+            children: [
+              Card(
+                elevation: 0.0,
+                child: Container(
+                  height: 80,
+                  child: Center(
+                    child: Text(
+                      'Notado',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 40,
+                        letterSpacing: 2,
+                        color: drawerBarColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              ListTile(
+                // onTap: () => Navigator.push(
+                //   context,
+                //   buildPageRouteBuilder(HomeScreen(user: null)),
+                // ),
+                onTap: () => {
+                  Navigator.pop(context),
+                  _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      content: Text('You are already on the Home Screen'),
+                    ),
+                  ),
+                },
+                leading: Icon(Icons.home, color: drawerBarColor),
+                title: Text('Home'),
+              ),
+              ListTile(
+                onTap: () => Navigator.push(
+                  context,
+                  buildPageRouteBuilder(ProfileScreen()),
+                ),
+                leading: Icon(Icons.person, color: drawerBarColor),
+                title: Text('Profile'),
+              ),
+              ListTile(
+                onTap: () => {},
+                leading: Icon(FontAwesomeIcons.trash, color: drawerBarColor),
+                title: Text('Trash'),
+              ),
+              ListTile(
+                onTap: () => {},
+                leading: Icon(FontAwesomeIcons.star, color: drawerBarColor),
+                title: Text('Rate us'),
+              ),
+              ListTile(
+                onTap: () => {},
+                leading: Icon(Icons.contact_mail, color: drawerBarColor),
+                title: Text('Contact us'),
+              ),
+              ListTile(
+                onTap: () {
+                  BlocProvider.of<AuthenticationBloc>(context).add(
+                    LoggedOut(),
+                  );
+                  Navigator.pushReplacement(
+                    context,
+                    PageRouteBuilder(
+                      transitionDuration: Duration(milliseconds: 440),
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          LoginScreen(userRepository: widget.userRepository),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        var begin = Offset(0, 1);
+                        var end = Offset.zero;
+                        var curve = Curves.easeInOutQuad;
+                        var tween = Tween(begin: begin, end: end)
+                            .chain(CurveTween(curve: curve));
+                        //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
+
+                        return SlideTransition(
+                            position: animation.drive(tween), child: child);
+                        //return FadeTransition(opacity: animation.drive(tween), child: child);
+                      },
+                    ),
+                  );
+                },
+                leading:
+                    Icon(FontAwesomeIcons.signOutAlt, color: drawerBarColor),
+                title: Text('Logout'),
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Builder(
         //TODO: Check whether this is correct or not i.e, two Scaffolds
-        builder: (BuildContext context) => Scaffold(
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-          resizeToAvoidBottomPadding: false,
-          floatingActionButton: FAB(widget: widget),
-          appBar: appbar(context),
-          drawer: Drawer(
-            elevation: 0.0,
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              color: Colors.white,
-              child: ListView(
-                children: [
-                  Card(
-                    elevation: 0.0,
-                    child: Container(
-                      height: 80,
-                      child: Center(
-                        child: Text(
-                          'Notado',
+        builder: (BuildContext context) => SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.all(14.0),
+            child: Column(
+              children: [
+                Card(
+                  color: Colors.green[300],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Container(
+                    height: 150,
+                    width: MediaQuery.of(context).size.width,
+                    child: Padding(
+                      padding: EdgeInsets.all(18.0),
+                      child: Text('$userCard',
                           style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 40,
-                            letterSpacing: 2,
-                            color: drawerBarColor,
-                          ),
-                        ),
-                      ),
+                              fontSize: 30, fontWeight: FontWeight.w400)),
                     ),
                   ),
-                  ListTile(
-                    // onTap: () => Navigator.push(
-                    //   context,
-                    //   buildPageRouteBuilder(HomeScreen(user: null)),
-                    // ),
-                    onTap: () => {
-                      Scaffold.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('You are already on the Home Screen'),
-                        ),
-                      ),
-                    },
-                    leading: Icon(Icons.home, color: drawerBarColor),
-                    title: Text('Home'),
-                  ),
-                  ListTile(
-                    onTap: () => Navigator.push(
-                      context,
-                      buildPageRouteBuilder(ProfileScreen()),
-                    ),
-                    leading: Icon(Icons.person, color: drawerBarColor),
-                    title: Text('Profile'),
-                  ),
-                  ListTile(
-                    onTap: () => {},
-                    leading:
-                        Icon(FontAwesomeIcons.trash, color: drawerBarColor),
-                    title: Text('Trash'),
-                  ),
-                  ListTile(
-                    onTap: () => {},
-                    leading: Icon(FontAwesomeIcons.star, color: drawerBarColor),
-                    title: Text('Rate us'),
-                  ),
-                  ListTile(
-                    onTap: () => {},
-                    leading: Icon(Icons.contact_mail, color: drawerBarColor),
-                    title: Text('Contact us'),
-                  ),
-                  ListTile(
-                    onTap: () {
-                      BlocProvider.of<AuthenticationBloc>(context).add(
-                        LoggedOut(),
-                      );
-                      Navigator.pushReplacement(
-                        context,
-                        PageRouteBuilder(
-                          transitionDuration: Duration(milliseconds: 440),
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  LoginScreen(
-                                      userRepository: widget.userRepository),
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            var begin = Offset(0, 1);
-                            var end = Offset.zero;
-                            var curve = Curves.easeInOutQuad;
-                            var tween = Tween(begin: begin, end: end)
-                                .chain(CurveTween(curve: curve));
-                            //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
-
-                            return SlideTransition(
-                                position: animation.drive(tween), child: child);
-                            //return FadeTransition(opacity: animation.drive(tween), child: child);
-                          },
-                        ),
-                      );
-                    },
-                    leading: Icon(FontAwesomeIcons.signOutAlt,
-                        color: drawerBarColor),
-                    title: Text('Logout'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          body: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.all(14.0),
-              child: Column(
-                children: [
-                  Card(
-                    color: Colors.green[300],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Container(
-                      height: 150,
-                      width: MediaQuery.of(context).size.width,
-                      child: Padding(
-                        padding: EdgeInsets.all(18.0),
-                        child: Text('$userCard',
-                            style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.w400)),
-                      ),
-                    ),
-                  ),
-                  GridView.count(
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                  ),
-                ],
-              ),
+                ),
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                ),
+              ],
             ),
           ),
         ),
@@ -192,7 +191,9 @@ class _HomeScreenState extends State<HomeScreen> {
               context,
               CupertinoPageRoute(
                 builder: (context) {
-                  return SettingsScreen();
+                  return SettingsScreen(
+                    userRepository: widget.userRepository,
+                  );
                 },
               ),
             ),
@@ -215,7 +216,7 @@ class FAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      backgroundColor: Colors.purple,
+      backgroundColor: Colors.green,
       onPressed: () => Navigator.push(
         context,
         // Pageroutebuilder for implementing different a transition between screens

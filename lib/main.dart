@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notado/authentication/authentication_bloc.dart';
@@ -13,6 +14,10 @@ import 'screens/splash/splash_screen.dart';
 
 void main() {
   runApp(App());
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.blue, // navigation bar color
+    statusBarColor: Colors.green, // status bar color
+  ));
 }
 
 class App extends StatefulWidget {
