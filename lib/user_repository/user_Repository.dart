@@ -31,8 +31,6 @@ class UserRepository {
   }
 
   Future<void> signOut() async {
-    print('vkcxvkjxbcvjk.............bsdbv.......................hdsclchl');
-
     final _firebaseInstance = FirebaseAuth.instance;
     return await _firebaseInstance.signOut();
     // return await Future.wait([

@@ -516,54 +516,54 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
               IconButton(
                   icon: Icon(Icons.format_list_numbered), onPressed: null),
               IconButton(
-                icon: Icon(Icons.format_color_fill),
-                onPressed: () => _scaffoldKey.currentState.showSnackBar(
-                  SnackBar(
-                    content: AlertDialog(
-                      content: Container(
-                        height: 300,
-                        child: GridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 5,
-                          children: [
-                            GestureDetector(
-                              child: CircleAvatar(
-                                radius: 10,
-                                backgroundColor: Colors.orange,
-                              ),
-                            ),
-                            GestureDetector(
-                              child: CircleAvatar(
-                                radius: 10,
-                                backgroundColor: Colors.pink,
-                              ),
-                            ),
-                            GestureDetector(
-                              child: CircleAvatar(
-                                radius: 10,
-                                backgroundColor: Colors.purple,
-                              ),
-                            ),
-                            GestureDetector(
-                              child: CircleAvatar(
-                                radius: 10,
-                                backgroundColor: Colors.deepPurple,
-                              ),
-                            ),
-                            GestureDetector(
-                              child: CircleAvatar(
-                                radius: 10,
-                                backgroundColor: Colors.blue,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                // _openColorPicker()
-              ),
+                  icon: Icon(Icons.format_color_fill),
+                  onPressed: () =>
+                      //  _scaffoldKey.currentState.showSnackBar(
+                      //   SnackBar(
+                      //     content: AlertDialog(
+                      //       content: Container(
+                      //         height: 300,
+                      //         child: GridView.count(
+                      //           shrinkWrap: true,
+                      //           crossAxisCount: 5,
+                      //           children: [
+                      //             GestureDetector(
+                      //               child: CircleAvatar(
+                      //                 radius: 10,
+                      //                 backgroundColor: Colors.orange,
+                      //               ),
+                      //             ),
+                      //             GestureDetector(
+                      //               child: CircleAvatar(
+                      //                 radius: 10,
+                      //                 backgroundColor: Colors.pink,
+                      //               ),
+                      //             ),
+                      //             GestureDetector(
+                      //               child: CircleAvatar(
+                      //                 radius: 10,
+                      //                 backgroundColor: Colors.purple,
+                      //               ),
+                      //             ),
+                      //             GestureDetector(
+                      //               child: CircleAvatar(
+                      //                 radius: 10,
+                      //                 backgroundColor: Colors.deepPurple,
+                      //               ),
+                      //             ),
+                      //             GestureDetector(
+                      //               child: CircleAvatar(
+                      //                 radius: 10,
+                      //                 backgroundColor: Colors.blue,
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      _openColorPicker()),
             ],
           ),
         ),
@@ -640,32 +640,105 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                     key: formKey,
                     child: Column(
                       children: <Widget>[
-                        // widget.drawModel != null
-                        //     ? null
-                        //     //TODO: Implement it
-                        //     // Transform.scale(
-                        //     //     scale: 0.5,
-                        //     //     child: Scaffold(
-                        //     //       body: Container(
-                        //     //         child: CustomPaint(
-                        //     //           painter: Draw(
-                        //     //               points: widget
-                        //     //                   .drawModel[
-                        //     //                       widget.drawModel.length - 1]
-                        //     //                   .points),
-                        //     //         ),
-                        //     //       ),
-                        //     //     ),
-                        //     //   )
-                        //     : SizedBox(height: 10),
+                        Card(
+                          color: mainColor,
+                          elevation: 0.0,
+                          shadowColor: mainColor,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: PadH * width * 3,
+                              vertical: PadV * height * 3,
+                            ),
+
+                            // TODO: Maybe use RawKeyboardListner
+                            child: TextFormField(
+                              textAlign: align,
+                              // centerAlign == true
+                              //     ? TextAlign.center
+                              //     : rightAlign == true
+                              //         ? TextAlign.right
+                              //         : TextAlign.left,
+                              autofocus: false,
+                              maxLines: 1,
+                              scrollPhysics: BouncingScrollPhysics(),
+                              controller: noteController,
+                              enableInteractiveSelection: true,
+                              initialValue: initialText,
+                              textCapitalization: TextCapitalization.sentences,
+                              onSaved: (s) => {
+                                //TODO: implement notes.notes = s, noteController.text
+                              },
+                              validator: (s) =>
+                                  s.length > 0 ? null : 'Note can\'t be empty',
+                              // onChanged: (value) => {
+                              //   initialText = noteController.text,
+                              //   print(noteController.text),
+                              // },
+
+                              style: TextStyle(
+                                fontSize: isTextHigh == false ? 17 : 20,
+                                letterSpacing: 0.9,
+                                fontStyle:
+                                    isItalic == false ? null : FontStyle.italic,
+                                fontWeight: isBold == false
+                                    ? FontWeight.w300
+                                    : FontWeight.w600,
+                                decoration: underlinePressed
+                                    ? TextDecoration.underline
+                                    : null,
+                                //TODO: implement lineThrough
+                                // decoration: TextDecoration.combine([
+                                //   underlinePressed
+                                //       ? TextDecoration.underline
+                                //       : null,
+                                //   strikeThroughPressed
+                                //       ? TextDecoration.lineThrough
+                                //       : null,
+                                // ]),
+                              ),
+
+                              decoration: InputDecoration.collapsed(
+                                hintText: 'Title ',
+                                hintStyle: TextStyle(
+                                  letterSpacing: 0.7,
+                                  fontWeight: isBold == false
+                                      ? FontWeight.w300
+                                      : FontWeight.bold,
+                                  fontStyle: isItalic == false
+                                      ? null
+                                      : FontStyle.italic,
+                                  color: addNoteColor,
+                                  fontSize: isTextHigh == false ? 15 : 19,
+                                  decoration: underlinePressed
+                                      ? TextDecoration.underline
+                                      : null,
+                                  // decoration: TextDecoration.combine(
+                                  //   [
+                                  //     underlinePressed
+                                  //         ? TextDecoration.underline
+                                  //         : null,
+                                  //     strikeThroughPressed
+                                  //         ? TextDecoration.lineThrough
+                                  //         : null,
+                                  //   ],
+                                  // ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                         images.length != 0
                             // List view for images
-                            ? Column(
-                                children: <Widget>[
+                            ? GridView.count(
+                                padding: EdgeInsets.all(0),
+                                physics: BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                crossAxisCount:
+                                    images.length <= 2 ? images.length : 3,
+                                children: [
                                   for (int i = 0; i < images.length; i++)
                                     Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: ImageColumnPad * width),
+                                      padding: EdgeInsets.all(1.0),
                                       child: Dismissible(
                                         key: ObjectKey(images[i]),
                                         onDismissed: (direction) {
@@ -693,7 +766,7 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                                           child: Center(
                                             child: Image.file(
                                               images[i],
-                                              fit: BoxFit.contain,
+                                              fit: BoxFit.fill,
                                             ),
                                           ),
                                         ),
@@ -701,6 +774,51 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                                     ),
                                 ],
                               )
+
+                            //TODO: TODO: MAIN IMAGE COLUMN
+                            // Column(
+                            //     children: <Widget>[
+                            //       for (int i = 0; i < images.length; i++)
+                            //         Padding(
+                            //           padding: EdgeInsets.symmetric(
+                            //             horizontal: ImageColumnPad * width,
+                            //             vertical: 1,
+                            //           ),
+                            //           child: Dismissible(
+                            //             key: ObjectKey(images[i]),
+                            //             onDismissed: (direction) {
+                            //               var item = images.elementAt(i);
+                            //               deleteItem(i);
+                            //               Scaffold.of(context).showSnackBar(
+                            //                 SnackBar(
+                            //                   shape: RoundedRectangleBorder(),
+                            //                   content: Text("Item deleted",
+                            //                       style:
+                            //                           TextStyle(fontSize: 15)),
+                            //                   action: SnackBarAction(
+                            //                     label: "UNDO",
+                            //                     onPressed: () {
+                            //                       undoDeletion(i, item);
+                            //                     },
+                            //                   ),
+                            //                 ),
+                            //               );
+                            //             },
+                            //             child: GestureDetector(
+                            //               onTap: () => {
+                            //                 //TODO: Implement delete function here
+                            //               },
+                            //               child: Center(
+                            //                 child: Image.file(
+                            //                   images[i],
+                            //                   fit: BoxFit.contain,
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //           ),
+                            //         ),
+                            //     ],
+                            //   )
                             : SizedBox(height: 2),
                         Card(
                           color: mainColor,

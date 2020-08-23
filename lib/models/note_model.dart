@@ -2,25 +2,37 @@ import 'dart:io';
 import 'package:meta/meta.dart';
 
 class Note {
-  String note;
+  String title;
+  String content;
   String dateTime;
   bool bold;
   bool italic;
-  bool uderlined;
+  bool underlined;
   bool strikeThrough;
   bool textHigh;
-  String color;
-  List<File> images;
-  //TODO: add drawModel maybe by using maps
   String alignment;
-  Note(
-      {@required this.note,
-      @required this.dateTime,
-      this.bold,
-      this.italic,
-      this.uderlined,
-      this.strikeThrough,
-      this.textHigh,
-      this.color,
-      this.images});
+  String noteColor;
+  final String createdAt;
+  String modifiedAt;
+  //TODO:
+  // List<File> images;
+  String drawPoints;
+  String drawColor;
+  Note({
+    @required this.title,
+    @required this.content,
+    @required this.dateTime,
+    @required this.bold,
+    @required this.italic,
+    @required this.underlined,
+    @required this.strikeThrough,
+    @required this.textHigh,
+    @required this.alignment,
+    @required this.noteColor,
+    // @required this.images,
+    @required this.createdAt,
+    @required this.modifiedAt,
+    @required this.drawPoints,
+    @required this.drawColor,
+  });
 }
