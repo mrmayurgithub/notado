@@ -83,5 +83,8 @@ class UserRepository {
     return user.displayName;
   }
 
-  //TODO: implement database Service
+  Future<String> getUID() async {
+    final FirebaseUser user = await _firebaseAuth.currentUser();
+    return await user.uid.toString();
+  }
 }
