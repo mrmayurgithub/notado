@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<Note>>.value(
-      value: DatabaseService(uid: uid).notes,
+      value: DatabaseService(uid: uid).notesFromNotes,
       child: Scaffold(
         drawerEnableOpenDragGesture: true,
         key: _scaffoldKey,

@@ -25,7 +25,7 @@ class NoteCard extends StatelessWidget {
       child: Card(
         margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0.0),
         child: ListTile(
-          title: Text(note.title),
+          title: Text('note.title'),
         ),
       ),
     );

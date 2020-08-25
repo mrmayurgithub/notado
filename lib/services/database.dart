@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:notado/models/note_model.dart';
 import 'package:notado/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,29 +9,36 @@ class DatabaseService {
   final String uid;
   DatabaseService({@required this.uid});
 
-  final CollectionReference noteReference =
-      Firestore.instance.collection('notes');
-  final CollectionReference trashReference =
-      Firestore.instance.collection('trash');
-
-  Future<void> createUserData(
+  Future<void> createUserData({
     // String id,
-    String title,
-    String content,
-    String dateTime,
-    bool bold,
-    bool italic,
-    bool underlined,
-    bool strikeThrough,
-    bool textHigh,
-    String alignment,
-    String noteColor,
-    String modifiedAt,
-    String drawPoints,
-    String drawColor,
-  ) async {
-    final id = Firestore.instance.collection('notes').document().documentID;
-    return await noteReference.document(id).setData({
+    @required String title,
+    @required String content,
+    @required String dateTime,
+    @required bool bold,
+    @required bool italic,
+    @required bool underlined,
+    @required bool strikeThrough,
+    @required bool textHigh,
+    @required String alignment,
+    @required String noteColor,
+    @required String modifiedAt,
+    @required String drawPoints,
+    @required String drawColor,
+    @required List<File> images,
+  }) async {
+    final id = Firestore.instance
+        .collection('notes')
+        .document(uid)
+        .collection('userNotes')
+        .document()
+        .documentID;
+
+    await Firestore.instance
+        .collection('notes')
+        .document(uid)
+        .collection('userNotes')
+        .document(id)
+        .setData({
       'id': id,
       'title': title,
       'content': content,
@@ -45,6 +54,13 @@ class DatabaseService {
       'drawPoints': drawPoints,
       'drawColor': drawColor,
     });
+    return await uploadFileToNote(
+      images: images,
+      uid: uid,
+      id: id,
+    ).whenComplete(
+      () => print('Image uploaded'),
+    );
   }
 
   Future<void> updateUserData(
@@ -63,7 +79,12 @@ class DatabaseService {
     String drawPoints,
     String drawColor,
   ) async {
-    return await noteReference.document(id).updateData({
+    return await Firestore.instance
+        .collection('notes')
+        .document(uid)
+        .collection('userNotes')
+        .document(id)
+        .updateData({
       'id': id,
       'title': title,
       'content': content,
@@ -82,17 +103,27 @@ class DatabaseService {
   }
 
   Future<void> deleteUserDataFromNotes(String id) async {
-    return await noteReference
+    return await Firestore.instance
+        .collection('notes')
+        .document(uid)
+        .collection('userNotes')
         .document(id)
         .delete()
         .whenComplete(() => print('DELETED FROM NOTES'));
   }
 
   Future<void> deleteUserDataFromTrash(String id) async {
-    return await trashReference
+    return await Firestore.instance
+        .collection('trash')
+        .document(uid)
+        .collection('userNotes')
         .document(id)
         .delete()
         .whenComplete(() => print('DELETED FROM TRASH'));
+    // return await trashReference
+    //     .document(id)
+    //     .delete()
+    //     .whenComplete(() => print('DELETED FROM TRASH'));
   }
 
   Future<void> trashUserData(
@@ -111,7 +142,13 @@ class DatabaseService {
     String drawPoints,
     String drawColor,
   ) async {
-    await trashReference.document(id).setData({
+    return await Firestore.instance
+        .collection('trash')
+        .document(uid)
+        .collection('userNotes')
+        .document(id)
+        .setData({
+      // await trashReference.document(id).setData({
       'id': id,
       'title': title,
       'content': content,
@@ -132,6 +169,7 @@ class DatabaseService {
 
 //TODO: CHECKKKKKKKKKkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
   //Note list from snapshot
+  //TODO: check
   List<Note> _noteListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.documents.map((docuid) {
       return Note(
@@ -162,9 +200,49 @@ class DatabaseService {
   //   );
   // }
 
-  // get brews stream
-  Stream<List<Note>> get notes {
-    return noteReference.snapshots().map(_noteListFromSnapshot);
+  Stream<List<Note>> get notesFromNotes {
+    return Firestore.instance
+        .collection('notes')
+        .document(uid)
+        .collection('userNotes')
+        .snapshots()
+        .map(_noteListFromSnapshot);
+  }
+
+  Stream<List<Note>> get notesFromTrash {
+    return Firestore.instance
+        .collection('trash')
+        .document(uid)
+        .collection('userNotes')
+        .snapshots()
+        .map(_noteListFromSnapshot);
+  }
+
+  String _uploadFileURL;
+  String fileURL;
+  Future uploadFileToNote(
+      {@required List<File> images, @required String uid, @required id}) async {
+    for (int i = 0; i < images.length; i++) {
+      StorageUploadTask uploadTask = FirebaseStorage.instance
+          .ref()
+          .child('notes/$uid/$id')
+          .putFile(images[i]);
+
+      await uploadTask.onComplete;
+      print('File uploaded');
+      // FirebaseStorage.instance.ref().child('notes/$uid/$id}').getDownloadURL();
+    }
+  }
+
+  Future uploadFileToNTrash(List<File> images) async {
+    for (int i = 0; i < images.length; i++) {
+      StorageReference storageReference =
+          FirebaseStorage.instance.ref().child('');
+      StorageUploadTask uploadTask = storageReference.putFile(images[i]);
+      await uploadTask.onComplete;
+      print('File uploaded');
+      storageReference.getDownloadURL();
+    }
   }
 
   // // get user doc stream

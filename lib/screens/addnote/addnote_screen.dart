@@ -1,11 +1,11 @@
 import 'dart:io';
-import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:notado/models/draw_screen_model.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/constants/constants.dart';
 import 'package:notado/screens/draw/draw_screen.dart';
+import 'package:notado/services/database.dart';
 import 'package:notado/user_repository/user_Repository.dart';
 import 'dart:math' as math;
 
@@ -51,6 +51,9 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
   Color mainColor = Colors.white;
   Color permanentColor;
   TextAlign align = TextAlign.left;
+  String uid;
+  DatabaseService _databaseService;
+  bool isBullet = false;
 
   void _openDialog(String title, Widget content) {
     showDialog(
@@ -166,41 +169,21 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
     Icons.brush,
   ];
 
-  // static List<FloatingActionButton> floatingActionButtons = [
-  //   FloatingActionButton(
-  //     heroTag: null,
-  //     tooltip: 'Draw',
-  //     backgroundColor: Colors.green,
-  //     mini: true,
-  //     onPressed: () => {},
-  //     child: Icon(Icons.brush),
-  //   ),
-  //   FloatingActionButton(
-  //     heroTag: null,
-  //     mini: true,
-  //     backgroundColor: Colors.green,
-  //     tooltip: 'Insert Image',
-  //     onPressed: () => {},
-  //     child: Icon(Icons.add_a_photo),
-  //   ),
-  //   FloatingActionButton(
-  //     heroTag: null,
-  //     mini: true,
-  //     backgroundColor: Colors.green,
-  //     tooltip: 'Insert voice',
-  //     onPressed: () => {},
-  //     child: Icon(Icons.mic),
-  //   ),
-  // ];
+  _getUID() async {
+    uid = await widget.userRepository.getUID();
+  }
+
   @override
   void initState() {
-    // drawModel = <DrawModel>[];
+    titleController = TextEditingController();
+    noteController = TextEditingController();
     // initializing the animation contoller variable _controller
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     )..repeat(reverse: false);
-
+    _getUID();
+    _databaseService = DatabaseService(uid: uid);
     super.initState();
   }
 
@@ -236,6 +219,7 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
     final appBarIconColor = Colors.black;
     final ImageColumnPad = 4.5 / w;
     String initialText = '';
+    int currentTextLength = 0;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -267,8 +251,31 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
           IconButton(
             icon: Icon(Icons.check, color: appBarIconColor),
             onPressed: () => {
+              print(TextAlign.center.toString()),
               //TODO: apply addNote function
-              if (formKey.currentState.validate()) {}
+              if (formKey.currentState.validate())
+                {
+                  _databaseService.createUserData(
+                    title: titleController.text,
+                    content: noteController.text,
+                    dateTime: '',
+                    bold: isBold,
+                    italic: isItalic,
+                    underlined: isTextUnderlined,
+                    strikeThrough: false,
+                    textHigh: true,
+                    alignment: '',
+                    noteColor: '',
+                    modifiedAt: null,
+                    drawPoints: null,
+                    drawColor: null,
+                    images: images,
+                  ),
+                  // _databaseService.uploadFileToNote(
+                  //   images: images,
+                  //   uid: uid,
+                  // ),
+                }
             },
             // onPressed: () => {
             //   if (formKey.currentState.validate())
@@ -279,8 +286,6 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-        // shape: CircularNotchedRectangle(),
-        // shape: AutomaticNotchedShape(),
         elevation: 10,
         color: mainColor,
         notchMargin: 8,
@@ -512,7 +517,11 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
               IconButton(icon: Icon(Icons.check_box), onPressed: null),
               IconButton(icon: Icon(Icons.strikethrough_s), onPressed: null),
               IconButton(
-                  icon: Icon(Icons.format_list_bulleted), onPressed: null),
+                  icon: Icon(Icons.format_list_bulleted), onPressed: () => {}
+                  // setState(() {
+                  //   isBullet = true;
+                  // }),
+                  ),
               IconButton(
                   icon: Icon(Icons.format_list_numbered), onPressed: null),
               IconButton(
@@ -658,18 +667,19 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                               //     : rightAlign == true
                               //         ? TextAlign.right
                               //         : TextAlign.left,
+
                               autofocus: false,
                               maxLines: 1,
                               scrollPhysics: BouncingScrollPhysics(),
-                              controller: noteController,
+                              controller: titleController,
                               enableInteractiveSelection: true,
-                              initialValue: initialText,
                               textCapitalization: TextCapitalization.sentences,
                               onSaved: (s) => {
                                 //TODO: implement notes.notes = s, noteController.text
                               },
-                              validator: (s) =>
-                                  s.length > 0 ? null : 'Note can\'t be empty',
+                              validator: (s) => s.length > 0
+                                  ? null
+                                  : 'This field can\'t be left empty',
                               // onChanged: (value) => {
                               //   initialText = noteController.text,
                               //   print(noteController.text),
@@ -727,18 +737,65 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
+
+                        // images.length > 1
+                        // // List view for images
+                        // ? GridView.count(
+                        //     padding: EdgeInsets.all(0),
+                        //     physics: BouncingScrollPhysics(),
+                        //     shrinkWrap: true,
+                        //     crossAxisCount:
+                        //         images.length <= 2 ? images.length : 3,
+                        //     children: [
+                        //       for (int i = 0; i < images.length; i++)
+                        //         Padding(
+                        //           padding: EdgeInsets.all(1.0),
+                        //           child: Dismissible(
+                        //             key: ObjectKey(images[i]),
+                        //             onDismissed: (direction) {
+                        //               var item = images.elementAt(i);
+                        //               deleteItem(i);
+                        //               Scaffold.of(context).showSnackBar(
+                        //                 SnackBar(
+                        //                   shape: RoundedRectangleBorder(),
+                        //                   content: Text("Item deleted",
+                        //                       style:
+                        //                           TextStyle(fontSize: 15)),
+                        //                   action: SnackBarAction(
+                        //                     label: "UNDO",
+                        //                     onPressed: () {
+                        //                       undoDeletion(i, item);
+                        //                     },
+                        //                   ),
+                        //                 ),
+                        //               );
+                        //             },
+                        //             child: GestureDetector(
+                        //               onTap: () => {
+                        //                 //TODO: Implement delete function here
+                        //               },
+                        //               child: Center(
+                        //                 child: Image.file(
+                        //                   images[i],
+                        //                   fit: BoxFit.fill,
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ),
+                        //     ],
+                        //   )
+
+                        //TODO: TODO: MAIN IMAGE COLUMN
                         images.length != 0
-                            // List view for images
-                            ? GridView.count(
-                                padding: EdgeInsets.all(0),
-                                physics: BouncingScrollPhysics(),
-                                shrinkWrap: true,
-                                crossAxisCount:
-                                    images.length <= 2 ? images.length : 3,
-                                children: [
+                            ? Column(
+                                children: <Widget>[
                                   for (int i = 0; i < images.length; i++)
                                     Padding(
-                                      padding: EdgeInsets.all(1.0),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: ImageColumnPad * width,
+                                        vertical: 1,
+                                      ),
                                       child: Dismissible(
                                         key: ObjectKey(images[i]),
                                         onDismissed: (direction) {
@@ -766,7 +823,7 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                                           child: Center(
                                             child: Image.file(
                                               images[i],
-                                              fit: BoxFit.fill,
+                                              fit: BoxFit.contain,
                                             ),
                                           ),
                                         ),
@@ -774,51 +831,6 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                                     ),
                                 ],
                               )
-
-                            //TODO: TODO: MAIN IMAGE COLUMN
-                            // Column(
-                            //     children: <Widget>[
-                            //       for (int i = 0; i < images.length; i++)
-                            //         Padding(
-                            //           padding: EdgeInsets.symmetric(
-                            //             horizontal: ImageColumnPad * width,
-                            //             vertical: 1,
-                            //           ),
-                            //           child: Dismissible(
-                            //             key: ObjectKey(images[i]),
-                            //             onDismissed: (direction) {
-                            //               var item = images.elementAt(i);
-                            //               deleteItem(i);
-                            //               Scaffold.of(context).showSnackBar(
-                            //                 SnackBar(
-                            //                   shape: RoundedRectangleBorder(),
-                            //                   content: Text("Item deleted",
-                            //                       style:
-                            //                           TextStyle(fontSize: 15)),
-                            //                   action: SnackBarAction(
-                            //                     label: "UNDO",
-                            //                     onPressed: () {
-                            //                       undoDeletion(i, item);
-                            //                     },
-                            //                   ),
-                            //                 ),
-                            //               );
-                            //             },
-                            //             child: GestureDetector(
-                            //               onTap: () => {
-                            //                 //TODO: Implement delete function here
-                            //               },
-                            //               child: Center(
-                            //                 child: Image.file(
-                            //                   images[i],
-                            //                   fit: BoxFit.contain,
-                            //                 ),
-                            //               ),
-                            //             ),
-                            //           ),
-                            //         ),
-                            //     ],
-                            //   )
                             : SizedBox(height: 2),
                         Card(
                           color: mainColor,
@@ -838,12 +850,33 @@ class _AddNoteState extends State<AddNote> with TickerProviderStateMixin {
                               //     : rightAlign == true
                               //         ? TextAlign.right
                               //         : TextAlign.left,
+                              onChanged: (String newText) {
+                                if (isBullet) {
+                                  if (newText[0] != '•') {
+                                    newText = '• ' + newText;
+                                    noteController.text = newText;
+                                    noteController.selection =
+                                        TextSelection.fromPosition(TextPosition(
+                                            offset:
+                                                noteController.text.length));
+                                  }
+                                  if (newText[newText.length - 1] == '\n' &&
+                                      newText.length > currentTextLength) {
+                                    noteController.text = newText + '• ';
+                                    noteController.selection =
+                                        TextSelection.fromPosition(TextPosition(
+                                            offset:
+                                                noteController.text.length));
+                                  }
+                                  currentTextLength =
+                                      noteController.text.length;
+                                } else {}
+                              },
                               autofocus: false,
                               maxLines: 4,
                               scrollPhysics: BouncingScrollPhysics(),
                               controller: noteController,
                               enableInteractiveSelection: true,
-                              initialValue: initialText,
                               textCapitalization: TextCapitalization.sentences,
                               onSaved: (s) => {
                                 //TODO: implement notes.notes = s, noteController.text
