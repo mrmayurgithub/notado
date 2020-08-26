@@ -87,4 +87,19 @@ class UserRepository {
     final FirebaseUser user = await _firebaseAuth.currentUser();
     return await user.uid.toString();
   }
+
+  Future<bool> validatePassword(String password) async {
+    var _firebaseUser = await FirebaseAuth.instance.currentUser();
+    var _authCredentials = EmailAuthProvider.getCredential(
+      email: _firebaseUser.email,
+      password: password,
+    );
+    try {
+      var authResult =
+          await _firebaseUser.reauthenticateWithCredential(_authCredentials);
+      return authResult.user == null;
+    } catch (e) {
+      return false;
+    }
+  }
 }
