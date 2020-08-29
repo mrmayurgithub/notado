@@ -1,4 +1,5 @@
 # notado
+## In Development mode
 Features - 
 - Add audio notes
 - Add image notes
