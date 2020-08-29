@@ -6,15 +6,16 @@ INJECTED from C:\apps\notado\android\app\src\main\AndroidManifest.xml:1:1-47:12
 INJECTED from C:\apps\notado\android\app\src\main\AndroidManifest.xml:1:1-47:12
 MERGED from C:\apps\notado\android\app\src\main\AndroidManifest.xml:1:1-47:12
 MERGED from [:google_sign_in] C:\apps\notado\build\google_sign_in\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-9:12
-MERGED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-15:12
 MERGED from [:firebase_auth] C:\apps\notado\build\firebase_auth\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-15:12
 MERGED from [:firebase_auth_web] C:\apps\notado\build\firebase_auth_web\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
+MERGED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-15:12
 MERGED from [:cloud_firestore] C:\apps\notado\build\cloud_firestore\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-15:12
 MERGED from [:cloud_firestore_web] C:\apps\notado\build\cloud_firestore_web\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:firebase_core] C:\apps\notado\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-15:12
 MERGED from [:firebase_core_web] C:\apps\notado\build\firebase_core_web\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:image_picker] C:\apps\notado\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-22:12
 MERGED from [:flutter_plugin_android_lifecycle] C:\apps\notado\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
+MERGED from [:url_launcher] C:\apps\notado\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-14:12
 MERGED from [:shared_preferences] C:\apps\notado\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.firebase:firebase-analytics:17.2.2] C:\Users\mrmay\.gradle\caches\transforms-2\files-2.1\2a70ee504bd32b1bd949b6dd58d86852\firebase-analytics-17.2.2\AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.firebase:firebase-auth:19.2.0] C:\Users\mrmay\.gradle\caches\transforms-2\files-2.1\a83bb62cb43b672cf00b874e0ee6110c\firebase-auth-19.2.0\AndroidManifest.xml:17:1-42:12
@@ -79,16 +80,18 @@ INJECTED from C:\apps\notado\android\app\src\debug\AndroidManifest.xml:1:1-7:12
 		ADDED from C:\apps\notado\android\app\src\main\AndroidManifest.xml:1:11-69
 application
 ADDED from C:\apps\notado\android\app\src\main\AndroidManifest.xml:8:5-46:19
-MERGED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-13:19
-MERGED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-13:19
 MERGED from [:firebase_auth] C:\apps\notado\build\firebase_auth\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-13:19
 MERGED from [:firebase_auth] C:\apps\notado\build\firebase_auth\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-13:19
+MERGED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-13:19
+MERGED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-13:19
 MERGED from [:cloud_firestore] C:\apps\notado\build\cloud_firestore\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-13:19
 MERGED from [:cloud_firestore] C:\apps\notado\build\cloud_firestore\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-13:19
 MERGED from [:firebase_core] C:\apps\notado\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-13:19
 MERGED from [:firebase_core] C:\apps\notado\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-13:19
 MERGED from [:image_picker] C:\apps\notado\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:10:5-20:19
 MERGED from [:image_picker] C:\apps\notado\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:10:5-20:19
+MERGED from [:url_launcher] C:\apps\notado\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-12:19
+MERGED from [:url_launcher] C:\apps\notado\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-12:19
 MERGED from [com.google.firebase:firebase-analytics:17.2.2] C:\Users\mrmay\.gradle\caches\transforms-2\files-2.1\2a70ee504bd32b1bd949b6dd58d86852\firebase-analytics-17.2.2\AndroidManifest.xml:7:5-20
 MERGED from [com.google.firebase:firebase-analytics:17.2.2] C:\Users\mrmay\.gradle\caches\transforms-2\files-2.1\2a70ee504bd32b1bd949b6dd58d86852\firebase-analytics-17.2.2\AndroidManifest.xml:7:5-20
 MERGED from [com.google.firebase:firebase-auth:19.2.0] C:\Users\mrmay\.gradle\caches\transforms-2\files-2.1\a83bb62cb43b672cf00b874e0ee6110c\firebase-auth-19.2.0\AndroidManifest.xml:23:5-40:19
@@ -189,12 +192,12 @@ INJECTED from C:\apps\notado\android\app\src\main\AndroidManifest.xml
 INJECTED from C:\apps\notado\android\app\src\main\AndroidManifest.xml
 MERGED from [:google_sign_in] C:\apps\notado\build\google_sign_in\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:google_sign_in] C:\apps\notado\build\google_sign_in\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:firebase_auth] C:\apps\notado\build\firebase_auth\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:firebase_auth] C:\apps\notado\build\firebase_auth\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:firebase_auth_web] C:\apps\notado\build\firebase_auth_web\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:firebase_auth_web] C:\apps\notado\build\firebase_auth_web\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:cloud_firestore] C:\apps\notado\build\cloud_firestore\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:cloud_firestore] C:\apps\notado\build\cloud_firestore\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:cloud_firestore_web] C:\apps\notado\build\cloud_firestore_web\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
@@ -207,6 +210,8 @@ MERGED from [:image_picker] C:\apps\notado\build\image_picker\intermediates\libr
 MERGED from [:image_picker] C:\apps\notado\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_plugin_android_lifecycle] C:\apps\notado\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_plugin_android_lifecycle] C:\apps\notado\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:url_launcher] C:\apps\notado\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:url_launcher] C:\apps\notado\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:shared_preferences] C:\apps\notado\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:shared_preferences] C:\apps\notado\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-analytics:17.2.2] C:\Users\mrmay\.gradle\caches\transforms-2\files-2.1\2a70ee504bd32b1bd949b6dd58d86852\firebase-analytics-17.2.2\AndroidManifest.xml:5:5-44
@@ -326,9 +331,9 @@ MERGED from [com.google.android.gms:play-services-measurement-sdk-api:17.2.2] C:
 	android:name
 		ADDED from C:\apps\notado\android\app\src\debug\AndroidManifest.xml:6:22-64
 service#com.google.firebase.components.ComponentDiscoveryService
-ADDED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-12:19
-MERGED from [:firebase_auth] C:\apps\notado\build\firebase_auth\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-12:19
-MERGED from [:firebase_auth] C:\apps\notado\build\firebase_auth\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-12:19
+ADDED from [:firebase_auth] C:\apps\notado\build\firebase_auth\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-12:19
+MERGED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-12:19
+MERGED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-12:19
 MERGED from [:cloud_firestore] C:\apps\notado\build\cloud_firestore\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-12:19
 MERGED from [:cloud_firestore] C:\apps\notado\build\cloud_firestore\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-12:19
 MERGED from [:firebase_core] C:\apps\notado\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-12:19
@@ -352,19 +357,19 @@ MERGED from [com.google.firebase:firebase-common:19.3.0] C:\Users\mrmay\.gradle\
 	android:directBootAware
 		ADDED from [com.google.firebase:firebase-common:19.3.0] C:\Users\mrmay\.gradle\caches\transforms-2\files-2.1\e55918edcb12ea6e2fd0abfdb5291ec1\jetified-firebase-common-19.3.0\AndroidManifest.xml:34:13-43
 	android:name
-		ADDED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:8:18-89
-meta-data#com.google.firebase.components:io.flutter.plugins.firebase.storage.FlutterFirebaseAppRegistrar
-ADDED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-11:85
-	android:value
-		ADDED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:11:17-82
-	android:name
-		ADDED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:10:17-126
+		ADDED from [:firebase_auth] C:\apps\notado\build\firebase_auth\intermediates\library_manifest\debug\AndroidManifest.xml:8:18-89
 meta-data#com.google.firebase.components:io.flutter.plugins.firebaseauth.FlutterFirebaseAppRegistrar
 ADDED from [:firebase_auth] C:\apps\notado\build\firebase_auth\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-11:85
 	android:value
 		ADDED from [:firebase_auth] C:\apps\notado\build\firebase_auth\intermediates\library_manifest\debug\AndroidManifest.xml:11:17-82
 	android:name
 		ADDED from [:firebase_auth] C:\apps\notado\build\firebase_auth\intermediates\library_manifest\debug\AndroidManifest.xml:10:17-122
+meta-data#com.google.firebase.components:io.flutter.plugins.firebase.storage.FlutterFirebaseAppRegistrar
+ADDED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-11:85
+	android:value
+		ADDED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:11:17-82
+	android:name
+		ADDED from [:firebase_storage] C:\apps\notado\build\firebase_storage\intermediates\library_manifest\debug\AndroidManifest.xml:10:17-126
 meta-data#com.google.firebase.components:io.flutter.plugins.firebase.cloudfirestore.FlutterFirebaseAppRegistrar
 ADDED from [:cloud_firestore] C:\apps\notado\build\cloud_firestore\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-11:85
 	android:value
@@ -401,6 +406,14 @@ ADDED from [:image_picker] C:\apps\notado\build\image_picker\intermediates\libra
 		ADDED from [:image_picker] C:\apps\notado\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:18:17-72
 	android:name
 		ADDED from [:image_picker] C:\apps\notado\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:17:17-67
+activity#io.flutter.plugins.urllauncher.WebViewActivity
+ADDED from [:url_launcher] C:\apps\notado\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-11:74
+	android:exported
+		ADDED from [:url_launcher] C:\apps\notado\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-37
+	android:theme
+		ADDED from [:url_launcher] C:\apps\notado\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-71
+	android:name
+		ADDED from [:url_launcher] C:\apps\notado\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-74
 activity#com.google.firebase.auth.internal.FederatedSignInActivity
 ADDED from [com.google.firebase:firebase-auth:19.2.0] C:\Users\mrmay\.gradle\caches\transforms-2\files-2.1\a83bb62cb43b672cf00b874e0ee6110c\firebase-auth-19.2.0\AndroidManifest.xml:24:9-31:50
 	android:excludeFromRecents

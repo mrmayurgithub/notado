@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notado/authentication/authenticationBloc/authentication_event.dart';
 import 'package:notado/authentication/authentication_bloc.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/screens/home/home_screen.dart';
@@ -34,6 +35,7 @@ class _AppState extends State<App> {
   void initState() {
     //Initializing _authenticationBloc
     _authenticationBloc = AuthenticationBloc(userRepository: _userRepository);
+    // _authenticationBloc.add(AppStarted());
     _authenticationBloc.add(AppStarted());
     super.initState();
   }

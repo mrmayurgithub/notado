@@ -5,6 +5,7 @@ import 'package:notado/packages/packages.dart';
 import 'package:notado/authentication/authenticationBloc/authentication_bloc.dart';
 import 'package:notado/authentication/authenticationBloc/authentication_event.dart';
 import 'package:notado/constants/constants.dart';
+import 'package:notado/screens/addnote/NoteAC.dart';
 import 'package:notado/screens/addnote/addnote_screen.dart';
 import 'package:notado/screens/home/note_list.dart';
 import 'package:notado/screens/login/login_screen.dart';
@@ -239,6 +240,7 @@ class FAB extends StatelessWidget {
           //Navigating to the addnte screen when FAB is pressed
           pageBuilder: (context, animation, secondaryAnimation) =>
               AddNote(userRepository: widget.userRepository),
+          // NoteAC(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             var begin = Offset(0, 1);
             var end = Offset.zero;
