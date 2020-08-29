@@ -157,8 +157,6 @@ class _LoginFormState extends State<LoginForm> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       GestureDetector(
-                        //TODO: Implement forgot password here
-                        //TODO: add Forgotpassword state
                         onTap: () => {},
                         child: Text(
                           'Forgot Password',

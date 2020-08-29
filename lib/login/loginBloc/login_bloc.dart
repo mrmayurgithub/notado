@@ -15,7 +15,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     // Login Button Pressed
     if (event is LoginButtonPressed) {
       // yield LoginProgress when login process is being started
-      yield (LoginInProgress());
+      // yield (LoginInProgress());
       try {
         if (await _userRepository.isEmailVerified()) {
           await _userRepository.signInWithCredentials(

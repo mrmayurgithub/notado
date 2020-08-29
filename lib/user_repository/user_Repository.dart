@@ -31,8 +31,6 @@ class UserRepository {
   }
 
   Future<void> signOut() async {
-    print('vkcxvkjxbcvjk.............bsdbv.......................hdsclchl');
-
     final _firebaseInstance = FirebaseAuth.instance;
     return await _firebaseInstance.signOut();
     // return await Future.wait([
@@ -85,5 +83,23 @@ class UserRepository {
     return user.displayName;
   }
 
-  //TODO: implement database Service
+  Future<String> getUID() async {
+    final FirebaseUser user = await _firebaseAuth.currentUser();
+    return await user.uid.toString();
+  }
+
+  Future<bool> validatePassword(String password) async {
+    var _firebaseUser = await FirebaseAuth.instance.currentUser();
+    var _authCredentials = EmailAuthProvider.getCredential(
+      email: _firebaseUser.email,
+      password: password,
+    );
+    try {
+      var authResult =
+          await _firebaseUser.reauthenticateWithCredential(_authCredentials);
+      return authResult.user == null;
+    } catch (e) {
+      return false;
+    }
+  }
 }
