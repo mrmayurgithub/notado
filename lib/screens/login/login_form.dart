@@ -4,6 +4,7 @@ import 'package:notado/authentication/authentication_bloc.dart';
 import 'package:notado/constants/constants.dart';
 import 'package:notado/login/bloc.dart';
 import 'package:notado/screens/home/home_screen.dart';
+import 'package:notado/screens/home/list_page.dart';
 import 'package:notado/screens/register/register_screen.dart';
 import 'package:notado/screens/verification/verification.dart';
 import 'package:notado/user_repository/user_Repository.dart';
@@ -25,6 +26,7 @@ class _LoginFormState extends State<LoginForm> {
   LoginBloc _loginBloc;
   bool isPassValid = false;
   bool isEmailValid = false;
+  bool isPassVisible = false;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -148,10 +150,65 @@ class _LoginFormState extends State<LoginForm> {
                   WelcomeText(fieldPad: 18 / h, height: height),
                   SizedBox(height: fieldPad * height),
                   // TextField for email
-                  emailTextField(),
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _emailController,
+
+                    // autovalidate: true,
+                    autocorrect: false,
+                    validator: (_) {
+                      //validating email
+                      return _emailController.text.contains("@")
+                          ? null
+                          : 'Invalid Email';
+                    },
+                    decoration: inputDecorationEmail(),
+                  ),
                   SizedBox(height: fieldPad * height),
                   //TextField for password
-                  passwordTextField(),
+                  TextFormField(
+                    obscureText: !isPassVisible,
+                    // autovalidate: true,
+                    autocorrect: false,
+                    validator: (_) {
+                      //validating password
+                      return _passwordController.text.length < 6
+                          ? 'Your password should have atleast 6 characters'
+                          : null;
+                    },
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          isPassVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            isPassVisible = !isPassVisible;
+                          });
+                        },
+                      ),
+                      // errorText:
+                      //     _emailController.text.contains('@') ? null : 'Enter a correct email',
+                      prefixIcon: Icon(Icons.lock_outline),
+                      hintText: 'Password',
+                      hintStyle: hintStyle(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(loginPageRadius),
+                        borderSide: BorderSide(color: Colors.black12),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(loginPageRadius),
+                        borderSide: BorderSide(color: Colors.black12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(loginPageRadius),
+                        borderSide: BorderSide(color: Colors.blue),
+                      ),
+                    ),
+                  ),
                   SizedBox(height: fieldPad * height),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -232,43 +289,7 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  TextFormField passwordTextField() {
-    return TextFormField(
-      obscureText: true,
-      obscuringCharacter: '#',
-      // autovalidate: true,
-      autocorrect: false,
-      validator: (_) {
-        //validating password
-        return _passwordController.text.length < 6
-            ? 'Your password should have atleast 6 characters'
-            : null;
-      },
-      controller: _passwordController,
-      decoration: inputDecoration().copyWith(
-        hintText: 'Password', prefixIcon: Icon(Icons.lock_outline),
-        // errorText: _passwordController.text.length > 6
-        //     ? null
-        //     : 'Your password should have atleast 6 characters',
-      ),
-    );
-  }
-
-  TextFormField emailTextField() {
-    return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      controller: _emailController,
-      // autovalidate: true,
-      autocorrect: false,
-      validator: (_) {
-        //validating email
-        return _emailController.text.contains("@") ? null : 'Invalid Email';
-      },
-      decoration: inputDecoration(),
-    );
-  }
-
-  InputDecoration inputDecoration() {
+  InputDecoration inputDecorationEmail() {
     return InputDecoration(
       // errorText:
       //     _emailController.text.contains('@') ? null : 'Enter a correct email',

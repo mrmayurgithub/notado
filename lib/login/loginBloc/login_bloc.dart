@@ -31,7 +31,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     // Login With Google Pressed
     else if (event is LoginWithGoogle) {
       // yield LoginProgress when login process is being started
-      yield LoginInProgress();
+      // yield LoginInProgress();
       try {
         await _userRepository.signInWithGoogle();
 

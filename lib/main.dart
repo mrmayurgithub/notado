@@ -6,6 +6,7 @@ import 'package:notado/authentication/authenticationBloc/authentication_event.da
 import 'package:notado/authentication/authentication_bloc.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/screens/home/home_screen.dart';
+import 'package:notado/screens/home/list_page.dart';
 import 'package:notado/screens/login/login_screen.dart';
 import 'package:notado/screens/register/register_screen.dart';
 import 'package:notado/screens/verification/verification.dart';

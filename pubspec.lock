@@ -120,6 +120,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.3"
+  data_connection_checker:
+    dependency: "direct main"
+    description:
+      name: data_connection_checker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.4"
   email_validator:
     dependency: "direct main"
     description:
@@ -547,7 +554,7 @@ packages:
     source: hosted
     version: "1.2.0"
   url_launcher:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: url_launcher
       url: "https://pub.dartlang.org"

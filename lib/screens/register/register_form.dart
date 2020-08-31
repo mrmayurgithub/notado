@@ -27,6 +27,7 @@ class _RegisterFormState extends State<RegisterForm> {
   LoginBloc _loginBloc;
   bool isPassValid = false;
   bool isEmailValid = false;
+  bool isPassVisible = false;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -186,10 +187,89 @@ class _RegisterFormState extends State<RegisterForm> {
                   EnterDetailsWidget(fieldPad: 18 / h, height: height),
                   SizedBox(height: fieldPad * height),
                   // TextField for email
-                  emailTextField(),
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _emailController,
+                    // autovalidate: true,
+                    autocorrect: false,
+                    validator: (_) {
+                      //validating email
+                      return EmailValidator.validate(_emailController.text)
+                          ? null
+                          : 'Invalid email';
+                      // return _emailController.text.contains("@") ? null : 'Invalid Email';
+                    },
+                    decoration: InputDecoration(
+                      // errorText:
+                      //     _emailController.text.contains('@') ? null : 'Enter a correct email',
+                      prefixIcon: Icon(Icons.mail_outline),
+                      hintText: 'Email',
+                      hintStyle: TextStyle(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 16),
+
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(loginPageRadius),
+                        borderSide: BorderSide(color: Colors.black12),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(loginPageRadius),
+                        borderSide: BorderSide(color: Colors.black12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(loginPageRadius),
+                        borderSide: BorderSide(color: Colors.blue),
+                      ),
+                    ),
+                  ),
                   SizedBox(height: fieldPad * height),
                   // passwordTextField
-                  passwordTextField(),
+                  TextFormField(
+                      obscureText: true,
+                      // autovalidate: true,
+                      autocorrect: false,
+                      validator: (_) {
+                        //validating password
+                        return _passwordController.text.length < 6
+                            ? 'Your password should have atleast 6 characters'
+                            : null;
+                      },
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        // errorText:
+                        //     _emailController.text.contains('@') ? null : 'Enter a correct email',
+                        hintText: 'Password',
+                        hintStyle: TextStyle(
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 16),
+                        prefixIcon: Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            isPassVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isPassVisible = !isPassVisible;
+                            });
+                          },
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(loginPageRadius),
+                          borderSide: BorderSide(color: Colors.black12),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(loginPageRadius),
+                          borderSide: BorderSide(color: Colors.black12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(loginPageRadius),
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                      )),
                   SizedBox(height: fieldPad * height),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: fieldPad * height),
@@ -246,69 +326,6 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
           );
         },
-      ),
-    );
-  }
-
-  TextFormField passwordTextField() {
-    return TextFormField(
-      obscureText: true,
-      obscuringCharacter: '#',
-      // autovalidate: true,
-      autocorrect: false,
-      validator: (_) {
-        //validating password
-        return _passwordController.text.length < 6
-            ? 'Your password should have atleast 6 characters'
-            : null;
-      },
-      controller: _passwordController,
-      decoration: inputDecoration().copyWith(
-        hintText: 'Password', prefixIcon: Icon(Icons.lock_outline),
-        // errorText: _passwordController.text.length > 6
-        //     ? null
-        //     : 'Your password should have atleast 6 characters',
-      ),
-    );
-  }
-
-  TextFormField emailTextField() {
-    return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      controller: _emailController,
-      // autovalidate: true,
-      autocorrect: false,
-      validator: (_) {
-        //validating email
-        return EmailValidator.validate(_emailController.text)
-            ? null
-            : 'Invalid email';
-        // return _emailController.text.contains("@") ? null : 'Invalid Email';
-      },
-      decoration: inputDecoration(),
-    );
-  }
-
-  InputDecoration inputDecoration() {
-    return InputDecoration(
-      // errorText:
-      //     _emailController.text.contains('@') ? null : 'Enter a correct email',
-      prefixIcon: Icon(Icons.mail_outline),
-      hintText: 'Email',
-      hintStyle: TextStyle(
-          color: Colors.black54, fontWeight: FontWeight.w300, fontSize: 16),
-
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(loginPageRadius),
-        borderSide: BorderSide(color: Colors.black12),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(loginPageRadius),
-        borderSide: BorderSide(color: Colors.black12),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(loginPageRadius),
-        borderSide: BorderSide(color: Colors.blue),
       ),
     );
   }
