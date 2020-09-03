@@ -2,19 +2,18 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:notado/global_variable.dart';
 import 'package:notado/models/note_model.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/authentication/authenticationBloc/authentication_bloc.dart';
 import 'package:notado/authentication/authenticationBloc/authentication_event.dart';
 import 'package:notado/constants/constants.dart';
 import 'package:notado/screens/addnote/ZefyrEdit.dart';
-import 'package:notado/screens/addnote/addnote_screen.dart';
-import 'package:notado/screens/home/list_page.dart';
-import 'package:notado/screens/home/note_list.dart';
 import 'package:notado/screens/login/login_screen.dart';
 import 'package:notado/screens/profile/profile_screen.dart';
+import 'package:notado/screens/search/search_screen.dart';
 import 'package:notado/screens/settings/settings_screen.dart';
-import 'package:notado/services/database.dart';
+import 'package:notado/screens/trash/trash_screen.dart';
 import 'package:notado/user_repository/user_Repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -291,8 +290,11 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  AnimationController viewController;
+  bool islistView = true;
 
   String userCard;
   getUserEmail() async {
@@ -334,7 +336,6 @@ class _HomeScreenState extends State<HomeScreen> {
   //   getUserEmail();
   //   super.initState();
   // }
-
   //
   //TODO: CHECK
   //
@@ -354,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return new ListTile(
       onTap: () => _navigateToNoteDetails(note, index),
-      title: Text(note.title),
+      title: Text(note.title, style: TextStyle(color: Colors.green[600])),
       subtitle: Text(formatter.format(note.date)),
     );
   }
@@ -377,12 +378,18 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }).catchError(print);
     getUserEmail();
+    viewController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     super.initState();
+    currentScreen = whichScreen.home;
   }
 
-//
-//
-//
+  @override
+  void dispose() {
+    viewController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget content;
@@ -404,10 +411,157 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       drawerEnableOpenDragGesture: true,
       key: _scaffoldKey,
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       resizeToAvoidBottomPadding: false,
       floatingActionButton: FAB(widget: widget),
-      appBar: appbar(context),
+
+      // resizeToAvoidBottomPadding: false,
+
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        notchMargin: 8.0,
+        // elevation: 0.0,
+        shape: CircularNotchedRectangle(),
+        child: Padding(
+          padding: EdgeInsets.all(5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                height: 45,
+                child: IconButton(
+                  icon: AnimatedIcon(
+                    icon: AnimatedIcons.list_view,
+                    progress: viewController,
+                    size: 18,
+                  ),
+                  onPressed: () {
+                    islistView
+                        ? viewController.forward()
+                        : viewController.reverse();
+                    islistView = !islistView;
+                    if (!islistView)
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                              'The app is currently in development mode, please wait while we cook the recipe for this.')));
+                  },
+                ),
+              ),
+              Container(
+                height: 45,
+                padding: EdgeInsets.all(7),
+                child: DropdownButton<String>(
+                  dropdownColor: Colors.white,
+                  underline: SizedBox(),
+                  icon: Icon(Icons.more_vert, color: Colors.black),
+                  iconSize: 18,
+                  elevation: 0,
+                  style: TextStyle(color: Colors.green),
+                  onChanged: (String newValue) {
+                    _scaffoldKey.currentState.hideCurrentSnackBar();
+
+                    if (newValue == 'Sort by') {
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          duration: Duration(seconds: 20),
+                          elevation: 0,
+                          backgroundColor: Colors.transparent,
+                          content: AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            backgroundColor: Colors.green,
+                            title: Text('Sort By'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: [
+                                  ListTile(
+                                    leading: Radio(
+                                      value: false,
+                                      groupValue: null,
+                                      onChanged: null,
+                                    ),
+                                    title: Text('Name '),
+                                  ),
+                                  ListTile(
+                                    leading: Radio(
+                                      value: false,
+                                      groupValue: null,
+                                      onChanged: null,
+                                    ),
+                                    title: Text('Date created'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            actions: [
+                              FlatButton(
+                                onPressed: () {
+                                  // Navigator.pop(context);
+                                  _scaffoldKey.currentState
+                                    ..hideCurrentSnackBar();
+                                },
+                                child: Text('Cancel'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  items: <String>['Select Notes', 'Sort by']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text('My Notes', style: TextStyle(color: Colors.black)),
+        elevation: 0,
+        actions: [
+          Padding(
+            padding: EdgeInsets.all(4.0),
+            child: IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) {
+                    return SearchScreen(
+                      userRepository: widget.userRepository,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(4.0),
+            child: IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) {
+                    return SettingsScreen(
+                      userRepository: widget.userRepository,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
       drawer: Drawer(
         elevation: 0.0,
         child: Container(
@@ -439,11 +593,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 // ),
                 onTap: () => {
                   Navigator.pop(context),
-                  _scaffoldKey.currentState.showSnackBar(
-                    SnackBar(
-                      content: Text('You are already on the Home Screen'),
+                  if (currentScreen == whichScreen.home)
+                    _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(
+                        content: Text('You are already on the Home Screen'),
+                      ),
                     ),
-                  ),
                 },
                 leading: Icon(Icons.home, color: drawerBarColor),
                 title: Text('Home'),
@@ -457,7 +612,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: Text('Profile'),
               ),
               ListTile(
-                onTap: () => {},
+                onTap: () => Navigator.push(
+                  context,
+                  buildPageRouteBuilder(
+                      TrashScreen(userRepository: widget.userRepository)),
+                ),
                 leading: Icon(FontAwesomeIcons.trash, color: drawerBarColor),
                 title: Text('Trash'),
               ),
@@ -468,7 +627,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               ListTile(
                 onTap: () => {
-                  print('pressed'),
+                  print('Contact us pressed'),
                   _launchUrl(
                       'mailto:notado.care@gmail.com?subject=User Experience@Notado')
                 },
@@ -518,22 +677,22 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.all(14.0),
             child: Column(
               children: [
-                Card(
-                  color: Colors.green[300],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Container(
-                    height: 150,
-                    width: MediaQuery.of(context).size.width,
-                    child: Padding(
-                      padding: EdgeInsets.all(18.0),
-                      child: Text('$userCard',
-                          style: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.w400)),
-                    ),
-                  ),
-                ),
+                // Card(
+                //   color: Colors.green[300],
+                //   shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(10),
+                //   ),
+                //   child: Container(
+                //     height: 150,
+                //     width: MediaQuery.of(context).size.width,
+                //     child: Padding(
+                //       padding: EdgeInsets.all(18.0),
+                //       child: Text('$userCard',
+                //           style: TextStyle(
+                //               fontSize: 30, fontWeight: FontWeight.w400)),
+                //     ),
+                //   ),
+                // ),
                 content,
                 // GridView.count(
                 //   crossAxisCount: 2,
@@ -544,35 +703,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-    );
-  }
-
-//AppBar for HomeScreen
-  AppBar appbar(BuildContext context) {
-    return AppBar(
-      iconTheme: IconThemeData(color: Colors.black),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      title: Text('My Notes', style: TextStyle(color: Colors.black)),
-      elevation: 0,
-      actions: [
-        Padding(
-          padding: EdgeInsets.all(10.0),
-          child: GestureDetector(
-            // Navigating to the settings screen when settings Icon is pressed
-            onTap: () => Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) {
-                  return SettingsScreen(
-                    userRepository: widget.userRepository,
-                  );
-                },
-              ),
-            ),
-            child: Icon(Icons.settings),
-          ),
-        ),
-      ],
     );
   }
 }

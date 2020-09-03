@@ -97,6 +97,7 @@ class UserRepository {
     try {
       var authResult =
           await _firebaseUser.reauthenticateWithCredential(_authCredentials);
+      print(authResult.user == null);
       return authResult.user == null;
     } catch (e) {
       return false;

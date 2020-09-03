@@ -3,7 +3,6 @@ import 'package:notado/constants/constants.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/screens/change_password/change_password_screen.dart';
 import 'package:notado/screens/profile/profile_screen.dart';
-import 'package:notado/screens/settings/bloc/visibility_bloc.dart';
 import 'package:notado/screens/settings/settings_constants.dart';
 import 'package:notado/screens/settings/terms_and_privacy_policy.dart';
 import 'package:notado/theme/themes.dart';
@@ -513,15 +512,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   leading: Icon(FontAwesomeIcons.themeisle),
                   title: Text('Dark Theme'),
                   trailing: Switch(
-                      value: status,
-                      onChanged: (value) {
-                        setState(() {
-                          status = value;
-                          status == true
-                              ? _themeChanger.setTheme(ThemeData.dark())
-                              : _themeChanger.setTheme(ThemeData.light());
-                        });
-                      }),
+                    value: status,
+                    onChanged: (value) {
+                      setState(() {
+                        status = value;
+                        status == true
+                            ? _themeChanger.setTheme(ThemeData.dark())
+                            : _themeChanger.setTheme(ThemeData.light());
+                      });
+                    },
+                  ),
                 ),
                 ListTile(
                   trailing: Icon(Icons.arrow_right),
@@ -531,7 +531,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onTap: () => showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return ChangePswrdDialog();
+                      return ChangePswrdDialog(
+                        userRepository: widget.userRepository,
+                        scaffoldKey: _scaffoldKey,
+                      );
                     },
                   ),
                   //  {
@@ -700,8 +703,11 @@ class TermsAndPrivacyPolicy extends StatelessWidget {
 
 class ChangePswrdDialog extends StatefulWidget {
   final UserRepository userRepository;
+  final scaffoldKey;
 
-  const ChangePswrdDialog({Key key, this.userRepository}) : super(key: key);
+  const ChangePswrdDialog(
+      {Key key, @required this.userRepository, @required this.scaffoldKey})
+      : super(key: key);
   @override
   _ChangePswrdDialogState createState() => _ChangePswrdDialogState();
 }
@@ -715,9 +721,42 @@ class _ChangePswrdDialogState extends State<ChangePswrdDialog> {
   TextEditingController _newPassController;
   TextEditingController _repeatPassController;
   TextEditingController _passController;
+  var _scaffoldKey;
 
   Future<bool> validateCurrentPassword(String password) async {
     return await widget.userRepository.validatePassword(password);
+  }
+
+  void _submitButtonClick() async {
+    if (!_formKey.currentState.validate()) return;
+    try {
+      showProgress(context: _scaffoldKey.currentContext);
+      final _user = await FirebaseAuth.instance.currentUser();
+      if (_user.displayName != null) {
+        Navigator.pop(context);
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(
+                'You cannot change your Google Account Password from here')));
+        return;
+      }
+      final _credentials = EmailAuthProvider.getCredential(
+        email: _user.email,
+        password: _passController.text,
+      );
+      final _reauthenticate =
+          await _user.reauthenticateWithCredential(_credentials);
+      if (_reauthenticate.user == null) {
+        Navigator.of(context).pop();
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('A problem occured. Please Login Again'),
+        ));
+      }
+      final _authResult = await FirebaseAuth.instance.currentUser();
+      await _authResult.updatePassword(_passController.text);
+      Navigator.pop(context);
+    } catch (e) {
+      print('Some Problem Occured');
+    }
   }
 
   @override
@@ -725,6 +764,7 @@ class _ChangePswrdDialogState extends State<ChangePswrdDialog> {
     _passController = TextEditingController();
     _newPassController = TextEditingController();
     _repeatPassController = TextEditingController();
+    _scaffoldKey = widget.scaffoldKey;
     super.initState();
   }
 
@@ -750,6 +790,13 @@ class _ChangePswrdDialogState extends State<ChangePswrdDialog> {
                   child: TextFormField(
                     controller: _passController,
                     obscureText: isPassVisible,
+                    validator: (value) {
+                      if (value.length == 0) {
+                        return 'This field cannot be left empty';
+                      } else {
+                        return null;
+                      }
+                    },
                     decoration: InputDecoration(
                       border: sScreenChangePsBorder,
                       enabledBorder: sScreenChangePsEBorder,
@@ -774,9 +821,13 @@ class _ChangePswrdDialogState extends State<ChangePswrdDialog> {
                   padding: EdgeInsets.all(8.0),
                   child: TextFormField(
                     validator: (value) {
-                      return value.length >= 6
-                          ? null
-                          : 'Password should not be less than 6 characters long';
+                      if (value.length == 0) {
+                        return 'This field cannot be left empty';
+                      } else if (value.length < 6) {
+                        return 'This field cannot be atleast 6 characters long';
+                      } else {
+                        return null;
+                      }
                     },
                     controller: _newPassController,
                     obscureText: isNewPassVisible1,
@@ -820,9 +871,13 @@ class _ChangePswrdDialogState extends State<ChangePswrdDialog> {
                       labelText: 'New Password',
                     ),
                     validator: (value) {
-                      return _newPassController.text == value
-                          ? null
-                          : 'The passswords doesn\' match';
+                      if (value.length == 0) {
+                        return 'This field cannot be left empty';
+                      } else if (value.length < 6) {
+                        return 'This passwords do not match';
+                      } else {
+                        return null;
+                      }
                     },
                   ),
                 ),
@@ -844,31 +899,47 @@ class _ChangePswrdDialogState extends State<ChangePswrdDialog> {
         ),
         FlatButton(
           onPressed: () async {
-            // checkPassValid = await validateCurrentPassword(_passwordController.text),
-            checkPassValid = await widget.userRepository
-                .validatePassword(_passController.text);
+            _submitButtonClick();
+            // // // // // // checkPassValid = await validateCurrentPassword(_passwordController.text),
+            // // // // // checkPassValid = await widget.userRepository
+            // // // // //     .validatePassword(_passController.text);
 
-            if (checkPassValid == false)
-              // Scaffold.of(context).showSnackBar(
-              //   SnackBar(
-              //     content: Text('Invalid Password'),
-              //   ),
-              // );
-              setState(() {});
+            // // // // // if (checkPassValid == false)
+            // // // // //   // Scaffold.of(context).showSnackBar(
+            // // // // //   //   SnackBar(
+            // // // // //   //     content: Text('Invalid Password'),
+            // // // // //   //   ),
+            // // // // //   // );
+            // // // // //   setState(() {});
 
-            if (_formKey.currentState.validate() && checkPassValid) {
-              //TODO: update password
-              //TODO: show snackbar
+            // // // // // if (_formKey.currentState.validate() && checkPassValid) {
+            // // // // //   //TODO: update password
+            // // // // //   //TODO: show snackbar
 
-              isPassVisible = false;
-              isNewPassVisible1 = false;
-              isNewPassVisible2 = false;
-              Navigator.pop(context);
-            }
+            // // // // //   isPassVisible = false;
+            // // // // //   isNewPassVisible1 = false;
+            // // // // //   isNewPassVisible2 = false;
+            // // // // //   Navigator.pop(context);
+            // // // // // }
           },
           child: Text('Submit'),
         ),
       ],
     );
+  }
+}
+
+class showProgress extends StatefulWidget {
+  final BuildContext context;
+
+  const showProgress({Key key, @required this.context}) : super(key: key);
+  @override
+  _showProgressState createState() => _showProgressState();
+}
+
+class _showProgressState extends State<showProgress> {
+  @override
+  Widget build(BuildContext context) {
+    return showProgress(context: widget.context);
   }
 }

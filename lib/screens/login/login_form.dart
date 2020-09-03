@@ -5,6 +5,7 @@ import 'package:notado/constants/constants.dart';
 import 'package:notado/login/bloc.dart';
 import 'package:notado/screens/home/home_screen.dart';
 import 'package:notado/screens/home/list_page.dart';
+import 'package:notado/screens/login/circular_progress.dart';
 import 'package:notado/screens/register/register_screen.dart';
 import 'package:notado/screens/verification/verification.dart';
 import 'package:notado/user_repository/user_Repository.dart';
@@ -60,6 +61,7 @@ class _LoginFormState extends State<LoginForm> {
     final loginScreentextPadV = 8 / w;
     final mainColumnPadding = 25 / w;
     final fieldPad = 23 / h;
+
     return BlocListener<LoginBloc, LoginState>(
       cubit: _loginBloc,
       listener: (BuildContext context, state) {
@@ -110,7 +112,7 @@ class _LoginFormState extends State<LoginForm> {
               ),
             );
         } else if (state is LoginSuccess) {
-          print("Login success stte");
+          print("Login success state");
           // return BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
           Navigator.pushReplacement(
             context,
@@ -121,19 +123,24 @@ class _LoginFormState extends State<LoginForm> {
             ),
           );
         } else if (state is LoginInProgress) {
-          Scaffold.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Logging In...'),
-                    CircularProgressIndicator(),
-                  ],
-                ),
-              ),
-            );
+          // Scaffold.of(context)
+          //   ..hideCurrentSnackBar()
+          //   ..showSnackBar(
+          //     SnackBar(
+          //       content: Row(
+          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //         children: [
+          //           Text('Logging In...'),
+          //           CircularProgressIndicator(),
+          //         ],
+          //       ),
+          //     ),
+          //   );
+
+          Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) {
+            return CircularProgress();
+          }));
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
@@ -238,7 +245,9 @@ class _LoginFormState extends State<LoginForm> {
                               //     email: _emailController.text,
                               //     password: _passwordController.text,
                               //   ),);
+                              //
                               // Adding event LoginButtonPressed to iniitiate login
+                              //
                               BlocProvider.of<LoginBloc>(context).add(
                                 LoginButtonPressed(
                                   email: _emailController.text,
@@ -247,6 +256,8 @@ class _LoginFormState extends State<LoginForm> {
                               );
                             } else {
                               //TODO: Implement else function
+                              print(
+                                  '..........................------------------');
                             }
                           },
                           child: LoginButton(
