@@ -57,6 +57,9 @@ class _AppState extends State<App> {
             ThemeData.light(),
           ),
         ),
+        ListenableProvider<selectNotesNotifier>(
+          create: (_) => selectNotesNotifier(),
+        ),
       ],
       child: Builder(
         builder: (BuildContext context) {

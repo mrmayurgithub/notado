@@ -5,3 +5,4 @@ Color drawerBarColor = Colors.green;
 var loginPageRadius = 7.0;
 Color appBarIconColor = Colors.black;
 Color addNoteColor = Colors.black;
+// double homeScreenIconSize = 18.0;

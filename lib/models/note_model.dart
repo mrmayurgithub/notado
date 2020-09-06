@@ -51,6 +51,8 @@ class Note {
   String text;
   final DateTime date;
 
+  
+
   static List<Note> allFromResponse(String response) {
     //1
     var decodedJson = json.decode(response).cast<String, dynamic>(); //2

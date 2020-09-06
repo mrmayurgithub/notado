@@ -14,13 +14,17 @@ import 'package:notado/screens/home/home_screen.dart';
 import 'package:notado/screens/login/login_screen.dart';
 import 'package:notado/screens/profile/profile_screen.dart';
 import 'package:notado/screens/settings/settings_screen.dart';
+import 'package:notado/services/database.dart';
 import 'package:notado/user_repository/user_Repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TrashScreen extends StatefulWidget {
   final UserRepository userRepository;
+  final DatabaseService databaseService;
 
-  const TrashScreen({Key key, @required this.userRepository}) : super(key: key);
+  const TrashScreen(
+      {Key key, @required this.userRepository, @required this.databaseService})
+      : super(key: key);
 
   @override
   _TrashScreenState createState() => _TrashScreenState();
@@ -88,7 +92,10 @@ class _TrashScreenState extends State<TrashScreen>
     Navigator.of(context).push(
       new MaterialPageRoute(
         builder: (c) {
-          return ZefyrNote(note: note);
+          return ZefyrNote(
+              note: note,
+              databaseService: widget.databaseService,
+              userRepository: widget.userRepository);
         },
       ),
     );

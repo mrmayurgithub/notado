@@ -446,14 +446,6 @@ import 'package:notado/user_repository/user_Repository.dart';
 // }
 // }
 
-import 'package:flutter/material.dart';
-import 'package:notado/constants/constants.dart';
-import 'package:notado/packages/packages.dart';
-import 'package:notado/screens/change_password/change_password_screen.dart';
-import 'package:notado/screens/profile/profile_screen.dart';
-import 'package:notado/theme/themes.dart';
-import 'package:notado/user_repository/user_Repository.dart';
-
 class SettingsScreen extends StatefulWidget {
   final UserRepository userRepository;
 
@@ -469,11 +461,15 @@ enum themeType { darkTheme, lightTheme }
 class _SettingsScreenState extends State<SettingsScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   themeType _themeType = themeType.lightTheme;
+  final appBarTitleSize = (22 / 1001.0694778740428);
 
   @override
   Widget build(BuildContext context) {
     bool status = Theme.of(context).brightness == Brightness.dark;
     ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
+    Size size = MediaQuery.of(context).size;
+    double height = size.height;
+    double width = size.height;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -485,7 +481,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w300,
-            fontSize: 22,
+            fontSize: appBarTitleSize * height,
           ),
         ),
       ),
@@ -722,6 +718,7 @@ class _ChangePswrdDialogState extends State<ChangePswrdDialog> {
   TextEditingController _repeatPassController;
   TextEditingController _passController;
   var _scaffoldKey;
+  final double tileTextSize = 25 / 1001.0694778740428;
 
   Future<bool> validateCurrentPassword(String password) async {
     return await widget.userRepository.validatePassword(password);
@@ -770,13 +767,16 @@ class _ChangePswrdDialogState extends State<ChangePswrdDialog> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    double height = size.height;
+    double width = size.height;
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(7),
       ),
       title: Text(
         'Change Password',
-        style: TextStyle(fontSize: 25),
+        style: TextStyle(fontSize: tileTextSize * height),
       ),
       content: Container(
         width: MediaQuery.of(context).size.width / 1.2,
@@ -881,7 +881,9 @@ class _ChangePswrdDialogState extends State<ChangePswrdDialog> {
                     },
                   ),
                 ),
-                Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+                Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: (tileTextSize * height) / 5)),
               ],
             ),
           ),

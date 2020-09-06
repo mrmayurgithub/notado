@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:notado/models/note_model.dart';
 import 'package:notado/packages/packages.dart';
@@ -13,7 +12,10 @@ class ZefyrNote extends StatefulWidget {
   final DatabaseService databaseService;
   final UserRepository userRepository;
   const ZefyrNote(
-      {Key key, this.note, this.databaseService, this.userRepository})
+      {Key key,
+      this.note,
+      @required this.databaseService,
+      @required this.userRepository})
       : super(key: key);
 
   @override
@@ -24,17 +26,16 @@ class _ZefyrNoteState extends State<ZefyrNote> {
   Color mainColor = Colors.white;
   final appBarIconColor = Colors.black;
   // StreamSubscription<NotusChange> _sub;
-  String uid;
-  DatabaseService databaseService;
 
   _save() async {
-    final contents = jsonEncode(_controller.document);
+    print('savvvvinggg....');
+    // Scaffold.of(context)
+    //     .showSnackBar(SnackBar(content: Text('Saving Note...')));
+    final contents = jsonEncode(_controller.document.toJson());
 
-    databaseService.createZefyrUserData(contents: contents);
-  }
-
-  getUid() async {
-    uid = widget.userRepository.getUID().toString();
+    await widget.databaseService.createZefyrUserData(contents: contents);
+    // Scaffold.of(context)
+    //     .showSnackBar(SnackBar(content: Text('Note Saved Successfully')));
   }
 
   ZefyrController _controller;
@@ -47,8 +48,6 @@ class _ZefyrNoteState extends State<ZefyrNote> {
   @override
   void initState() {
     super.initState();
-    getUid();
-    databaseService = DatabaseService(uid: uid);
     _focusNode = FocusNode();
     // _sub = _controller.document.changes.listen((change) {
     //   print('${change.source}: ${change.change}');
@@ -90,7 +89,10 @@ class _ZefyrNoteState extends State<ZefyrNote> {
           ),
         ),
         actions: [
-          IconButton(icon: Icon(Icons.save), onPressed: null),
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: _save,
+          ),
         ],
       ),
       body: body,

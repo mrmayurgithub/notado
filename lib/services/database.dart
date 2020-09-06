@@ -33,7 +33,7 @@ class DatabaseService {
         .document(uid)
         .collection('userNotes')
         .document(id)
-        .updateData({});
+        .updateData({'contents': contents, 'id': id});
     //TODO: update images thing
   }
 
@@ -71,34 +71,64 @@ class DatabaseService {
         .setData({'contents': contents, 'id': id});
   }
 
+  // Stream<List<Note>> get notesZefyrFromNotes {
+  //   return Firestore.instance
+  //       .collection('notes')
+  //       .document(uid)
+  //       .collection('userNotes')
+  //       .snapshots()
+  //       .map((snapshot) => snapshot.documents
+  //           .map((document) => Note.fromMap(document.data))
+  //           .toList());
+  // }
+
+  Stream<QuerySnapshot> get notesZefyrFromNotes {
+    return Firestore.instance
+        .collection('notes')
+        .document(uid)
+        .collection('userNotes')
+        .snapshots();
+  }
+
 //TODO: improve
-  List<Note> _noteZefyrListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map((docuid) {
-      return Note(
-        title: null,
-        text: null,
-        date: null,
-      );
-    });
-  }
+  // List<Note> _noteZefyrListFromSnapshot(QuerySnapshot snapshot) {
+  //   return snapshot.documents.map((docuid) {
+  //     return Note(
+  //       title: null,
+  //       text: null,
+  //       date: null,
+  //     );
+  //   });
+  // }
 
-  Stream<List<Note>> get notesZefyrFromTrash {
-    return Firestore.instance
-        .collection('notes')
-        .document(uid)
-        .collection('userNotes')
-        .snapshots()
-        .map(_noteZefyrListFromSnapshot);
-  }
+  // Stream<List<Note>> get notesZefyrFromTrash {
+  //   return Firestore.instance
+  //       .collection('notes')
+  //       .document(uid)
+  //       .collection('userNotes')
+  //       .snapshots()
+  //       .map(_noteZefyrListFromSnapshot);
+  // }
 
-  Stream<List<Note>> get notesZefyrFromNotes {
-    return Firestore.instance
-        .collection('notes')
-        .document(uid)
-        .collection('userNotes')
-        .snapshots()
-        .map(_noteZefyrListFromSnapshot);
-  }
+  // Stream<List<Note>> get notesZefyrFromNotes {
+  //   return Firestore.instance
+  //       .collection('notes')
+  //       .document(uid)
+  //       .collection('userNotes')
+  //       .snapshots()
+  //       .map(_noteZefyrListFromSnapshot);
+  // }
+
+  //
+  //
+  //**********************************************************************************
+  //
+  //**********************************************************************************
+  //
+  //**********************************************************************************
+  //
+  //
+
 //   Future<void> createUserData({
 //     // String id,
 //     @required String title,
