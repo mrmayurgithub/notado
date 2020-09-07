@@ -6,6 +6,7 @@ import 'package:notado/login/bloc.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/screens/home/home_screen.dart';
 import 'package:notado/user_repository/user_Repository.dart';
+import 'package:notado/screens/home/list_page.dart';
 
 class VerificationScreen extends StatefulWidget {
   final UserRepository userRepository;

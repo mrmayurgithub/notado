@@ -84,8 +84,9 @@ class UserRepository {
   }
 
   Future<String> getUID() async {
-    final FirebaseUser user = await _firebaseAuth.currentUser();
-    return await user.uid.toString();
+    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    return user.uid;
+    // return user.email;
   }
 
   Future<bool> validatePassword(String password) async {
@@ -97,6 +98,7 @@ class UserRepository {
     try {
       var authResult =
           await _firebaseUser.reauthenticateWithCredential(_authCredentials);
+      print(authResult.user == null);
       return authResult.user == null;
     } catch (e) {
       return false;

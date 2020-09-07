@@ -14,9 +14,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
     // Login Button Pressed
     if (event is LoginButtonPressed) {
-      // yield LoginProgress when login process is being started
-      // yield (LoginInProgress());
       try {
+        // yield LoginProgress when login process is being started
+        yield (LoginInProgress());
         if (await _userRepository.isEmailVerified()) {
           await _userRepository.signInWithCredentials(
               email: event.email, password: event.password);
@@ -25,13 +25,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           print('Not verified');
         // yield login success event when user is loggedin
       } catch (e) {
+        print(e.toString());
         yield LoginFailure(message: e.toString());
       }
     }
     // Login With Google Pressed
     else if (event is LoginWithGoogle) {
       // yield LoginProgress when login process is being started
-      yield LoginInProgress();
+      // yield LoginInProgress();
       try {
         await _userRepository.signInWithGoogle();
 

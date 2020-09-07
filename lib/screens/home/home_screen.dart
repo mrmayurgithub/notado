@@ -1,281 +1,41 @@
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:notado/global_variable.dart';
 import 'package:notado/models/note_model.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/authentication/authenticationBloc/authentication_bloc.dart';
 import 'package:notado/authentication/authenticationBloc/authentication_event.dart';
 import 'package:notado/constants/constants.dart';
-import 'package:notado/screens/addnote/NoteAC.dart';
-import 'package:notado/screens/addnote/addnote_screen.dart';
-import 'package:notado/screens/home/note_list.dart';
+import 'package:notado/screens/addnote/ZefyrEdit.dart';
+import 'package:notado/screens/home/home_trial.dart';
 import 'package:notado/screens/login/login_screen.dart';
 import 'package:notado/screens/profile/profile_screen.dart';
+import 'package:notado/screens/search/search_screen.dart';
 import 'package:notado/screens/settings/settings_screen.dart';
+import 'package:notado/screens/trash/trash_screen.dart';
 import 'package:notado/services/database.dart';
 import 'package:notado/user_repository/user_Repository.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class HomeScreen extends StatefulWidget {
-  final UserRepository userRepository;
+// // // Floating Action button for Home Screen
 
-  const HomeScreen({Key key, @required this.userRepository}) : super(key: key);
+// // PageRouteBuilder buildPageRouteBuilder(Widget screen) {
+// //   return PageRouteBuilder(
+// //     pageBuilder: (context, animation, secondaryAnimation) => screen,
+// //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+// //       var begin = Offset(-1, 0);
+// //       var end = Offset.zero;
+// //       var curve = Curves.easeInOutQuad;
+// //       var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+// //       //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
 
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  String userCard;
-  String uid;
-  getUserEmail() async {
-    userCard = await widget.userRepository.getUser();
-  }
-
-  getUserUID() async {
-    uid = await widget.userRepository.getUID();
-  }
-
-  @override
-  void initState() {
-    getUserEmail();
-    getUserUID();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamProvider<List<Note>>.value(
-      value: DatabaseService(uid: uid).notesFromNotes,
-      child: Scaffold(
-        drawerEnableOpenDragGesture: true,
-        key: _scaffoldKey,
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        resizeToAvoidBottomPadding: false,
-        floatingActionButton: FAB(widget: widget),
-        appBar: appbar(context),
-        drawer: Drawer(
-          elevation: 0.0,
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            color: Colors.white,
-            child: ListView(
-              children: [
-                Card(
-                  elevation: 0.0,
-                  child: Container(
-                    height: 80,
-                    child: Center(
-                      child: Text(
-                        'Notado',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 40,
-                          letterSpacing: 2,
-                          color: drawerBarColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                ListTile(
-                  // onTap: () => Navigator.push(
-                  //   context,
-                  //   buildPageRouteBuilder(HomeScreen(user: null)),
-                  // ),
-                  onTap: () => {
-                    Navigator.pop(context),
-                    _scaffoldKey.currentState.showSnackBar(
-                      SnackBar(
-                        content: Text('You are already on the Home Screen'),
-                      ),
-                    ),
-                  },
-                  leading: Icon(Icons.home, color: drawerBarColor),
-                  title: Text('Home'),
-                ),
-                ListTile(
-                  onTap: () => Navigator.push(
-                    context,
-                    buildPageRouteBuilder(ProfileScreen()),
-                  ),
-                  leading: Icon(Icons.person, color: drawerBarColor),
-                  title: Text('Profile'),
-                ),
-                ListTile(
-                  onTap: () => {},
-                  leading: Icon(FontAwesomeIcons.trash, color: drawerBarColor),
-                  title: Text('Trash'),
-                ),
-                ListTile(
-                  onTap: () => {},
-                  leading: Icon(FontAwesomeIcons.star, color: drawerBarColor),
-                  title: Text('Rate us'),
-                ),
-                ListTile(
-                  onTap: () => {},
-                  leading: Icon(Icons.contact_mail, color: drawerBarColor),
-                  title: Text('Contact us'),
-                ),
-                ListTile(
-                  onTap: () {
-                    BlocProvider.of<AuthenticationBloc>(context).add(
-                      LoggedOut(),
-                    );
-                    Navigator.pushReplacement(
-                      context,
-                      PageRouteBuilder(
-                        transitionDuration: Duration(milliseconds: 440),
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            LoginScreen(userRepository: widget.userRepository),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          var begin = Offset(0, 1);
-                          var end = Offset.zero;
-                          var curve = Curves.easeInOutQuad;
-                          var tween = Tween(begin: begin, end: end)
-                              .chain(CurveTween(curve: curve));
-                          //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
-
-                          return SlideTransition(
-                              position: animation.drive(tween), child: child);
-                          //return FadeTransition(opacity: animation.drive(tween), child: child);
-                        },
-                      ),
-                    );
-                  },
-                  leading:
-                      Icon(FontAwesomeIcons.signOutAlt, color: drawerBarColor),
-                  title: Text('Logout'),
-                ),
-              ],
-            ),
-          ),
-        ),
-        body: NotesList(),
-
-        //  Builder(
-        //   //TODO: Check whether this is correct or not i.e, two Scaffolds
-        //   builder: (BuildContext context) => SingleChildScrollView(
-        //     physics: BouncingScrollPhysics(),
-        //     child: Padding(
-        //       padding: EdgeInsets.all(14.0),
-        //       child: Column(
-        //         children: [
-        //           Card(
-        //             color: Colors.green[300],
-        //             shape: RoundedRectangleBorder(
-        //               borderRadius: BorderRadius.circular(10),
-        //             ),
-        //             child: Container(
-        //               height: 150,
-        //               width: MediaQuery.of(context).size.width,
-        //               child: Padding(
-        //                 padding: EdgeInsets.all(18.0),
-        //                 child: Text('$userCard',
-        //                     style: TextStyle(
-        //                         fontSize: 30, fontWeight: FontWeight.w400)),
-        //               ),
-        //             ),
-        //           ),
-        //           GridView.count(
-        //             crossAxisCount: 2,
-        //             shrinkWrap: true,
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        // ),
-      ),
-    );
-  }
-
-//AppBar for HomeScreen
-  AppBar appbar(BuildContext context) {
-    return AppBar(
-      iconTheme: IconThemeData(color: Colors.black),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      title: Text('My Notes', style: TextStyle(color: Colors.black)),
-      elevation: 0,
-      actions: [
-        Padding(
-          padding: EdgeInsets.all(10.0),
-          child: GestureDetector(
-            // Navigating to the settings screen when settings Icon is pressed
-            onTap: () => Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) {
-                  return SettingsScreen(
-                    userRepository: widget.userRepository,
-                  );
-                },
-              ),
-            ),
-            child: Icon(Icons.settings),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class FAB extends StatelessWidget {
-  const FAB({
-    Key key,
-    @required this.widget,
-  }) : super(key: key);
-
-  final HomeScreen widget;
-
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      backgroundColor: Colors.green,
-      onPressed: () => Navigator.push(
-        context,
-        // Pageroutebuilder for implementing different a transition between screens
-        PageRouteBuilder(
-          //Navigating to the addnte screen when FAB is pressed
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              AddNote(userRepository: widget.userRepository),
-          // NoteAC(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            var begin = Offset(0, 1);
-            var end = Offset.zero;
-            var curve = Curves.easeInOutQuad;
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-            //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
-            return SlideTransition(
-                position: animation.drive(tween), child: child);
-            //return FadeTransition(opacity: animation.drive(tween), child: child);
-          },
-        ),
-      ),
-      child: Icon(Icons.add),
-    );
-  }
-}
-
-// Floating Action button for Home Screen
-
-PageRouteBuilder buildPageRouteBuilder(Widget screen) {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => screen,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(-1, 0);
-      var end = Offset.zero;
-      var curve = Curves.easeInOutQuad;
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
-
-      return SlideTransition(position: animation.drive(tween), child: child);
-      //return FadeTransition(opacity: animation.drive(tween), child: child);
-    },
-  );
-}
+// //       return SlideTransition(position: animation.drive(tween), child: child);
+// //       //return FadeTransition(opacity: animation.drive(tween), child: child);
+// //     },
+// //   );
+// // }
 
 // class HomeScreen extends StatefulWidget {
 //   final UserRepository userRepository;
@@ -286,29 +46,294 @@ PageRouteBuilder buildPageRouteBuilder(Widget screen) {
 //   _HomeScreenState createState() => _HomeScreenState();
 // }
 
-// class _HomeScreenState extends State<HomeScreen> {
+// class _HomeScreenState extends State<HomeScreen>
+//     with SingleTickerProviderStateMixin {
 //   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
+//   AnimationController viewController;
+//   bool islistView = true;
+//   String uid;
 //   String userCard;
+//   var h = 1001.0694778740428;
+//   final w = 462.03206671109666;
+//   double homeScreenIconSize = 20.0 / 1001.0694778740428;
+
 //   getUserEmail() async {
 //     userCard = await widget.userRepository.getUser();
 //   }
 
+//   _getUID() async {
+//     uid = await widget.userRepository.getUID();
+//   }
+
+//   bool _showNetworkError = false;
+//   final _borderRadius = BorderRadius.circular(70);
+//   TapGestureRecognizer _repoButton;
+//   void _launchUrl(String url) async {
+//     if (await canLaunch(url) && await _checkConnection()) {
+//       _checkConnection();
+//       launch(url);
+//     } else {
+//       setState(() {
+//         print('netwrok error');
+//         _showNetworkError = true;
+//       });
+//     }
+//   }
+
+//   Future<bool> _checkConnection() async {
+//     if (await DataConnectionChecker().hasConnection) {
+//       setState(() {
+//         _showNetworkError = false;
+//       });
+//       return true;
+//     } else {
+//       setState(() {
+//         print('netwrok error');
+//         _showNetworkError = true;
+//       });
+//       return false;
+//     }
+//   }
+
+//   // @override
+//   // void initState() {
+//   //   getUserEmail();
+//   //   super.initState();
+//   // }
+//   //
+//   //TODO: CHECK
+//   //
+//   List<Note> _notes = [];
+//   final formatter = new DateFormat('yyyy-MM-dd hh:mm:ss');
+//   Future<void> _loadNotes() async {
+//     final jsonResponse =
+//         await DefaultAssetBundle.of(context).loadString("assets/text.json");
+
+//     setState(() {
+//       _notes = Note.allFromResponse(jsonResponse);
+//     });
+//   }
+
+//   Widget _buildNoteListTile(BuildContext context, int index) {
+//     var note = _notes[index];
+
+//     return new ListTile(
+//       onTap: () => _navigateToNoteDetails(note, index),
+//       title: Text(note.title, style: TextStyle(color: Colors.green[600])),
+//       subtitle: Text(formatter.format(note.date)),
+//     );
+//   }
+
+//   void _navigateToNoteDetails(Note note, Object index) {
+//     Navigator.of(context).push(
+//       new MaterialPageRoute(
+//         builder: (c) {
+//           return ZefyrNote(
+//             note: note,
+//             databaseService: DatabaseService(uid: uid),
+//             userRepository: widget.userRepository,
+//           );
+//         },
+//       ),
+//     );
+//   }
+
 //   @override
 //   void initState() {
+//     _loadNotes().then((onValue) {
+//       setState(() {
+//         //  _notes = onValue;
+//       });
+//     }).catchError(print);
 //     getUserEmail();
+//     _getUID();
+//     viewController =
+//         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
 //     super.initState();
+//     currentScreen = whichScreen.home;
+//   }
+
+//   @override
+//   void dispose() {
+//     viewController.dispose();
+//     super.dispose();
 //   }
 
 //   @override
 //   Widget build(BuildContext context) {
-//     return Scaffold(
+//     Widget content;
+//     final height = MediaQuery.of(context).size.height;
+//     if (_notes.isEmpty) {
+//       content = Center(
+//         child: CircularProgressIndicator(), //1
+//       );
+//     } else {
+//       content = ListView.builder(
+//         shrinkWrap: true,
+//         //2
+//         itemCount: _notes.length,
+//         itemBuilder: _buildNoteListTile,
+//       );
+//     }
+//     return
+//         // HomeTrial(
+//         //   userRepository: widget.userRepository,
+//         //   databaseService: DatabaseService(uid: uid),
+//         // );
+//         Scaffold(
 //       drawerEnableOpenDragGesture: true,
 //       key: _scaffoldKey,
-//       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+//       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 //       resizeToAvoidBottomPadding: false,
-//       floatingActionButton: FAB(widget: widget),
-//       appBar: appbar(context),
+//       floatingActionButton: FAB(uid: uid, widget: widget),
+
+//       // resizeToAvoidBottomPadding: false,
+
+//       bottomNavigationBar: BottomAppBar(
+//         color: Colors.white,
+//         notchMargin: 8.0,
+//         // elevation: 0.0,
+//         shape: CircularNotchedRectangle(),
+//         child: Padding(
+//           padding: EdgeInsets.all(5.0),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               Container(
+//                 height: 45,
+//                 child: IconButton(
+//                   icon: AnimatedIcon(
+//                     icon: AnimatedIcons.list_view,
+//                     progress: viewController,
+//                     size: homeScreenIconSize * height,
+//                   ),
+//                   onPressed: () {
+//                     islistView
+//                         ? viewController.forward()
+//                         : viewController.reverse();
+//                     islistView = !islistView;
+//                     if (!islistView)
+//                       _scaffoldKey.currentState.showSnackBar(SnackBar(
+//                           content: Text(
+//                               'The app is currently in development mode, please wait while we cook the recipe for this.')));
+//                   },
+//                 ),
+//               ),
+//               Container(
+//                 height: 45,
+//                 padding: EdgeInsets.all(7),
+//                 child: DropdownButton<String>(
+//                   dropdownColor: Colors.white,
+//                   underline: SizedBox(),
+//                   icon: Icon(Icons.more_vert, color: Colors.black),
+//                   iconSize: homeScreenIconSize * height,
+//                   elevation: 0,
+//                   style: TextStyle(color: Colors.green),
+//                   onChanged: (String newValue) {
+//                     _scaffoldKey.currentState.hideCurrentSnackBar();
+
+//                     if (newValue == 'Sort by') {
+//                       _scaffoldKey.currentState.showSnackBar(
+//                         SnackBar(
+//                           duration: Duration(seconds: 20),
+//                           elevation: 0,
+//                           backgroundColor: Colors.transparent,
+//                           content: AlertDialog(
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(10.0),
+//                             ),
+//                             backgroundColor: Colors.green,
+//                             title: Text('Sort By'),
+//                             content: SingleChildScrollView(
+//                               child: ListBody(
+//                                 children: [
+//                                   ListTile(
+//                                     leading: Radio(
+//                                       value: false,
+//                                       groupValue: null,
+//                                       onChanged: null,
+//                                     ),
+//                                     title: Text('Name '),
+//                                   ),
+//                                   ListTile(
+//                                     leading: Radio(
+//                                       value: false,
+//                                       groupValue: null,
+//                                       onChanged: null,
+//                                     ),
+//                                     title: Text('Date created'),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                             actions: [
+//                               FlatButton(
+//                                 onPressed: () {
+//                                   // Navigator.pop(context);
+//                                   _scaffoldKey.currentState
+//                                     ..hideCurrentSnackBar();
+//                                 },
+//                                 child: Text('Cancel'),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       );
+//                     }
+//                   },
+//                   items: <String>['Select Notes', 'Sort by']
+//                       .map<DropdownMenuItem<String>>((String value) {
+//                     return DropdownMenuItem<String>(
+//                       value: value,
+//                       child: Text(value),
+//                     );
+//                   }).toList(),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//       appBar: AppBar(
+//         iconTheme: IconThemeData(color: Colors.black),
+//         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+//         title: Text('My Notes', style: TextStyle(color: Colors.black)),
+//         elevation: 0,
+//         actions: [
+//           Padding(
+//             padding: EdgeInsets.all(4.0),
+//             child: IconButton(
+//               icon: Icon(Icons.search),
+//               onPressed: () => Navigator.push(
+//                 context,
+//                 CupertinoPageRoute(
+//                   builder: (context) {
+//                     return SearchScreen(
+//                       userRepository: widget.userRepository,
+//                     );
+//                   },
+//                 ),
+//               ),
+//             ),
+//           ),
+//           Padding(
+//             padding: EdgeInsets.all(4.0),
+//             child: IconButton(
+//               icon: Icon(Icons.settings),
+//               onPressed: () => Navigator.push(
+//                 context,
+//                 CupertinoPageRoute(
+//                   builder: (context) {
+//                     return SettingsScreen(
+//                       userRepository: widget.userRepository,
+//                     );
+//                   },
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
 //       drawer: Drawer(
 //         elevation: 0.0,
 //         child: Container(
@@ -340,11 +365,12 @@ PageRouteBuilder buildPageRouteBuilder(Widget screen) {
 //                 // ),
 //                 onTap: () => {
 //                   Navigator.pop(context),
-//                   _scaffoldKey.currentState.showSnackBar(
-//                     SnackBar(
-//                       content: Text('You are already on the Home Screen'),
+//                   if (currentScreen == whichScreen.home)
+//                     _scaffoldKey.currentState.showSnackBar(
+//                       SnackBar(
+//                         content: Text('You are already on the Home Screen'),
+//                       ),
 //                     ),
-//                   ),
 //                 },
 //                 leading: Icon(Icons.home, color: drawerBarColor),
 //                 title: Text('Home'),
@@ -358,7 +384,12 @@ PageRouteBuilder buildPageRouteBuilder(Widget screen) {
 //                 title: Text('Profile'),
 //               ),
 //               ListTile(
-//                 onTap: () => {},
+//                 onTap: () => Navigator.push(
+//                   context,
+//                   buildPageRouteBuilder(TrashScreen(
+//                       userRepository: widget.userRepository,
+//                       databaseService: DatabaseService(uid: uid))),
+//                 ),
 //                 leading: Icon(FontAwesomeIcons.trash, color: drawerBarColor),
 //                 title: Text('Trash'),
 //               ),
@@ -368,7 +399,11 @@ PageRouteBuilder buildPageRouteBuilder(Widget screen) {
 //                 title: Text('Rate us'),
 //               ),
 //               ListTile(
-//                 onTap: () => {},
+//                 onTap: () => {
+//                   print('Contact us pressed'),
+//                   _launchUrl(
+//                       'mailto:notado.care@gmail.com?subject=User Experience@Notado')
+//                 },
 //                 leading: Icon(Icons.contact_mail, color: drawerBarColor),
 //                 title: Text('Contact us'),
 //               ),
@@ -407,68 +442,28 @@ PageRouteBuilder buildPageRouteBuilder(Widget screen) {
 //           ),
 //         ),
 //       ),
-//       body: Builder(
-//         //TODO: Check whether this is correct or not i.e, two Scaffolds
-//         builder: (BuildContext context) => SingleChildScrollView(
-//           physics: BouncingScrollPhysics(),
-//           child: Padding(
-//             padding: EdgeInsets.all(14.0),
-//             child: Column(
-//               children: [
-//                 Card(
-//                   color: Colors.green[300],
-//                   shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(10),
+//       body: StreamBuilder(
+//         stream: DatabaseService(uid: uid).notesZefyrFromNotes,
+//         builder: (BuildContext context, AsyncSnapshot snapshot) {
+//           if (!snapshot.hasData) {
+//             return Center(child: CircularProgressIndicator());
+//           } else
+//             return ListView(
+//               children: snapshot.data.documents.map<Widget>((document) {
+//                 return Padding(
+//                   padding: EdgeInsets.all(8.0),
+//                   child: ListTile(
+//                     tileColor: Colors.grey[100],
+//                     title: Text(document['contents']),
+//                     // trailing: selecting
+//                     //     ? Checkbox(value: false, onChanged: null)
+//                     //     : null,
 //                   ),
-//                   child: Container(
-//                     height: 150,
-//                     width: MediaQuery.of(context).size.width,
-//                     child: Padding(
-//                       padding: EdgeInsets.all(18.0),
-//                       child: Text('$userCard',
-//                           style: TextStyle(
-//                               fontSize: 30, fontWeight: FontWeight.w400)),
-//                     ),
-//                   ),
-//                 ),
-//                 GridView.count(
-//                   crossAxisCount: 2,
-//                   shrinkWrap: true,
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
+//                 );
+//               }).toList(),
+//             );
+//         },
 //       ),
-//     );
-//   }
-
-// //AppBar for HomeScreen
-//   AppBar appbar(BuildContext context) {
-//     return AppBar(
-//       iconTheme: IconThemeData(color: Colors.black),
-//       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-//       title: Text('My Notes', style: TextStyle(color: Colors.black)),
-//       elevation: 0,
-//       actions: [
-//         Padding(
-//           padding: EdgeInsets.all(10.0),
-//           child: GestureDetector(
-//             // Navigating to the settings screen when settings Icon is pressed
-//             onTap: () => Navigator.push(
-//               context,
-//               CupertinoPageRoute(
-//                 builder: (context) {
-//                   return SettingsScreen(
-//                     userRepository: widget.userRepository,
-//                   );
-//                 },
-//               ),
-//             ),
-//             child: Icon(Icons.settings),
-//           ),
-//         ),
-//       ],
 //     );
 //   }
 // }
@@ -476,10 +471,12 @@ PageRouteBuilder buildPageRouteBuilder(Widget screen) {
 // class FAB extends StatelessWidget {
 //   const FAB({
 //     Key key,
+//     @required this.uid,
 //     @required this.widget,
 //   }) : super(key: key);
 
 //   final HomeScreen widget;
+//   final String uid;
 
 //   @override
 //   Widget build(BuildContext context) {
@@ -491,7 +488,11 @@ PageRouteBuilder buildPageRouteBuilder(Widget screen) {
 //         PageRouteBuilder(
 //           //Navigating to the addnte screen when FAB is pressed
 //           pageBuilder: (context, animation, secondaryAnimation) =>
-//               AddNote(userRepository: widget.userRepository),
+//               // AddNote(userRepository: widget.userRepository),
+//               ZefyrNote(
+//             databaseService: DatabaseService(uid: uid),
+//             userRepository: widget.userRepository,
+//           ),
 //           transitionsBuilder: (context, animation, secondaryAnimation, child) {
 //             var begin = Offset(0, 1);
 //             var end = Offset.zero;
@@ -527,3 +528,506 @@ PageRouteBuilder buildPageRouteBuilder(Widget screen) {
 //     },
 //   );
 // }
+
+class selectNotesNotifier extends ChangeNotifier {
+  bool _isSelecting = false;
+  get selectingOrNot => _isSelecting;
+  changeSelect() {
+    _isSelecting = !_isSelecting;
+    notifyListeners();
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  final UserRepository userRepository;
+
+  const HomeScreen({Key key, @required this.userRepository}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  AnimationController viewController;
+  bool islistView = true;
+  String uid;
+  String userCard;
+  var h = 1001.0694778740428;
+  final w = 462.03206671109666;
+  double homeScreenIconSize = 20.0 / 1001.0694778740428;
+
+  getUserEmail() async {
+    userCard = await widget.userRepository.getUser();
+  }
+
+  _getUID() async {
+    uid = await widget.userRepository.getUID();
+  }
+
+  bool _showNetworkError = false;
+  final _borderRadius = BorderRadius.circular(70);
+  TapGestureRecognizer _repoButton;
+  void _launchUrl(String url) async {
+    if (await canLaunch(url) && await _checkConnection()) {
+      _checkConnection();
+      launch(url);
+    } else {
+      setState(() {
+        print('netwrok error');
+        _showNetworkError = true;
+      });
+    }
+  }
+
+  Future<bool> _checkConnection() async {
+    if (await DataConnectionChecker().hasConnection) {
+      setState(() {
+        _showNetworkError = false;
+      });
+      return true;
+    } else {
+      setState(() {
+        print('netwrok error');
+        _showNetworkError = true;
+      });
+      return false;
+    }
+  }
+
+  // @override
+  // void initState() {
+  //   getUserEmail();
+  //   super.initState();
+  // }
+  //
+  //TODO: CHECK
+  //
+  List<Note> _notes = [];
+  final formatter = new DateFormat('yyyy-MM-dd hh:mm:ss');
+  // Future<void> _loadNotes() async {
+  //   final jsonResponse =
+  //       await DefaultAssetBundle.of(context).loadString("assets/text.json");
+
+  //   setState(() {
+  //     _notes = Note.allFromResponse(jsonResponse);
+  //   });
+  // }
+
+  Widget _buildNoteListTile(BuildContext context, int index) {
+    var note = _notes[index];
+
+    return new ListTile(
+      onTap: () => _navigateToNoteDetails(note, index),
+      title: Text(note.title, style: TextStyle(color: Colors.green[600])),
+      subtitle: Text(formatter.format(note.date)),
+    );
+  }
+
+  void _navigateToNoteDetails(Note note, Object index) {
+    Navigator.of(context).push(
+      new MaterialPageRoute(
+        builder: (c) {
+          return ZefyrNote(
+            note: note,
+            databaseService: DatabaseService(uid: uid),
+            userRepository: widget.userRepository,
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    // _loadNotes().then((onValue) {
+    //   setState(() {
+    //     //  _notes = onValue;
+    //   });
+    // }).catchError(print);
+    getUserEmail();
+    _getUID();
+    viewController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    super.initState();
+    currentScreen = whichScreen.home;
+  }
+
+  @override
+  void dispose() {
+    viewController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget content;
+    final selectNotesNotifier selectNotifier =
+        Provider.of<selectNotesNotifier>(context);
+    final height = MediaQuery.of(context).size.height;
+    final listSelect = Provider.of<selectNotesNotifier>(context).selectingOrNot;
+
+    if (_notes.isEmpty) {
+      content = Center(
+        child: CircularProgressIndicator(), //1
+      );
+    } else {
+      content = ListView.builder(
+        shrinkWrap: true,
+        //2
+        itemCount: _notes.length,
+        itemBuilder: _buildNoteListTile,
+      );
+    }
+    return Scaffold(
+      drawerEnableOpenDragGesture: true,
+      key: _scaffoldKey,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      resizeToAvoidBottomPadding: false,
+      floatingActionButton: FAB(uid: uid, widget: widget),
+
+      // resizeToAvoidBottomPadding: false,
+
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        notchMargin: 8.0,
+        // elevation: 0.0,
+        shape: CircularNotchedRectangle(),
+        child: Padding(
+          padding: EdgeInsets.all(5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                height: 45,
+                child: IconButton(
+                  icon: AnimatedIcon(
+                    icon: AnimatedIcons.list_view,
+                    progress: viewController,
+                    size: homeScreenIconSize * height,
+                  ),
+                  onPressed: () {
+                    islistView
+                        ? viewController.forward()
+                        : viewController.reverse();
+                    islistView = !islistView;
+                    if (!islistView)
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                              'The app is currently in development mode, please wait while we cook the recipe for this.')));
+                  },
+                ),
+              ),
+              Container(
+                height: 45,
+                padding: EdgeInsets.all(7),
+                child: DropdownButton<String>(
+                  dropdownColor: Colors.white,
+                  underline: SizedBox(),
+                  icon: Icon(Icons.more_vert, color: Colors.black),
+                  iconSize: homeScreenIconSize * height,
+                  elevation: 0,
+                  style: TextStyle(color: Colors.green),
+                  onChanged: (String newValue) {
+                    _scaffoldKey.currentState.hideCurrentSnackBar();
+
+                    if (newValue == 'Sort by') {
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          duration: Duration(seconds: 20),
+                          elevation: 0,
+                          backgroundColor: Colors.transparent,
+                          content: AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            backgroundColor: Colors.green,
+                            title: Text('Sort By'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: [
+                                  ListTile(
+                                    leading: Radio(
+                                      value: false,
+                                      groupValue: null,
+                                      onChanged: null,
+                                    ),
+                                    title: Text('Name '),
+                                  ),
+                                  ListTile(
+                                    leading: Radio(
+                                      value: false,
+                                      groupValue: null,
+                                      onChanged: null,
+                                    ),
+                                    title: Text('Date created'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            actions: [
+                              FlatButton(
+                                onPressed: () {
+                                  // Navigator.pop(context);
+                                  _scaffoldKey.currentState
+                                    ..hideCurrentSnackBar();
+                                },
+                                child: Text('Cancel'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  items: <String>['Select Notes', 'Sort by']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                      onTap: value == 'Select Notes'
+                          ? selectNotifier.changeSelect()
+                          : null,
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text('My Notes', style: TextStyle(color: Colors.black)),
+        elevation: 0,
+        actions: [
+          Padding(
+            padding: EdgeInsets.all(4.0),
+            child: IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) {
+                    return SearchScreen(
+                      userRepository: widget.userRepository,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(4.0),
+            child: IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) {
+                    return SettingsScreen(
+                      userRepository: widget.userRepository,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        elevation: 0.0,
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          color: Colors.white,
+          child: ListView(
+            children: [
+              Card(
+                elevation: 0.0,
+                child: Container(
+                  height: 80,
+                  child: Center(
+                    child: Text(
+                      'Notado',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 40,
+                        letterSpacing: 2,
+                        color: drawerBarColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              ListTile(
+                // onTap: () => Navigator.push(
+                //   context,
+                //   buildPageRouteBuilder(HomeScreen(user: null)),
+                // ),
+                onTap: () => {
+                  Navigator.pop(context),
+                  if (currentScreen == whichScreen.home)
+                    _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(
+                        content: Text('You are already on the Home Screen'),
+                      ),
+                    ),
+                },
+                leading: Icon(Icons.home, color: drawerBarColor),
+                title: Text('Home'),
+              ),
+              ListTile(
+                onTap: () => Navigator.push(
+                  context,
+                  buildPageRouteBuilder(ProfileScreen()),
+                ),
+                leading: Icon(Icons.person, color: drawerBarColor),
+                title: Text('Profile'),
+              ),
+              ListTile(
+                onTap: () => Navigator.push(
+                  context,
+                  buildPageRouteBuilder(TrashScreen(
+                      userRepository: widget.userRepository,
+                      databaseService: DatabaseService(uid: uid))),
+                ),
+                leading: Icon(FontAwesomeIcons.trash, color: drawerBarColor),
+                title: Text('Trash'),
+              ),
+              ListTile(
+                onTap: () => {},
+                leading: Icon(FontAwesomeIcons.star, color: drawerBarColor),
+                title: Text('Rate us'),
+              ),
+              ListTile(
+                onTap: () => {
+                  print('Contact us pressed'),
+                  _launchUrl(
+                      'mailto:notado.care@gmail.com?subject=User Experience@Notado')
+                },
+                leading: Icon(Icons.contact_mail, color: drawerBarColor),
+                title: Text('Contact us'),
+              ),
+              ListTile(
+                onTap: () {
+                  BlocProvider.of<AuthenticationBloc>(context).add(
+                    LoggedOut(),
+                  );
+                  Navigator.pushReplacement(
+                    context,
+                    PageRouteBuilder(
+                      transitionDuration: Duration(milliseconds: 440),
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          LoginScreen(userRepository: widget.userRepository),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        var begin = Offset(0, 1);
+                        var end = Offset.zero;
+                        var curve = Curves.easeInOutQuad;
+                        var tween = Tween(begin: begin, end: end)
+                            .chain(CurveTween(curve: curve));
+                        //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
+
+                        return SlideTransition(
+                            position: animation.drive(tween), child: child);
+                        //return FadeTransition(opacity: animation.drive(tween), child: child);
+                      },
+                    ),
+                  );
+                },
+                leading:
+                    Icon(FontAwesomeIcons.signOutAlt, color: drawerBarColor),
+                title: Text('Logout'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: StreamBuilder(
+        stream: DatabaseService(uid: uid).notesZefyrFromNotes,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          } else
+            return ListView(
+              children: snapshot.data.documents.map<Widget>((document) {
+                return Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: ListTile(
+                    tileColor: Colors.grey[100],
+                    title: Text(document['contents']),
+                    trailing: listSelect
+                        ? Checkbox(value: false, onChanged: null)
+                        : null,
+                  ),
+                );
+              }).toList(),
+            );
+        },
+      ),
+    );
+  }
+}
+
+class FAB extends StatelessWidget {
+  const FAB({
+    Key key,
+    @required this.uid,
+    @required this.widget,
+  }) : super(key: key);
+
+  final HomeScreen widget;
+  final String uid;
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      backgroundColor: Colors.green,
+      onPressed: () => Navigator.push(
+        context,
+        // Pageroutebuilder for implementing different a transition between screens
+        PageRouteBuilder(
+          //Navigating to the addnte screen when FAB is pressed
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              // AddNote(userRepository: widget.userRepository),
+              ZefyrNote(
+            databaseService: DatabaseService(uid: uid),
+            userRepository: widget.userRepository,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = Offset(0, 1);
+            var end = Offset.zero;
+            var curve = Curves.easeInOutQuad;
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
+            return SlideTransition(
+                position: animation.drive(tween), child: child);
+            //return FadeTransition(opacity: animation.drive(tween), child: child);
+          },
+        ),
+      ),
+      child: Icon(Icons.add),
+    );
+  }
+}
+
+// Floating Action button for Home Screen
+
+PageRouteBuilder buildPageRouteBuilder(Widget screen) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => screen,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(-1, 0);
+      var end = Offset.zero;
+      var curve = Curves.easeInOutQuad;
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
+
+      return SlideTransition(position: animation.drive(tween), child: child);
+      //return FadeTransition(opacity: animation.drive(tween), child: child);
+    },
+  );
+}
