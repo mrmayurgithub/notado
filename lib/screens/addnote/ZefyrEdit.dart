@@ -25,17 +25,18 @@ class ZefyrNote extends StatefulWidget {
 class _ZefyrNoteState extends State<ZefyrNote> {
   Color mainColor = Colors.white;
   final appBarIconColor = Colors.black;
+  final _scaffoldkey = GlobalKey<ScaffoldState>();
   // StreamSubscription<NotusChange> _sub;
 
   _save() async {
     print('savvvvinggg....');
-    // Scaffold.of(context)
-    //     .showSnackBar(SnackBar(content: Text('Saving Note...')));
+    _scaffoldkey.currentState
+        .showSnackBar(SnackBar(content: Text('Saving Note...')));
     final contents = jsonEncode(_controller.document.toJson());
-
     await widget.databaseService.createZefyrUserData(contents: contents);
-    // Scaffold.of(context)
-    //     .showSnackBar(SnackBar(content: Text('Note Saved Successfully')));
+    _scaffoldkey.currentState.hideCurrentSnackBar();
+    _scaffoldkey.currentState
+        .showSnackBar(SnackBar(content: Text('Note saved successfully')));
   }
 
   ZefyrController _controller;
@@ -75,6 +76,7 @@ class _ZefyrNoteState extends State<ZefyrNote> {
             ),
           );
     return Scaffold(
+      key: _scaffoldkey,
       backgroundColor: mainColor,
       appBar: AppBar(
         elevation: 0,

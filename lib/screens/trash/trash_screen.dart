@@ -69,14 +69,14 @@ class _TrashScreenState extends State<TrashScreen>
 
   List<Note> _notes = [];
   final formatter = new DateFormat('yyyy-MM-dd hh:mm:ss');
-  Future<void> _loadNotes() async {
-    final jsonResponse =
-        await DefaultAssetBundle.of(context).loadString("assets/text.json");
+  // Future<void> _loadNotes() async {
+  //   final jsonResponse =
+  //       await DefaultAssetBundle.of(context).loadString("assets/text.json");
 
-    setState(() {
-      _notes = Note.allFromResponse(jsonResponse);
-    });
-  }
+  //   setState(() {
+  //     _notes = Note.allFromResponse(jsonResponse);
+  //   });
+  // }
 
   Widget _buildNoteListTile(BuildContext context, int index) {
     var note = _notes[index];
@@ -103,11 +103,11 @@ class _TrashScreenState extends State<TrashScreen>
 
   @override
   void initState() {
-    _loadNotes().then((onValue) {
-      setState(() {
-        //  _notes = onValue;
-      });
-    }).catchError(print);
+    // _loadNotes().then((onValue) {
+    //   setState(() {
+    //     //  _notes = onValue;
+    //   });
+    // }).catchError(print);
     viewController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     super.initState();
@@ -146,7 +146,6 @@ class _TrashScreenState extends State<TrashScreen>
       child: Scaffold(
         drawerEnableOpenDragGesture: true,
         key: _scaffoldKey,
-
         appBar: AppBar(
           iconTheme: IconThemeData(color: Colors.black),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -285,7 +284,6 @@ class _TrashScreenState extends State<TrashScreen>
           onPressed: () {},
           child: Icon(FontAwesomeIcons.trash),
         ),
-
         bottomNavigationBar: BottomAppBar(
           notchMargin: 8.0,
           // elevation: 0.0,
@@ -391,39 +389,27 @@ class _TrashScreenState extends State<TrashScreen>
             ),
           ),
         ),
-
-        // bottomNavigationBar: BottomNavigationBar(
-        //   items: [
-        //     BottomNavigationBarItem(
-        //       title: Text('Sort'),
-        //       icon: IconButton(
-        //         icon: Icon(Icons.sort),
-        //         onPressed: null,
-        //       ),
-        //     ),
-        //     BottomNavigationBarItem(
-        //       title: islistView ? Text('List View') : Text('Grid View'),
-        //       icon: IconButton(
-        //         icon: AnimatedIcon(
-        //           icon: AnimatedIcons.list_view,
-        //           progress: viewController,
-        //         ),
-        //         onPressed: () {
-        //           islistView
-        //               ? viewController.forward()
-        //               : viewController.reverse();
-        //           islistView = !islistView;
-        //           if (!islistView)
-        //             _scaffoldKey.currentState.showSnackBar(SnackBar(
-        //                 content: Text(
-        //                     'The app is currently in development mode, please wait while we cook the recipe for this.')));
-        //         },
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        body: Builder(
-          builder: (BuildContext context) => SingleChildScrollView(),
+        body: StreamBuilder(
+          stream: widget.databaseService.notesZefyrFromTrash,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasError)
+              return Center(child: Text('ERROR'));
+            else if (snapshot.connectionState == ConnectionState.waiting)
+              return Center(child: CircularProgressIndicator());
+            return ListView(
+              children: snapshot.data.documents.map<Widget>(
+                (document) {
+                  return Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: ListTile(
+                      tileColor: Colors.grey[100],
+                      title: Text(document['contents']),
+                    ),
+                  );
+                },
+              ).toList(),
+            );
+          },
         ),
       ),
     );
