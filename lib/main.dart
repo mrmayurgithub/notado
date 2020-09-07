@@ -6,10 +6,7 @@ import 'package:notado/authentication/authenticationBloc/authentication_event.da
 import 'package:notado/authentication/authentication_bloc.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/screens/home/home_screen.dart';
-import 'package:notado/screens/home/list_page.dart';
 import 'package:notado/screens/login/login_screen.dart';
-import 'package:notado/screens/register/register_screen.dart';
-import 'package:notado/screens/verification/verification.dart';
 import 'package:notado/theme/themes.dart';
 import 'package:notado/user_repository/user_Repository.dart';
 import 'screens/splash/splash_screen.dart';
@@ -57,9 +54,9 @@ class _AppState extends State<App> {
             ThemeData.light(),
           ),
         ),
-        ListenableProvider<selectNotesNotifier>(
-          create: (_) => selectNotesNotifier(),
-        ),
+        // ListenableProvider<selectNotesNotifier>(
+        //   create: (_) => selectNotesNotifier(),
+        // ),
       ],
       child: Builder(
         builder: (BuildContext context) {

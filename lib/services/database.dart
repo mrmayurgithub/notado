@@ -90,6 +90,14 @@ class DatabaseService {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> get notesZefyrFromTrash {
+    return Firestore.instance
+        .collection('trash')
+        .document(uid)
+        .collection('userNotes')
+        .snapshots();
+  }
+
 //TODO: improve
   // List<Note> _noteZefyrListFromSnapshot(QuerySnapshot snapshot) {
   //   return snapshot.documents.map((docuid) {
@@ -99,15 +107,6 @@ class DatabaseService {
   //       date: null,
   //     );
   //   });
-  // }
-
-  // Stream<List<Note>> get notesZefyrFromTrash {
-  //   return Firestore.instance
-  //       .collection('notes')
-  //       .document(uid)
-  //       .collection('userNotes')
-  //       .snapshots()
-  //       .map(_noteZefyrListFromSnapshot);
   // }
 
   // Stream<List<Note>> get notesZefyrFromNotes {
