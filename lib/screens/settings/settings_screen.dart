@@ -513,8 +513,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       setState(() {
                         status = value;
                         status == true
-                            ? _themeChanger.setTheme(ThemeData.dark())
-                            : _themeChanger.setTheme(ThemeData.light());
+                            ? _themeChanger.setTheme(appTheme.getDarkTheme())
+                            : _themeChanger.setTheme(appTheme.getLightTheme());
                       });
                     },
                   ),

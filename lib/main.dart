@@ -51,12 +51,10 @@ class _AppState extends State<App> {
       providers: [
         ListenableProvider<ThemeChanger>(
           create: (_) => ThemeChanger(
-            ThemeData.light(),
+            appTheme.getLightTheme(),
           ),
         ),
-        // ListenableProvider<selectNotesNotifier>(
-        //   create: (_) => selectNotesNotifier(),
-        // ),
+        //ChangeNotifierProvider(create: (context) => ThemeChanger()),
       ],
       child: Builder(
         builder: (BuildContext context) {
