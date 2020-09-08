@@ -1,4 +1,3 @@
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:notado/authentication/authenticationBloc/authentication_bloc.dar
 import 'package:notado/authentication/authenticationBloc/authentication_event.dart';
 import 'package:notado/constants/constants.dart';
 import 'package:notado/screens/addnote/ZefyrEdit.dart';
+import 'package:notado/screens/draw/draw_screen.dart';
 import 'package:notado/screens/login/login_screen.dart';
 import 'package:notado/screens/profile/profile_screen.dart';
 import 'package:notado/screens/search/search_screen.dart';
@@ -101,7 +101,10 @@ class _HomeScreenState extends State<HomeScreen>
 
     return new ListTile(
       onTap: () => _navigateToNoteDetails(note, index),
-      title: Text(note.title, style: TextStyle(color: Colors.green[600])),
+      title: Text(
+        note.title,
+        // style: TextStyle(color: Colors.green[600]),
+      ),
       subtitle: Text(formatter.format(note.date)),
     );
   }
@@ -160,13 +163,12 @@ class _HomeScreenState extends State<HomeScreen>
     }
     return Scaffold(
       drawerEnableOpenDragGesture: true,
-      backgroundColor: Colors.black,
       key: _scaffoldKey,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       resizeToAvoidBottomPadding: false,
       floatingActionButton: FAB(uid: uid, widget: widget),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
+        // color: Colors.white,
         notchMargin: 8.0,
         shape: CircularNotchedRectangle(),
         child: Padding(
@@ -174,36 +176,56 @@ class _HomeScreenState extends State<HomeScreen>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                height: 45,
-                child: IconButton(
-                  icon: AnimatedIcon(
-                    icon: AnimatedIcons.list_view,
-                    progress: viewController,
-                    size: homeScreenIconSize * height,
+              Row(
+                children: [
+                  Container(
+                    height: 45,
+                    child: IconButton(
+                      icon: AnimatedIcon(
+                        icon: AnimatedIcons.list_view,
+                        progress: viewController,
+                        size: homeScreenIconSize * height,
+                      ),
+                      onPressed: () {
+                        islistView
+                            ? viewController.forward()
+                            : viewController.reverse();
+                        islistView = !islistView;
+                        if (!islistView)
+                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text(
+                                  'The app is currently in development mode, please wait while we cook the recipe for this.')));
+                      },
+                    ),
                   ),
-                  onPressed: () {
-                    islistView
-                        ? viewController.forward()
-                        : viewController.reverse();
-                    islistView = !islistView;
-                    if (!islistView)
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                              'The app is currently in development mode, please wait while we cook the recipe for this.')));
-                  },
-                ),
+                  Container(
+                    height: 45,
+                    child: IconButton(
+                      icon: Icon(Icons.brush),
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return DrawScreen(
+                              userRepository: widget.userRepository);
+                        }));
+                      },
+                    ),
+                  ),
+                ],
               ),
               Container(
                 height: 45,
                 padding: EdgeInsets.all(7),
                 child: DropdownButton<String>(
-                  dropdownColor: Colors.white,
+                  // dropdownColor: Colors.white,
                   underline: SizedBox(),
-                  icon: Icon(Icons.more_vert, color: Colors.black),
+                  icon: Icon(
+                    Icons.more_vert,
+                    //  color: Colors.black,
+                  ),
                   iconSize: homeScreenIconSize * height,
                   elevation: 0,
-                  style: TextStyle(color: Colors.green),
+                  // style: TextStyle(color: Colors.green),
                   onChanged: (String newValue) {
                     _scaffoldKey.currentState.hideCurrentSnackBar();
 
@@ -217,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen>
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            backgroundColor: Colors.green,
+                            // backgroundColor: Colors.green,
                             title: Text('Sort By'),
                             content: SingleChildScrollView(
                               child: ListBody(
@@ -426,12 +448,13 @@ class _HomeScreenState extends State<HomeScreen>
           else if (snapshot.connectionState == ConnectionState.waiting)
             return Center(child: CircularProgressIndicator());
           return ListView(
+            physics: BouncingScrollPhysics(),
             children: snapshot.data.documents.map<Widget>(
               (document) {
                 return Padding(
                   padding: EdgeInsets.all(10.0),
                   child: ListTile(
-                    tileColor: Colors.grey[100],
+                    // tileColor: Colors.grey[100],
                     title: Text(document['contents']),
                     onLongPress: () => {
                       DatabaseService(uid: uid).deleteZefyrUserDataFromNotes(
@@ -463,7 +486,7 @@ class FAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      backgroundColor: Colors.green,
+      // backgroundColor: Colors.green,
       onPressed: () => Navigator.push(
         context,
         // Pageroutebuilder for implementing different a transition between screens

@@ -59,6 +59,8 @@ dependencies:
   quill_delta: ^1.0.2
   data_connection_checker: ^0.3.4
   url_launcher: ^5.5.1
+  toast: ^0.1.5
+  pull_to_refresh: ^1.6.1
 
   # formz: ^0.2.0
   # authentication_repository:

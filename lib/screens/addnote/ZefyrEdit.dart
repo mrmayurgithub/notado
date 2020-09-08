@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notado/models/note_model.dart';
 import 'package:notado/packages/packages.dart';
+import 'package:notado/screens/home/home_screen.dart';
 import 'package:notado/services/database.dart';
 import 'package:notado/user_repository/user_Repository.dart';
 
@@ -30,13 +32,21 @@ class _ZefyrNoteState extends State<ZefyrNote> {
 
   _save() async {
     print('savvvvinggg....');
-    _scaffoldkey.currentState
-        .showSnackBar(SnackBar(content: Text('Saving Note...')));
+
     final contents = jsonEncode(_controller.document.toJson());
-    await widget.databaseService.createZefyrUserData(contents: contents);
-    _scaffoldkey.currentState.hideCurrentSnackBar();
-    _scaffoldkey.currentState
-        .showSnackBar(SnackBar(content: Text('Note saved successfully')));
+
+    Toast.show('Saving note...', context, duration: 100);
+    if (await _checkConnection()) {
+      await widget.databaseService.createZefyrUserData(contents: contents);
+      _scaffoldkey.currentState.hideCurrentSnackBar();
+      Toast.show('Note saves sucessfully', context);
+      Navigator.pushReplacement(context,
+          CupertinoPageRoute(builder: (BuildContext context) {
+        return HomeScreen(userRepository: widget.userRepository);
+      }));
+    } else {
+      Toast.show('Network Error', context);
+    }
   }
 
   ZefyrController _controller;
@@ -46,6 +56,54 @@ class _ZefyrNoteState extends State<ZefyrNote> {
   }
 
   FocusNode _focusNode;
+
+  Future<bool> _onBackPressed() {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Do you want to save your note ?'),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.pushReplacement(context,
+                  CupertinoPageRoute(builder: (BuildContext context) {
+                return HomeScreen(userRepository: widget.userRepository);
+              }));
+            },
+            child: Text('No'),
+          ),
+          FlatButton(
+            onPressed: () async {
+              await _save();
+              Navigator.pushReplacement(context,
+                  CupertinoPageRoute(builder: (BuildContext context) {
+                return HomeScreen(userRepository: widget.userRepository);
+              }));
+            },
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool _showNetworkError = false;
+
+  Future<bool> _checkConnection() async {
+    if (await DataConnectionChecker().hasConnection) {
+      setState(() {
+        _showNetworkError = false;
+      });
+      return true;
+    } else {
+      setState(() {
+        print('netwrok error');
+        _showNetworkError = true;
+      });
+      return false;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -69,35 +127,41 @@ class _ZefyrNoteState extends State<ZefyrNote> {
         ? Center(child: CircularProgressIndicator())
         : ZefyrScaffold(
             child: ZefyrEditor(
+              autofocus: false,
               controller: _controller,
               focusNode: _focusNode,
               physics: BouncingScrollPhysics(),
               imageDelegate: MyZefyrImageDelegate(),
             ),
           );
-    return Scaffold(
-      key: _scaffoldkey,
-      backgroundColor: mainColor,
-      appBar: AppBar(
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: Scaffold(
+        key: _scaffoldkey,
         backgroundColor: mainColor,
-        title: Text(
-          'Add your Note',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w400,
-            color: appBarIconColor,
+        appBar: AppBar(
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: mainColor,
+          title: Text(
+            'Add your Note',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w400,
+              color: appBarIconColor,
+            ),
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.save),
+              onPressed: () => {
+                _save(),
+              },
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: _save,
-          ),
-        ],
+        body: body,
       ),
-      body: body,
     );
   }
 }
