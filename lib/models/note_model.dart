@@ -53,9 +53,9 @@ class Note {
 
   static Note allFromResponse(String response) {
     //1
-    var decodedJson = json.decode(response).cast<String, dynamic>(); //2
+    var decodedJson = json.decode(response);
 
-    return decodedJson['results']
+    return decodedJson[response]
         .cast<Map<String, dynamic>>()
         .map((obj) => Note.fromMap(obj)) //3
         .toList()
@@ -72,9 +72,19 @@ class Note {
   //       .cast<Note>(); //4
   // }
 
+  // static Note fromMap(Map map) {
+  //   var textJson = json.encode(map['text']); //5
+  //   return Note(
+  //     //6
+  //     title: map['title'],
+  //     text: textJson,
+  //     date: DateTime.parse(map['date']), //7
+  //   );
+  // }
+
   static Note fromMap(Map map) {
     var textJson = json.encode(map['text']); //5
-    return new Note(
+    return Note(
       //6
       title: map['title'],
       text: textJson,

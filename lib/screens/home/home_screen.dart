@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -114,13 +116,18 @@ class _HomeScreenState extends State<HomeScreen>
       new MaterialPageRoute(
         builder: (c) {
           return ZefyrNote(
-            note: note,
+            // note: note,
             databaseService: DatabaseService(uid: uid),
             userRepository: widget.userRepository,
           );
         },
       ),
     );
+  }
+
+  Future<Null> refreshIt() async {
+    setState(() {});
+    // await Future.delayed(Duration(seconds: 5));
   }
 
   @override
@@ -166,7 +173,37 @@ class _HomeScreenState extends State<HomeScreen>
       key: _scaffoldKey,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       resizeToAvoidBottomPadding: false,
-      floatingActionButton: FAB(uid: uid, widget: widget),
+      floatingActionButton: FloatingActionButton(
+        // backgroundColor: Colors.green,
+        onPressed: () {
+          Navigator.push(
+            context,
+            // Pageroutebuilder for implementing different a transition between screens
+            PageRouteBuilder(
+              //Navigating to the addnte screen when FAB is pressed
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  // AddNote(userRepository: widget.userRepository),
+                  ZefyrNote(
+                databaseService: DatabaseService(uid: uid),
+                userRepository: widget.userRepository,
+              ),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                var begin = Offset(0, 1);
+                var end = Offset.zero;
+                var curve = Curves.easeInOutQuad;
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+                //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
+                return SlideTransition(
+                    position: animation.drive(tween), child: child);
+                //return FadeTransition(opacity: animation.drive(tween), child: child);
+              },
+            ),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
       bottomNavigationBar: BottomAppBar(
         // color: Colors.white,
         notchMargin: 8.0,
@@ -440,83 +477,56 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ),
       ),
-      body: StreamBuilder(
-        stream: DatabaseService(uid: uid).notesZefyrFromNotes,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasError)
-            return Center(child: Text('ERROR'));
-          else if (snapshot.connectionState == ConnectionState.waiting)
-            return Center(child: CircularProgressIndicator());
-          return ListView(
-            physics: BouncingScrollPhysics(),
-            children: snapshot.data.documents.map<Widget>(
-              (document) {
-                return Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: ListTile(
-                    // tileColor: Colors.grey[100],
-                    title: Text(document['contents']),
-                    onLongPress: () => {
-                      DatabaseService(uid: uid).deleteZefyrUserDataFromNotes(
-                        contents: document['contents'],
-                        id: document['id'],
-                      ),
-                    },
-                  ),
-                );
-              },
-            ).toList(),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class FAB extends StatelessWidget {
-  const FAB({
-    Key key,
-    @required this.uid,
-    @required this.widget,
-  }) : super(key: key);
-
-  final HomeScreen widget;
-  final String uid;
-
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      // backgroundColor: Colors.green,
-      onPressed: () => Navigator.push(
-        context,
-        // Pageroutebuilder for implementing different a transition between screens
-        PageRouteBuilder(
-          //Navigating to the addnte screen when FAB is pressed
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              // AddNote(userRepository: widget.userRepository),
-              ZefyrNote(
-            databaseService: DatabaseService(uid: uid),
-            userRepository: widget.userRepository,
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            var begin = Offset(0, 1);
-            var end = Offset.zero;
-            var curve = Curves.easeInOutQuad;
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-            //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
-            return SlideTransition(
-                position: animation.drive(tween), child: child);
-            //return FadeTransition(opacity: animation.drive(tween), child: child);
+      body: RefreshIndicator(
+        color: Colors.black,
+        onRefresh: refreshIt,
+        child: StreamBuilder(
+          stream: DatabaseService(uid: uid).notesZefyrFromNotes,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasError)
+              return Center(child: Text('ERROR'));
+            else if (snapshot.connectionState == ConnectionState.waiting)
+              return Center(
+                  child: CircularProgressIndicator(
+                backgroundColor: Colors.green,
+              ));
+            return ListView(
+              physics: BouncingScrollPhysics(),
+              children: snapshot.data.documents.map<Widget>(
+                (document) {
+                  var Cnote =
+                      Note.allFromResponse(json.decode(document['contents']));
+                  // var Cnote = json.decode(document['contents']);
+                  return Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: ListTile(
+                      // tileColor: Colors.grey[100],
+                      onTap: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return ZefyrNote(
+                          userRepository: widget.userRepository,
+                          databaseService: DatabaseService(uid: uid),
+                          contents: document['contents'],
+                        );
+                      })),
+                      // title: Text(Cnote['insert'].toString()),
+                      onLongPress: () => {
+                        DatabaseService(uid: uid).deleteZefyrUserDataFromNotes(
+                          contents: document['contents'],
+                          id: document['id'],
+                        ),
+                      },
+                    ),
+                  );
+                },
+              ).toList(),
+            );
           },
         ),
       ),
-      child: Icon(Icons.add),
     );
   }
 }
-
-// Floating Action button for Home Screen
 
 PageRouteBuilder buildPageRouteBuilder(Widget screen) {
   return PageRouteBuilder(
