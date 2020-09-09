@@ -10,6 +10,7 @@ class DatabaseService {
   DatabaseService({@required this.uid});
 
   Future<void> createZefyrUserData({@required String contents}) async {
+    print('uid.......' + uid.toString() + '\n');
     final id = Firestore.instance
         .collection('notes')
         .document(uid)

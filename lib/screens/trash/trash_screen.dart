@@ -93,12 +93,17 @@ class _TrashScreenState extends State<TrashScreen>
       new MaterialPageRoute(
         builder: (c) {
           return ZefyrNote(
-              note: note,
+              // note: note,
               databaseService: widget.databaseService,
               userRepository: widget.userRepository);
         },
       ),
     );
+  }
+
+  Future<Null> refreshIt() async {
+    setState(() {});
+    // await Future.delayed(Duration(seconds: 2));
   }
 
   @override
@@ -389,29 +394,50 @@ class _TrashScreenState extends State<TrashScreen>
             ),
           ),
         ),
-        body: StreamBuilder(
-          stream: widget.databaseService.notesZefyrFromTrash,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasError)
-              return Center(child: Text('ERROR'));
-            else if (snapshot.connectionState == ConnectionState.waiting)
-              return Center(child: CircularProgressIndicator());
-            return ListView(
-              children: snapshot.data.documents.map<Widget>(
-                (document) {
-                  return Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: ListTile(
-                      tileColor: Colors.grey[100],
-                      title: Text(document['contents']),
-                    ),
-                  );
-                },
-              ).toList(),
-            );
-          },
+        body: RefreshIndicator(
+          onRefresh: refreshIt,
+          child: StreamBuilder(
+            stream: widget.databaseService.notesZefyrFromTrash,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasError)
+                return Center(child: Text('ERROR'));
+              else if (snapshot.connectionState == ConnectionState.waiting)
+                return Center(child: CircularProgressIndicator());
+              return ListView(
+                children: snapshot.data.documents.map<Widget>(
+                  (document) {
+                    return Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: ListTile(
+                        tileColor: Colors.grey[100],
+                        title: Text(document['contents']),
+                        onLongPress: () => {
+                          widget.databaseService
+                              .deleteZefyrUserDataFromTrash(id: document['id']),
+                        },
+                        // trailing: IconButton(
+                        //   icon: Icon(Icons.undo_rounded),
+                        //   onPressed: null,
+                        //   tooltip: 'Restore',
+                        // ),
+                      ),
+                    );
+                  },
+                ).toList(),
+              );
+            },
+          ),
         ),
       ),
     );
+  }
+}
+
+class selectableBloc with ChangeNotifier {
+  bool _selectTile = false;
+  getSelectTile() => _selectTile;
+  setSelectTile() {
+    _selectTile = !_selectTile;
+    notifyListeners();
   }
 }
