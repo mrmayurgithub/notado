@@ -48,18 +48,16 @@ class Note {
   });
 
   final String title;
-  String text;
-  final DateTime date;
+  final String text;
+  final String date;
 
   static Note allFromResponse(String response) {
-    //1
     var decodedJson = json.decode(response);
-
-    return decodedJson[response]
+    return decodedJson['contents']
         .cast<Map<String, dynamic>>()
-        .map((obj) => Note.fromMap(obj)) //3
+        .map((obj) => Note.fromMap(obj))
         .toList()
-        .cast<Note>(); //4
+        .cast<Note>();
   }
   // static List<Note> allFromResponse(String response) {
   //   //1
@@ -83,12 +81,12 @@ class Note {
   // }
 
   static Note fromMap(Map map) {
-    var textJson = json.encode(map['text']); //5
+    // var textJson = json.encode(map['text']);
     return Note(
-      //6
       title: map['title'],
-      text: textJson,
-      date: DateTime.parse(map['date']), //7
+      date: map['date'],
+      text: map['contents'],
+      // date: DateTime.parse(map['date']),
     );
   }
 }

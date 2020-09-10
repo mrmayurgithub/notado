@@ -83,6 +83,18 @@ class UserRepository {
     return user.displayName;
   }
 
+  Future<String> getPhotoUrl() async {
+    final _firebaseInstance = FirebaseAuth.instance;
+    FirebaseUser user = await _firebaseInstance.currentUser();
+    return user.photoUrl;
+  }
+
+  Future<String> getDisplayName() async {
+    final _firebaseInstance = FirebaseAuth.instance;
+    FirebaseUser user = await _firebaseInstance.currentUser();
+    return user.displayName;
+  }
+
   Future<String> getUID() async {
     final FirebaseUser user = await FirebaseAuth.instance.currentUser();
     return user.uid;

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -48,9 +47,13 @@ class _HomeScreenState extends State<HomeScreen>
   var h = 1001.0694778740428;
   final w = 462.03206671109666;
   double homeScreenIconSize = 20.0 / 1001.0694778740428;
-
+  String photoUrl;
   getUserEmail() async {
     userCard = await widget.userRepository.getUser();
+  }
+
+  _getPhotoUrl() async {
+    photoUrl = await widget.userRepository.getPhotoUrl();
   }
 
   _getUID() async {
@@ -107,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen>
         note.title,
         // style: TextStyle(color: Colors.green[600]),
       ),
-      subtitle: Text(formatter.format(note.date)),
+      // subtitle: Text(formatter.format(note.date)),
     );
   }
 
@@ -139,9 +142,11 @@ class _HomeScreenState extends State<HomeScreen>
     // }).catchError(print);
     getUserEmail();
     _getUID();
+    _getPhotoUrl();
     viewController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     super.initState();
+    nmode = noteMode.newNote;
     currentScreen = whichScreen.home;
   }
 
@@ -155,7 +160,6 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     Widget content;
     final height = MediaQuery.of(context).size.height;
-
     if (_notes.isEmpty) {
       content = Center(
         child: CircularProgressIndicator(), //1
@@ -176,6 +180,7 @@ class _HomeScreenState extends State<HomeScreen>
       floatingActionButton: FloatingActionButton(
         // backgroundColor: Colors.green,
         onPressed: () {
+          nmode = noteMode.newNote;
           Navigator.push(
             context,
             // Pageroutebuilder for implementing different a transition between screens
@@ -332,7 +337,7 @@ class _HomeScreenState extends State<HomeScreen>
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.black),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text('My Notes', style: TextStyle(color: Colors.black)),
+        //  title: Text('My Notes', style: TextStyle(color: Colors.black)),
         elevation: 0,
         actions: [
           Padding(
@@ -353,16 +358,27 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           Padding(
             padding: EdgeInsets.all(4.0),
-            child: IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () => Navigator.push(
+            child: GestureDetector(
+              child: photoUrl == null
+                  ? CircleAvatar(backgroundColor: Colors.green)
+                  : CircleAvatar(
+                      // borderRadius: BorderRadius.circular(30),
+                      child: Hero(
+                        tag: 'profilepic',
+                        child: Image(
+                          image: NetworkImage(
+                            photoUrl,
+                          ),
+                        ),
+                      ),
+                    ),
+              onTap: () => Navigator.push(
                 context,
-                CupertinoPageRoute(
-                  builder: (context) {
-                    return SettingsScreen(
-                      userRepository: widget.userRepository,
-                    );
-                  },
+                buildPageRouteBuilder(
+                  ProfileScreen(
+                    photoUrl: photoUrl,
+                    userRepository: widget.userRepository,
+                  ),
                 ),
               ),
             ),
@@ -394,10 +410,6 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
               ListTile(
-                // onTap: () => Navigator.push(
-                //   context,
-                //   buildPageRouteBuilder(HomeScreen(user: null)),
-                // ),
                 onTap: () => {
                   Navigator.pop(context),
                   if (currentScreen == whichScreen.home)
@@ -407,26 +419,35 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                     ),
                 },
-                leading: Icon(Icons.home, color: drawerBarColor),
-                title: Text('Home'),
+                leading: Icon(Icons.note, color: drawerBarColor),
+                title: Text('My Notes'),
               ),
               ListTile(
                 onTap: () => Navigator.push(
                   context,
-                  buildPageRouteBuilder(ProfileScreen()),
-                ),
-                leading: Icon(Icons.person, color: drawerBarColor),
-                title: Text('Profile'),
-              ),
-              ListTile(
-                onTap: () => Navigator.push(
-                  context,
-                  buildPageRouteBuilder(TrashScreen(
+                  buildPageRouteBuilder(
+                    TrashScreen(
                       userRepository: widget.userRepository,
-                      databaseService: DatabaseService(uid: uid))),
+                      databaseService: DatabaseService(uid: uid),
+                    ),
+                  ),
                 ),
                 leading: Icon(FontAwesomeIcons.trash, color: drawerBarColor),
                 title: Text('Trash'),
+              ),
+              ListTile(
+                onTap: () => Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) {
+                      return SettingsScreen(
+                        userRepository: widget.userRepository,
+                      );
+                    },
+                  ),
+                ),
+                leading: Icon(Icons.settings, color: drawerBarColor),
+                title: Text('Settings'),
               ),
               ListTile(
                 onTap: () => {},
@@ -494,26 +515,44 @@ class _HomeScreenState extends State<HomeScreen>
               physics: BouncingScrollPhysics(),
               children: snapshot.data.documents.map<Widget>(
                 (document) {
-                  var Cnote =
-                      Note.allFromResponse(json.decode(document['contents']));
-                  // var Cnote = json.decode(document['contents']);
+                  Iterable list = json.decode(document['contents']);
+                  print("......................................" +
+                      list.runtimeType.toString());
+                  List<Note> Cnote = list.map((i) => Note.fromMap(i)).toList();
+                  print(Cnote[0].title.toString() +
+                      ".............................noteeeee\n");
                   return Padding(
-                    padding: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(2.0),
                     child: ListTile(
-                      // tileColor: Colors.grey[100],
-                      onTap: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        return ZefyrNote(
-                          userRepository: widget.userRepository,
-                          databaseService: DatabaseService(uid: uid),
-                          contents: document['contents'],
-                        );
-                      })),
-                      // title: Text(Cnote['insert'].toString()),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      isThreeLine: false,
+                      tileColor: Colors.grey[500],
+                      onTap: () {
+                        nmode = noteMode.editNote;
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return ZefyrNote(
+                            userRepository: widget.userRepository,
+                            databaseService: DatabaseService(uid: uid),
+                            contents: document['contents'],
+                            id: document['id'],
+                            title: document['title'],
+                          );
+                        }));
+                      },
+                      title: Text(document['title']),
+                      subtitle: Text(
+                        document['date'],
+                        style: TextStyle(color: Colors.grey[600], fontSize: 10),
+                      ),
                       onLongPress: () => {
                         DatabaseService(uid: uid).deleteZefyrUserDataFromNotes(
                           contents: document['contents'],
+                          title: document['title'],
                           id: document['id'],
+                          date: document['date'],
                         ),
                       },
                     ),

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -84,7 +86,7 @@ class _TrashScreenState extends State<TrashScreen>
     return new ListTile(
       onTap: () => _navigateToNoteDetails(note, index),
       title: Text(note.title),
-      subtitle: Text(formatter.format(note.date)),
+      // subtitle: Text(formatter.format(note.date)),
     );
   }
 
@@ -404,16 +406,27 @@ class _TrashScreenState extends State<TrashScreen>
               else if (snapshot.connectionState == ConnectionState.waiting)
                 return Center(child: CircularProgressIndicator());
               return ListView(
+                physics: BouncingScrollPhysics(),
                 children: snapshot.data.documents.map<Widget>(
                   (document) {
+                    Iterable list = json.decode(document['contents']);
+                    print("......................................" +
+                        list.runtimeType.toString());
+                    List<Note> Cnote =
+                        list.map((i) => Note.fromMap(i)).toList();
+                    print(Cnote[0].title.toString() +
+                        ".............................noteeeee\n");
                     return Padding(
                       padding: EdgeInsets.all(8.0),
                       child: ListTile(
                         tileColor: Colors.grey[100],
-                        title: Text(document['contents']),
+                        title: Text(document['title']),
                         onLongPress: () => {
                           widget.databaseService
                               .deleteZefyrUserDataFromTrash(id: document['id']),
+                        },
+                        onTap: () => {
+                          //TODO: add view note
                         },
                         // trailing: IconButton(
                         //   icon: Icon(Icons.undo_rounded),
