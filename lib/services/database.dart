@@ -5,11 +5,17 @@ import 'package:notado/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:notado/packages/packages.dart';
 
+enum sortType { name, date }
+
 class DatabaseService {
   final String uid;
   DatabaseService({@required this.uid});
 
-  Future<void> createZefyrUserData({@required String contents}) async {
+  Future<void> createZefyrUserData({
+    @required String contents,
+    @required String title,
+    @required String date,
+  }) async {
     print('uid.......' + uid.toString() + '\n');
     final id = Firestore.instance
         .collection('notes')
@@ -23,24 +29,47 @@ class DatabaseService {
         .document(uid)
         .collection('userNotes')
         .document(id)
-        .setData({'contents': contents, 'id': id});
+        .setData({
+      'contents': contents,
+      'title': title,
+      'id': id,
+      'date': date,
+    });
     //TODO: add upload images function
   }
 
-  Future<void> updateZefyrUserData(
-      {@required String contents, @required String id}) async {
+  Future<void> updateZefyrUserData({
+    @required String contents,
+    @required String title,
+    @required String id,
+    @required String date,
+  }) async {
     return await Firestore.instance
         .collection('notes')
         .document(uid)
         .collection('userNotes')
         .document(id)
-        .updateData({'contents': contents, 'id': id});
+        .updateData({
+      'contents': contents,
+      'title': title,
+      'id': id,
+      'date': date,
+    });
     //TODO: update images thing
   }
 
-  Future<void> deleteZefyrUserDataFromNotes(
-      {@required String contents, @required String id}) async {
-    trashZefyrUserData(contents: contents, id: id);
+  Future<void> deleteZefyrUserDataFromNotes({
+    @required String contents,
+    @required String title,
+    @required String id,
+    @required String date,
+  }) async {
+    trashZefyrUserData(
+      contents: contents,
+      title: title,
+      id: id,
+      date: date,
+    );
     return await Firestore.instance
         .collection('notes')
         .document(uid)
@@ -62,14 +91,23 @@ class DatabaseService {
     //TODO: delete from trash
   }
 
-  Future<void> trashZefyrUserData(
-      {@required String contents, @required String id}) async {
+  Future<void> trashZefyrUserData({
+    @required String contents,
+    @required String title,
+    @required String id,
+    @required String date,
+  }) async {
     return await Firestore.instance
         .collection('trash')
         .document(uid)
         .collection('userNotes')
         .document(id)
-        .setData({'contents': contents, 'id': id});
+        .setData({
+      'contents': contents,
+      'title': title,
+      'id': id,
+      'date': date,
+    });
   }
 
   // Stream<List<Note>> get notesZefyrFromNotes {
@@ -83,11 +121,21 @@ class DatabaseService {
   //           .toList());
   // }
 
-  Stream<QuerySnapshot> get notesZefyrFromNotes {
+  Stream<QuerySnapshot> get notesZefyrFromNotesOrderByTitle {
     return Firestore.instance
         .collection('notes')
         .document(uid)
         .collection('userNotes')
+        .orderBy('title')
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> get notesZefyrFromNotesOrderByDate {
+    return Firestore.instance
+        .collection('notes')
+        .document(uid)
+        .collection('userNotes')
+        .orderBy('date', descending: true)
         .snapshots();
   }
 

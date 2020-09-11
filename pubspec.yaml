@@ -61,7 +61,6 @@ dependencies:
   url_launcher: ^5.5.1
   toast: ^0.1.5
   # pull_to_refresh: ^1.6.1
-
   # formz: ^0.2.0
   # authentication_repository:
   #   path: packages/authentication_repository
