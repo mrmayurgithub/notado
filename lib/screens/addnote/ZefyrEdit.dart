@@ -307,13 +307,20 @@ class _ZefyrNoteState extends State<ZefyrNote> {
     // And show a snack bar on success.
     file.writeAsString(contents);
 //
+    var datetime = new DateTime.now().toString();
+
+    var dateParse = DateTime.parse(datetime);
+
+    var date = "${dateParse.day}-${dateParse.month}-${dateParse.year}";
     contents = jsonEncode(_controller.document.toJson());
     Toast.show('Saving note...', context, duration: 100);
     if (await _checkConnection()) {
       await widget.databaseService.createZefyrUserData(
         contents: contents,
         title: _titleController.text,
-        date: DateTime.now().toString(),
+        // date: DateTime.now().toString(),
+
+        date: date.toString(),
       );
       Toast.show('Note saved sucessfully', context);
       Navigator.pushReplacement(context,
@@ -458,18 +465,21 @@ class _ZefyrNoteState extends State<ZefyrNote> {
           backgroundColor: mainColor,
           title: Form(
             key: _formKey,
-            child: TextFormField(
-              // initialValue: _titleController.text,
-              controller: _titleController,
-              validator: (value) {
-                return value.length > 0
-                    ? null
-                    : 'This field cannot be left empty';
-              },
-              decoration: InputDecoration(
-                hintText: 'Title',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
+            child: Padding(
+              padding: EdgeInsets.all(10.0),
+              child: TextFormField(
+                // initialValue: _titleController.text,
+                controller: _titleController,
+                validator: (value) {
+                  return value.length > 0
+                      ? null
+                      : 'This field cannot be left empty';
+                },
+                decoration: InputDecoration(
+                  hintText: 'Title',
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
             ),

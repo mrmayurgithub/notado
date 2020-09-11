@@ -76,11 +76,10 @@ class UserRepository {
     return currentUser != null;
   }
 
-  Future<String> getUser() async {
+  Future<String> getUserEmail() async {
     final _firebaseInstance = FirebaseAuth.instance;
     FirebaseUser user = await _firebaseInstance.currentUser();
-    // return ((await user.isEmailVerified)).toString();
-    return user.displayName;
+    return user.email;
   }
 
   Future<String> getPhotoUrl() async {
@@ -115,4 +114,19 @@ class UserRepository {
       return false;
     }
   }
+}
+
+class userDetails {
+  final String uid;
+  final String photoUrl;
+  final String email;
+  final String displayName;
+  final FirebaseUser user;
+  userDetails({
+    @required this.uid,
+    @required this.photoUrl,
+    @required this.email,
+    @required this.displayName,
+    @required this.user,
+  });
 }

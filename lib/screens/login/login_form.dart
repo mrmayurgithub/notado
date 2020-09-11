@@ -4,6 +4,7 @@ import 'package:notado/authentication/authentication_bloc.dart';
 import 'package:notado/constants/constants.dart';
 import 'package:notado/login/bloc.dart';
 import 'package:notado/screens/home/home_screen.dart';
+import 'package:notado/screens/home/home_splash.dart';
 import 'package:notado/screens/home/list_page.dart';
 import 'package:notado/screens/login/circular_progress.dart';
 import 'package:notado/screens/register/register_screen.dart';
@@ -118,6 +119,7 @@ class _LoginFormState extends State<LoginForm> {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) {
+                // return HomeSplash(userRepository: widget.userRepository);
                 return HomeScreen(userRepository: widget.userRepository);
               },
             ),

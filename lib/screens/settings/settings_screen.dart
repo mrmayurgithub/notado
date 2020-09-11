@@ -462,6 +462,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   themeType _themeType = themeType.lightTheme;
   final appBarTitleSize = (22 / 1001.0694778740428);
+  String photoUrl;
+  _getPhotoUrl() async {
+    photoUrl = await widget.userRepository.getPhotoUrl();
+  }
+
+  @override
+  void initState() {
+    _getPhotoUrl();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -491,19 +501,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
             padding: EdgeInsets.all(10.0),
             child: ListView(
               children: [
-                ListTile(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return ProfileScreen();
-                      },
-                    ),
-                  ),
-                  leading: Icon(Icons.person_outline),
-                  title: Text('My Profile'),
-                  trailing: Icon(Icons.arrow_right),
-                ),
+                // ListTile(
+                //   onTap: () => Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (BuildContext context) {
+                //         return ProfileScreen(photoUrl: photoUrl);
+                //       },
+                //     ),
+                //   ),
+                //   leading: Icon(Icons.person_outline),
+                //   title: Text('My Profile'),
+                //   trailing: Icon(Icons.arrow_right),
+                // ),
                 ListTile(
                   leading: Icon(FontAwesomeIcons.themeisle),
                   title: Text('Dark Theme'),
@@ -519,32 +529,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     },
                   ),
                 ),
-                ListTile(
-                  trailing: Icon(Icons.arrow_right),
-                  leading: Icon(Icons.lock_open),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  onTap: () => showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return ChangePswrdDialog(
-                        userRepository: widget.userRepository,
-                        scaffoldKey: _scaffoldKey,
-                      );
-                    },
-                  ),
-                  //  {
-                  //   _showDialogBox(context);
-
-                  //   // Navigator.push(context,
-                  //   //     MaterialPageRoute(builder: (BuildContext context) {
-                  //   //   return ChnangePasswordScreen(
-                  //   //     userRepository: widget.userRepository,
-                  //   //   );
-                  //   // }));
-                  // },
-                  title: Text('Change Password'),
-                ),
+                // ListTile(
+                //   trailing: Icon(Icons.arrow_right),
+                //   leading: Icon(Icons.lock_open),
+                //   shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(10)),
+                //   onTap: () => showDialog(
+                //     context: context,
+                //     builder: (BuildContext context) {
+                //       return ChangePswrdDialog(
+                //         userRepository: widget.userRepository,
+                //         scaffoldKey: _scaffoldKey,
+                //       );
+                //     },
+                //   ),
+                //   title: Text('Change Password'),
+                // ),
                 ListTile(
                   onTap: () => showDialog(
                       context: context,

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -37,10 +36,16 @@ class _TrashScreenState extends State<TrashScreen>
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   AnimationController viewController;
   bool islistView = true;
-
+  int typeSort = 1;
   bool _showNetworkError = false;
   final _borderRadius = BorderRadius.circular(70);
   TapGestureRecognizer _repoButton;
+  setTypeSort(int val) {
+    Navigator.pop(context);
+    setState(() {
+      typeSort = val;
+    });
+  }
 
   void _launchUrl(String url) async {
     if (await canLaunch(url) && await _checkConnection()) {
@@ -211,20 +216,23 @@ class _TrashScreenState extends State<TrashScreen>
                     )
                   },
                   leading: Icon(Icons.home, color: drawerBarColor),
-                  title: Text('Home'),
+                  title: Text('My Notes'),
                 ),
                 ListTile(
-                  onTap: () => Navigator.push(
-                    context,
-                    buildPageRouteBuilder(ProfileScreen()),
-                  ),
-                  leading: Icon(Icons.person, color: drawerBarColor),
-                  title: Text('Profile'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        content: Text(
+                            'This app is currently in development mode,\n please wait while we cook the recipe for you')));
+                  },
+                  leading:
+                      Icon(FontAwesomeIcons.bookReader, color: drawerBarColor),
+                  title: Text('Study notes'),
                 ),
                 ListTile(
                   onTap: () => {
                     Navigator.pop(context),
-                    if (currentScreen == whichScreen.home)
+                    if (currentScreen == whichScreen.trash)
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(
                           content: Text('You are already on the Trash Screen'),
@@ -334,51 +342,49 @@ class _TrashScreenState extends State<TrashScreen>
                     elevation: 0,
                     style: TextStyle(color: Colors.green),
                     onChanged: (String newValue) {
+                      _scaffoldKey.currentState.hideCurrentSnackBar();
+
                       if (newValue == 'Sort by') {
-                        _scaffoldKey.currentState.showSnackBar(
-                          SnackBar(
-                            duration: Duration(seconds: 20),
-                            elevation: 0,
-                            backgroundColor: Colors.transparent,
-                            content: AlertDialog(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              backgroundColor: Colors.green,
-                              title: Text('Sort By'),
-                              content: SingleChildScrollView(
-                                child: ListBody(
-                                  children: [
-                                    ListTile(
-                                      leading: Radio(
-                                        value: false,
-                                        groupValue: null,
-                                        onChanged: null,
-                                      ),
-                                      title: Text('Name '),
-                                    ),
-                                    ListTile(
-                                      leading: Radio(
-                                        value: false,
-                                        groupValue: null,
-                                        onChanged: null,
-                                      ),
-                                      title: Text('Date created'),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              actions: [
-                                FlatButton(
-                                  onPressed: () {
-                                    // Navigator.pop(context);
-                                    _scaffoldKey.currentState
-                                      ..hideCurrentSnackBar();
-                                  },
-                                  child: Text('Cancel'),
-                                ),
-                              ],
+                        return showDialog(
+                          context: context,
+                          child: AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: [
+                                  RadioListTile(
+                                    value: 1,
+                                    groupValue: typeSort,
+                                    onChanged: (value) => {
+                                      setTypeSort(value),
+                                    },
+                                    activeColor: Colors.lightGreen,
+                                    title: Text('Name '),
+                                  ),
+                                  RadioListTile(
+                                    value: 2,
+                                    groupValue: typeSort,
+                                    onChanged: (value) => {
+                                      setTypeSort(value),
+                                    },
+                                    activeColor: Colors.lightGreen,
+                                    title: Text('Date created'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            actions: [
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  // _scaffoldKey.currentState
+                                  //   ..hideCurrentSnackBar();
+                                },
+                                child: Text('Cancel'),
+                              ),
+                            ],
                           ),
                         );
                       }
@@ -421,9 +427,48 @@ class _TrashScreenState extends State<TrashScreen>
                       child: ListTile(
                         tileColor: Colors.grey[100],
                         title: Text(document['title']),
+                        subtitle: Text(
+                          document['date'],
+                          style:
+                              TextStyle(color: Colors.grey[600], fontSize: 10),
+                        ),
                         onLongPress: () => {
-                          widget.databaseService
-                              .deleteZefyrUserDataFromTrash(id: document['id']),
+                          showDialog(
+                            context: context,
+                            child: AlertDialog(
+                              content: Text(
+                                'Are you sure you want to delete this note permanently ?',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  letterSpacing: 0.4,
+                                ),
+                              ),
+                              actions: <Widget>[
+                                FlatButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('No'),
+                                ),
+                                FlatButton(
+                                  onPressed: () {
+                                    widget.databaseService
+                                        .deleteZefyrUserDataFromTrash(
+                                            id: document['id']);
+                                    Navigator.pop(context);
+
+                                    Toast.show(
+                                      'Note deleted successfully',
+                                      context,
+                                      gravity: Toast.CENTER,
+                                      backgroundRadius: 10.0,
+                                    );
+                                  },
+                                  child: Text('Yes'),
+                                ),
+                              ],
+                            ),
+                          ),
                         },
                         onTap: () => {
                           //TODO: add view note

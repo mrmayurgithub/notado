@@ -5,6 +5,8 @@ import 'package:notado/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:notado/packages/packages.dart';
 
+enum sortType { name, date }
+
 class DatabaseService {
   final String uid;
   DatabaseService({@required this.uid});
@@ -119,11 +121,21 @@ class DatabaseService {
   //           .toList());
   // }
 
-  Stream<QuerySnapshot> get notesZefyrFromNotes {
+  Stream<QuerySnapshot> get notesZefyrFromNotesOrderByTitle {
     return Firestore.instance
         .collection('notes')
         .document(uid)
         .collection('userNotes')
+        .orderBy('title')
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> get notesZefyrFromNotesOrderByDate {
+    return Firestore.instance
+        .collection('notes')
+        .document(uid)
+        .collection('userNotes')
+        .orderBy('date', descending: true)
         .snapshots();
   }
 

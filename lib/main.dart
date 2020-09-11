@@ -6,6 +6,7 @@ import 'package:notado/authentication/authenticationBloc/authentication_event.da
 import 'package:notado/authentication/authentication_bloc.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/screens/home/home_screen.dart';
+import 'package:notado/screens/home/home_splash.dart';
 import 'package:notado/screens/login/login_screen.dart';
 import 'package:notado/theme/themes.dart';
 import 'package:notado/user_repository/user_Repository.dart';
@@ -88,6 +89,7 @@ class _AppState extends State<App> {
                   } else if (state is Authenticated) {
                     //Show the Home Screen when the user is Authenticated
                     return HomeScreen(userRepository: _userRepository);
+                    // return HomeSplash(userRepository: _userRepository);
                   } else if (state is Unauthenticated) {
                     //Show the Login Screen when the user hasn't loggedin
                     return LoginScreen(userRepository: _userRepository);
