@@ -63,6 +63,7 @@ import 'package:url_launcher/url_launcher.dart';
 //   String photoUrl;
 //   String displayName = "Username";
 //   String userEmail;
+//   AsyncSnapshot snapshot;
 //   sortType sort = sortType.name;
 //   int typeSort = 1;
 //   setTypeSort(int val) {
@@ -83,17 +84,12 @@ import 'package:url_launcher/url_launcher.dart';
 //     uid = widget.uid;
 //     photoUrl = widget.photoUrl;
 //     displayName = widget.displayName;
+//     snapshot = widget.snapshot;
 //     viewController =
 //         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
 //     super.initState();
 //     nmode = noteMode.newNote;
 //     currentScreen = whichScreen.home;
-//   }
-
-//   @override
-//   void didUpdateWidget(HomeScreen oldWidget) {
-//     super.didUpdateWidget(oldWidget);
-//     setState(() {});
 //   }
 
 //   bool _showNetworkError = false;
@@ -125,6 +121,21 @@ import 'package:url_launcher/url_launcher.dart';
 //       return false;
 //     }
 //   }
+
+//   @override
+//   void didUpdateWidget(HomeScreen oldWidget) {
+//     if (widget.snapshot != oldWidget.snapshot) snapshot = widget.snapshot;
+
+//     super.didUpdateWidget(oldWidget);
+//   }
+
+//   // @override
+//   // void didUpdateWidget(HomeScreen oldWidget) {
+//   //   super.didUpdateWidget(oldWidget);
+//   //   if (widget.snapshot != oldWidget.snapshot) {
+//   //     setState(() {});
+//   //   }
+//   // }
 
 //   List<Note> _notes = [];
 //   final formatter = new DateFormat('yyyy-MM-dd hh:mm:ss');
@@ -365,6 +376,7 @@ import 'package:url_launcher/url_launcher.dart';
 //                   builder: (context) {
 //                     return SearchScreen(
 //                       userRepository: widget.userRepository,
+//                       uid: uid,
 //                     );
 //                   },
 //                 ),
@@ -558,7 +570,7 @@ import 'package:url_launcher/url_launcher.dart';
 //         onRefresh: refreshIt,
 //         child: ListView(
 //           physics: BouncingScrollPhysics(),
-//           children: widget.snapshot.data.documents.map<Widget>(
+//           children: snapshot.data.documents.map<Widget>(
 //             (document) {
 //               Iterable list = json.decode(document['contents']);
 //               print("......................................" +
@@ -571,10 +583,67 @@ import 'package:url_launcher/url_launcher.dart';
 //                 padding: EdgeInsets.all(2.0),
 //                 child: ClipRRect(
 //                   borderRadius: BorderRadius.circular(10),
-//                   child: ListViewNotesTile(
-//                     widget: widget,
-//                     uid: uid,
-//                     document: document,
+//                   child: ListTile(
+//                     isThreeLine: false,
+//                     tileColor: Colors.grey[100],
+//                     onTap: () {
+//                       nmode = noteMode.editNote;
+//                       Navigator.push(
+//                         context,
+//                         PageRouteBuilder(
+//                           pageBuilder:
+//                               (context, animation, secondaryAnimation) =>
+//                                   ZefyrNote(
+//                             userRepository: widget.userRepository,
+//                             databaseService: DatabaseService(uid: widget.uid),
+//                             contents: document['contents'],
+//                             id: document['id'],
+//                             title: document['title'],
+//                           ),
+//                           transitionsBuilder:
+//                               (context, animation, secondaryAnimation, child) {
+//                             var begin = Offset(0, 0);
+//                             var end = Offset.zero;
+//                             var curve = Curves.easeInExpo;
+//                             var tween = Tween(begin: begin, end: end)
+//                                 .chain(CurveTween(curve: curve));
+//                             //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
+
+//                             return SlideTransition(
+//                                 position: animation.drive(tween), child: child);
+//                             //return FadeTransition(opacity: animation.drive(tween), child: child);
+//                           },
+//                         ),
+//                       );
+//                     },
+//                     // onTap: () {
+//                     //   nmode = noteMode.editNote;
+//                     //   Navigator.push(context, MaterialPageRoute(
+//                     //       builder: (BuildContext context) {
+//                     //     return ZefyrNote(
+//                     //       userRepository: widget.userRepository,
+//                     //       databaseService: DatabaseService(uid: uid),
+//                     //       contents: document['contents'],
+//                     //       id: document['id'],
+//                     //       title: document['title'],
+//                     //     );
+//                     //   }));
+//                     // },
+//                     title: Text(document['title']),
+//                     subtitle: Text(
+//                       document['date'],
+//                       style: TextStyle(color: Colors.grey[600], fontSize: 10),
+//                     ),
+//                     onLongPress: () => {
+//                       DatabaseService(uid: widget.uid)
+//                           .deleteZefyrUserDataFromNotes(
+//                         contents: document['contents'],
+//                         title: document['title'],
+//                         id: document['id'],
+//                         date: document['date'],
+//                       ),
+//                       Toast.show('Succesfully moved to trash...', context),
+//                     },
 //                   ),
 //                 ),
 //               );
@@ -582,104 +651,6 @@ import 'package:url_launcher/url_launcher.dart';
 //           ).toList(),
 //         ),
 //       ),
-//     );
-//   }
-// }
-
-// class ListViewNotesTile extends StatefulWidget {
-//   const ListViewNotesTile({
-//     Key key,
-//     @required this.widget,
-//     @required this.uid,
-//     @required this.document,
-//   }) : super(key: key);
-
-//   final HomeScreen widget;
-//   final String uid;
-//   final document;
-
-//   @override
-//   _ListViewNotesTileState createState() => _ListViewNotesTileState();
-// }
-
-// class _ListViewNotesTileState extends State<ListViewNotesTile> {
-//   var document;
-//   @override
-//   void didUpdateWidget(ListViewNotesTile oldWidget) {
-//     if (document != widget.document) {
-//       setState(() {
-//         document = widget.document;
-//       });
-//     }
-//     super.didUpdateWidget(oldWidget);
-//   }
-
-//   @override
-//   void initState() {
-//     document = widget.document;
-//     super.initState();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListTile(
-//       isThreeLine: false,
-//       tileColor: Colors.grey[100],
-//       onTap: () {
-//         nmode = noteMode.editNote;
-//         Navigator.push(
-//           context,
-//           PageRouteBuilder(
-//             pageBuilder: (context, animation, secondaryAnimation) => ZefyrNote(
-//               userRepository: widget.widget.userRepository,
-//               databaseService: DatabaseService(uid: widget.uid),
-//               contents: widget.document['contents'],
-//               id: widget.document['id'],
-//               title: widget.document['title'],
-//             ),
-//             transitionsBuilder:
-//                 (context, animation, secondaryAnimation, child) {
-//               var begin = Offset(0, 0);
-//               var end = Offset.zero;
-//               var curve = Curves.easeInExpo;
-//               var tween =
-//                   Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-//               //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
-
-//               return SlideTransition(
-//                   position: animation.drive(tween), child: child);
-//               //return FadeTransition(opacity: animation.drive(tween), child: child);
-//             },
-//           ),
-//         );
-//       },
-//       // onTap: () {
-//       //   nmode = noteMode.editNote;
-//       //   Navigator.push(context, MaterialPageRoute(
-//       //       builder: (BuildContext context) {
-//       //     return ZefyrNote(
-//       //       userRepository: widget.userRepository,
-//       //       databaseService: DatabaseService(uid: uid),
-//       //       contents: document['contents'],
-//       //       id: document['id'],
-//       //       title: document['title'],
-//       //     );
-//       //   }));
-//       // },
-//       title: Text(widget.document['title']),
-//       subtitle: Text(
-//         widget.document['date'],
-//         style: TextStyle(color: Colors.grey[600], fontSize: 10),
-//       ),
-//       onLongPress: () => {
-//         DatabaseService(uid: widget.uid).deleteZefyrUserDataFromNotes(
-//           contents: widget.document['contents'],
-//           title: widget.document['title'],
-//           id: widget.document['id'],
-//           date: widget.document['date'],
-//         ),
-//         Toast.show('Succesfully moved to trash...', context),
-//       },
 //     );
 //   }
 // }
@@ -746,6 +717,11 @@ class _HomeScreenState extends State<HomeScreen>
 
   _getUID() async {
     uid = await widget.userRepository.getUID();
+  }
+
+  @override
+  void didUpdateWidget(HomeScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
   }
 
   bool _showNetworkError = false;
@@ -836,8 +812,7 @@ class _HomeScreenState extends State<HomeScreen>
     viewController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     super.initState();
-    nmode = noteMode.newNote;
-    currentScreen = whichScreen.home;
+    // nmode = noteMode.newNote;
   }
 
   @override
@@ -848,6 +823,10 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    var nomode = Provider.of<NoteModeProvider>(context);
+    var cScreenObject = Provider.of<currentScreenProvider>(context);
+    print('currentScreen.......................' +
+        cScreenObject.whichScreen.toString());
     Widget content;
     final height = MediaQuery.of(context).size.height;
     if (_notes.isEmpty) {
@@ -870,7 +849,11 @@ class _HomeScreenState extends State<HomeScreen>
       floatingActionButton: FloatingActionButton(
         // backgroundColor: Colors.green,
         onPressed: () {
-          nmode = noteMode.newNote;
+          print('newNote..done.................' + nomode.notesmode.toString());
+
+          // nmode = noteMode.newNote;
+          nomode.notesmode = noteMode.newNote;
+          // .notesmode(noteMode.newNote);
           Navigator.push(
             context,
             // Pageroutebuilder for implementing different a transition between screens
@@ -916,6 +899,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Container(
                     height: 45,
                     child: IconButton(
+                      tooltip: 'Change view',
                       icon: AnimatedIcon(
                         icon: AnimatedIcons.list_view,
                         progress: viewController,
@@ -936,6 +920,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Container(
                     height: 45,
                     child: IconButton(
+                      tooltip: 'Handwritten notes',
                       icon: Icon(Icons.brush),
                       onPressed: () {
                         Navigator.push(context,
@@ -954,6 +939,7 @@ class _HomeScreenState extends State<HomeScreen>
                 child: DropdownButton<String>(
                   // dropdownColor: Colors.white,
                   underline: SizedBox(),
+
                   icon: Icon(
                     Icons.more_vert,
                     //  color: Colors.black,
@@ -1032,17 +1018,23 @@ class _HomeScreenState extends State<HomeScreen>
           Padding(
             padding: EdgeInsets.all(4.0),
             child: IconButton(
+              tooltip: 'Search',
               icon: Icon(Icons.search),
-              onPressed: () => Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) {
-                    return SearchScreen(
-                      userRepository: widget.userRepository,
-                    );
-                  },
-                ),
-              ),
+              onPressed: () {
+                cScreenObject.whichScreen = currentScreen.search;
+
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) {
+                      return SearchScreen(
+                        userRepository: widget.userRepository,
+                        uid: uid,
+                      );
+                    },
+                  ),
+                );
+              },
             ),
           ),
           Padding(
@@ -1130,7 +1122,7 @@ class _HomeScreenState extends State<HomeScreen>
               ListTile(
                 onTap: () => {
                   Navigator.pop(context),
-                  if (currentScreen == whichScreen.home)
+                  if (cScreenObject.whichScreen == currentScreen.home)
                     _scaffoldKey.currentState.showSnackBar(
                       SnackBar(
                         content: Text('You are already on the Home Screen'),
@@ -1152,29 +1144,35 @@ class _HomeScreenState extends State<HomeScreen>
                 title: Text('Study notes'),
               ),
               ListTile(
-                onTap: () => Navigator.push(
-                  context,
-                  buildPageRouteBuilder(
-                    TrashScreen(
-                      userRepository: widget.userRepository,
-                      databaseService: DatabaseService(uid: uid),
+                onTap: () {
+                  cScreenObject.whichScreen = currentScreen.trash;
+                  Navigator.push(
+                    context,
+                    buildPageRouteBuilder(
+                      TrashScreen(
+                        userRepository: widget.userRepository,
+                        databaseService: DatabaseService(uid: uid),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
                 leading: Icon(FontAwesomeIcons.trash, color: drawerBarColor),
                 title: Text('Trash'),
               ),
               ListTile(
-                onTap: () => Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) {
-                      return SettingsScreen(
-                        userRepository: widget.userRepository,
-                      );
-                    },
-                  ),
-                ),
+                onTap: () {
+                  cScreenObject.whichScreen = currentScreen.settings;
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) {
+                        return SettingsScreen(
+                          userRepository: widget.userRepository,
+                        );
+                      },
+                    ),
+                  );
+                },
                 leading: Icon(Icons.settings, color: drawerBarColor),
                 title: Text('Settings'),
               ),
@@ -1252,6 +1250,8 @@ class _HomeScreenState extends State<HomeScreen>
                   List<Note> Cnote = list.map((i) => Note.fromMap(i)).toList();
                   print(Cnote[0].title.toString() +
                       ".............................noteeeee\n");
+                  print(document['searchKey'].toString() +
+                      '....search........search');
                   return Padding(
                     padding: EdgeInsets.all(2.0),
                     child: ClipRRect(
@@ -1260,7 +1260,7 @@ class _HomeScreenState extends State<HomeScreen>
                         isThreeLine: false,
                         tileColor: Colors.grey[100],
                         onTap: () {
-                          nmode = noteMode.editNote;
+                          nomode.notesmode = noteMode.editNote;
                           Navigator.push(
                             context,
                             PageRouteBuilder(
@@ -1317,7 +1317,7 @@ class _HomeScreenState extends State<HomeScreen>
                             id: document['id'],
                             date: document['date'],
                           ),
-                          Toast.show('Succesfully moved to trash...', context),
+                          Toast.show('Succesfully moved to trash', context),
                         },
                       ),
                     ),

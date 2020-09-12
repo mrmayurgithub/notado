@@ -27,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: BlocProvider<LoginBloc>(
         create: (BuildContext context) => _loginBloc,
         child: LoginForm(userRepository: widget.userRepository),

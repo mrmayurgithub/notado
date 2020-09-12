@@ -27,7 +27,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
 
     var capitalizedValue =
-        value.substring(0, 1).toUpperCase() + value.substring(1);
+        value.substring(0, 1).toLowerCase() + value.substring(1);
 
     if (queryResultSet.length == 0 && value.length == 1) {
       SearchService()
@@ -35,11 +35,13 @@ class _SearchScreenState extends State<SearchScreen> {
           .then((QuerySnapshot docs) {
         for (int i = 0; i < docs.documents.length; ++i) {
           queryResultSet.add(docs.documents[i].data);
+          print(docs.documents[i]['title'].toString() + "title....");
         }
       });
     } else {
       tempSearchStore = [];
       queryResultSet.forEach((element) {
+        print(element['title'].toString() + ".............title......element");
         if (element['title'].startsWith(capitalizedValue)) {
           setState(() {
             tempSearchStore.add(element);
@@ -47,6 +49,9 @@ class _SearchScreenState extends State<SearchScreen> {
         }
       });
     }
+
+    print(tempSearchStore.length.toString() +
+        "................searchitems.............");
   }
 
   @override
@@ -90,6 +95,7 @@ class _SearchScreenState extends State<SearchScreen> {
 }
 
 Widget buildResultCard(data) {
+  print(data.toString() + '........datadatatadatadtad');
   return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       elevation: 2.0,
