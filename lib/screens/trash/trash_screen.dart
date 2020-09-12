@@ -123,7 +123,6 @@ class _TrashScreenState extends State<TrashScreen>
     viewController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     super.initState();
-    currentScreen = whichScreen.trash;
   }
 
   @override
@@ -135,6 +134,9 @@ class _TrashScreenState extends State<TrashScreen>
   @override
   Widget build(BuildContext context) {
     Widget content;
+    var cScreenObject = Provider.of<currentScreenProvider>(context);
+    print('currentScreen.......................' +
+        cScreenObject.whichScreen.toString());
 
     if (_notes.isEmpty) {
       content = Center(
@@ -168,16 +170,19 @@ class _TrashScreenState extends State<TrashScreen>
               padding: EdgeInsets.all(10.0),
               child: GestureDetector(
                 // Navigating to the settings screen when settings Icon is pressed
-                onTap: () => Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) {
-                      return SettingsScreen(
-                        userRepository: widget.userRepository,
-                      );
-                    },
-                  ),
-                ),
+                onTap: () {
+                  cScreenObject.whichScreen = currentScreen.settings;
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) {
+                        return SettingsScreen(
+                          userRepository: widget.userRepository,
+                        );
+                      },
+                    ),
+                  );
+                },
                 child: Icon(Icons.settings),
               ),
             ),
@@ -208,12 +213,13 @@ class _TrashScreenState extends State<TrashScreen>
                   ),
                 ),
                 ListTile(
-                  onTap: () => {
+                  onTap: () {
+                    cScreenObject.whichScreen = currentScreen.home;
                     Navigator.push(
                       context,
                       buildPageRouteBuilder(
                           HomeScreen(userRepository: widget.userRepository)),
-                    )
+                    );
                   },
                   leading: Icon(Icons.home, color: drawerBarColor),
                   title: Text('My Notes'),
@@ -232,7 +238,7 @@ class _TrashScreenState extends State<TrashScreen>
                 ListTile(
                   onTap: () => {
                     Navigator.pop(context),
-                    if (currentScreen == whichScreen.trash)
+                    if (cScreenObject.whichScreen == currentScreen.trash)
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(
                           content: Text('You are already on the Trash Screen'),
@@ -258,6 +264,8 @@ class _TrashScreenState extends State<TrashScreen>
                 ),
                 ListTile(
                   onTap: () {
+                    cScreenObject.whichScreen = currentScreen.login;
+
                     BlocProvider.of<AuthenticationBloc>(context).add(
                       LoggedOut(),
                     );
@@ -296,6 +304,7 @@ class _TrashScreenState extends State<TrashScreen>
         resizeToAvoidBottomPadding: false,
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.green,
+          tooltip: '',
           onPressed: () {},
           child: Icon(FontAwesomeIcons.trash),
         ),
@@ -313,6 +322,7 @@ class _TrashScreenState extends State<TrashScreen>
                   child: Column(
                     children: [
                       IconButton(
+                        tooltip: 'Change view',
                         icon: AnimatedIcon(
                           icon: AnimatedIcons.list_view,
                           progress: viewController,
@@ -405,7 +415,9 @@ class _TrashScreenState extends State<TrashScreen>
         body: RefreshIndicator(
           onRefresh: refreshIt,
           child: StreamBuilder(
-            stream: widget.databaseService.notesZefyrFromTrash,
+            stream: typeSort == 1
+                ? widget.databaseService.notesZefyrFromTrashOrderByName
+                : widget.databaseService.notesZefyrFromTrashOrderByDate,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasError)
                 return Center(child: Text('ERROR'));
@@ -458,7 +470,7 @@ class _TrashScreenState extends State<TrashScreen>
                                     Navigator.pop(context);
 
                                     Toast.show(
-                                      'Note deleted successfully',
+                                      'Deleted',
                                       context,
                                       gravity: Toast.CENTER,
                                       backgroundRadius: 10.0,

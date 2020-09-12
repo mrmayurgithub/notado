@@ -34,6 +34,7 @@ class DatabaseService {
       'title': title,
       'id': id,
       'date': date,
+      'searchKey': title[0],
     });
     //TODO: add upload images function
   }
@@ -54,6 +55,7 @@ class DatabaseService {
       'title': title,
       'id': id,
       'date': date,
+      'searchKey': title[0],
     });
     //TODO: update images thing
   }
@@ -64,7 +66,7 @@ class DatabaseService {
     @required String id,
     @required String date,
   }) async {
-    trashZefyrUserData(
+    await trashZefyrUserData(
       contents: contents,
       title: title,
       id: id,
@@ -91,6 +93,28 @@ class DatabaseService {
     //TODO: delete from trash
   }
 
+  Future<void> restoreZefyrUserDataFromTrash({
+    @required String contents,
+    @required String title,
+    @required String id,
+    @required String date,
+  }) async {
+    await createZefyrUserData(
+      contents: contents,
+      title: title,
+      date: date,
+    );
+    return await Firestore.instance
+        .collection('trash')
+        .document(uid)
+        .collection('userNotes')
+        .document(id)
+        .delete()
+        .whenComplete(
+          () => print('Restored'),
+        );
+  }
+
   Future<void> trashZefyrUserData({
     @required String contents,
     @required String title,
@@ -107,6 +131,7 @@ class DatabaseService {
       'title': title,
       'id': id,
       'date': date,
+      'searchKey': title[0],
     });
   }
 
@@ -121,8 +146,8 @@ class DatabaseService {
   //           .toList());
   // }
 
-  Stream<QuerySnapshot> get notesZefyrFromNotesOrderByTitle {
-    return Firestore.instance
+  Stream<QuerySnapshot> get notesZefyrFromNotesOrderByTitle async* {
+    yield* Firestore.instance
         .collection('notes')
         .document(uid)
         .collection('userNotes')
@@ -130,8 +155,8 @@ class DatabaseService {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> get notesZefyrFromNotesOrderByDate {
-    return Firestore.instance
+  Stream<QuerySnapshot> get notesZefyrFromNotesOrderByDate async* {
+    yield* Firestore.instance
         .collection('notes')
         .document(uid)
         .collection('userNotes')
@@ -139,8 +164,16 @@ class DatabaseService {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> get notesZefyrFromTrash {
-    return Firestore.instance
+  Stream<QuerySnapshot> get notesZefyrFromTrashOrderByName async* {
+    yield* Firestore.instance
+        .collection('trash')
+        .document(uid)
+        .collection('userNotes')
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> get notesZefyrFromTrashOrderByDate async* {
+    yield* Firestore.instance
         .collection('trash')
         .document(uid)
         .collection('userNotes')

@@ -295,7 +295,6 @@ class _ZefyrNoteState extends State<ZefyrNote> {
   final _scaffoldkey = GlobalKey<ScaffoldState>();
   ZefyrController _controller;
   TextEditingController _titleController;
-  final _formKey = GlobalKey<FormState>();
   // String initialText = "Title";
 
   _save() async {
@@ -313,7 +312,7 @@ class _ZefyrNoteState extends State<ZefyrNote> {
 
     var date = "${dateParse.day}-${dateParse.month}-${dateParse.year}";
     contents = jsonEncode(_controller.document.toJson());
-    Toast.show('Saving note...', context, duration: 100);
+    Toast.show('Saving note.', context, duration: 100);
     if (await _checkConnection()) {
       await widget.databaseService.createZefyrUserData(
         contents: contents,
@@ -336,7 +335,7 @@ class _ZefyrNoteState extends State<ZefyrNote> {
     print('updating.......');
     //TODO: update on mobile data
     var contents = jsonEncode(_controller.document.toJson());
-    Toast.show('Updating note...', context, duration: 100);
+    Toast.show('Updating note.', context, duration: 100);
     if (await _checkConnection()) {
       await widget.databaseService.updateZefyrUserData(
         contents: contents,
@@ -360,7 +359,9 @@ class _ZefyrNoteState extends State<ZefyrNote> {
     // //   final contents = await file.readAsString();
     // //   return NotusDocument.fromJson(jsonDecode(contents));
     // // }
-    if (nmode == noteMode.editNote) {
+    var nomode = Provider.of<NoteModeProvider>(context, listen: false);
+
+    if (nomode.notesmode == noteMode.editNote) {
       _titleController.text = widget.title;
       return NotusDocument.fromJson(jsonDecode(widget.contents));
     }
@@ -430,7 +431,7 @@ class _ZefyrNoteState extends State<ZefyrNote> {
     // _controller = ZefyrController(NotusDocument.fromDelta(
     //     Delta.fromJson(json.decode(widget.note.text) as List))); //1
     _titleController = TextEditingController();
-    _titleController.text = "Title";
+    _titleController.text = "Untitled Note";
 
     _loadDocument().then((document) {
       setState(() {
@@ -441,16 +442,28 @@ class _ZefyrNoteState extends State<ZefyrNote> {
 
   @override
   Widget build(BuildContext context) {
+    var nomode = Provider.of<NoteModeProvider>(context, listen: false);
+
     final Widget body = (_controller == null)
         ? Center(child: CircularProgressIndicator())
-        : ZefyrScaffold(
-            child: ZefyrEditor(
-              // mode: null,
-              autofocus: false,
-              controller: _controller,
-              focusNode: _focusNode,
-              physics: BouncingScrollPhysics(),
-              imageDelegate: MyZefyrImageDelegate(),
+        : ZefyrTheme(
+            data: ZefyrThemeData(
+              toolbarTheme: ToolbarTheme.fallback(context).copyWith(
+                color: Colors.white,
+                iconColor: Colors.green,
+              ),
+            ),
+            child: ZefyrScaffold(
+              child: ZefyrEditor(
+                // mode: null,
+
+                keyboardAppearance: Brightness.light,
+                autofocus: true,
+                controller: _controller,
+                focusNode: _focusNode,
+                physics: BouncingScrollPhysics(),
+                imageDelegate: MyZefyrImageDelegate(),
+              ),
             ),
           );
     return WillPopScope(
@@ -463,23 +476,16 @@ class _ZefyrNoteState extends State<ZefyrNote> {
           elevation: 0,
           iconTheme: IconThemeData(color: Colors.black),
           backgroundColor: mainColor,
-          title: Form(
-            key: _formKey,
-            child: Padding(
-              padding: EdgeInsets.all(10.0),
-              child: TextFormField(
-                // initialValue: _titleController.text,
-                controller: _titleController,
-                validator: (value) {
-                  return value.length > 0
-                      ? null
-                      : 'This field cannot be left empty';
-                },
-                decoration: InputDecoration(
-                  hintText: 'Title',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
+          title: Padding(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0.2),
+            child: TextFormField(
+              // initialValue: _titleController.text,
+              controller: _titleController,
+              maxLines: 1,
+              decoration: InputDecoration(
+                hintText: 'Untitled note',
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
                 ),
               ),
             ),
@@ -496,7 +502,9 @@ class _ZefyrNoteState extends State<ZefyrNote> {
             IconButton(
               icon: Icon(Icons.check),
               onPressed: () => {
-                if (_formKey.currentState.validate()) _save(),
+                if (_titleController.text.length == 0)
+                  _titleController.text = "Untitled note",
+                nomode.notesmode == noteMode.newNote ? _save() : _update(),
               },
             ),
           ],
