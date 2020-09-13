@@ -3,7 +3,7 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:notado/global_variable.dart';
+import 'package:notado/enums/enums.dart';
 import 'package:notado/models/note_model.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/authentication/authenticationBloc/authentication_bloc.dart';
@@ -765,32 +765,32 @@ class _HomeScreenState extends State<HomeScreen>
   //   });
   // }
 
-  Widget _buildNoteListTile(BuildContext context, int index) {
-    var note = _notes[index];
+  // Widget _buildNoteListTile(BuildContext context, int index) {
+  //   var note = _notes[index];
 
-    return new ListTile(
-      onTap: () => _navigateToNoteDetails(note, index),
-      title: Text(
-        note.title,
-        // style: TextStyle(color: Colors.green[600]),
-      ),
-      // subtitle: Text(formatter.format(note.date)),
-    );
-  }
+  //   return new ListTile(
+  //     onTap: () => _navigateToNoteDetails(note, index),
+  //     title: Text(
+  //       note.title,
+  //       // style: TextStyle(color: Colors.green[600]),
+  //     ),
+  //     // subtitle: Text(formatter.format(note.date)),
+  //   );
+  // }
 
-  void _navigateToNoteDetails(Note note, Object index) {
-    Navigator.of(context).push(
-      new MaterialPageRoute(
-        builder: (c) {
-          return ZefyrNote(
-            // note: note,
-            databaseService: DatabaseService(uid: uid),
-            userRepository: widget.userRepository,
-          );
-        },
-      ),
-    );
-  }
+  // void _navigateToNoteDetails(Note note, Object index) {
+  //   Navigator.of(context).push(
+  //     new MaterialPageRoute(
+  //       builder: (c) {
+  //         return ZefyrNote(
+  //           // note: note,
+  //           databaseService: DatabaseService(uid: uid),
+  //           userRepository: widget.userRepository,
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
   Future<Null> refreshIt() async {
     await Future.delayed(Duration(seconds: 2));
@@ -804,15 +804,21 @@ class _HomeScreenState extends State<HomeScreen>
     //     //  _notes = onValue;
     //   });
     // }).catchError(print);
+
+    viewController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    super.initState();
+    // nmode = noteMode.newNote;
+  }
+
+  @override
+  void didChangeDependencies() {
     _getUserEmail();
     _getUID();
     _getPhotoUrl();
     _getDisplayName();
     _getUserEmail();
-    viewController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    super.initState();
-    // nmode = noteMode.newNote;
+    super.didChangeDependencies();
   }
 
   @override
@@ -824,460 +830,483 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     var nomode = Provider.of<NoteModeProvider>(context);
-    var cScreenObject = Provider.of<currentScreenProvider>(context);
+    var cScreenObject = Provider.of<CurrentScreenProvider>(context);
     print('currentScreen.......................' +
         cScreenObject.whichScreen.toString());
+    var selectListItem = Provider.of<SelectListTile>(context);
+    var changeSelectedListItem =
+        Provider.of<ChangeSelectedListItemProvider>(context);
     Widget content;
     final height = MediaQuery.of(context).size.height;
-    if (_notes.isEmpty) {
-      content = Center(
-        child: CircularProgressIndicator(), //1
-      );
-    } else {
-      content = ListView.builder(
-        shrinkWrap: true,
-        //2
-        itemCount: _notes.length,
-        itemBuilder: _buildNoteListTile,
-      );
+    // if (_notes.isEmpty) {
+    //   content = Center(
+    //     child: CircularProgressIndicator(), //1
+    //   );
+    // } else {
+    //   content = ListView.builder(
+    //     shrinkWrap: true,
+    //     //2
+    //     itemCount: _notes.length,
+    //     itemBuilder: _buildNoteListTile,
+    //   );
+    // }
+    Future<bool> _onBackButtonPressed() async {
+      DateTime currentBackPressTime;
+
+      if (!selectListItem.isSelecting) {
+        DateTime now = DateTime.now();
+        if (currentBackPressTime == null ||
+            now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+          currentBackPressTime = now;
+          Toast.show('Press again to exit', context);
+          return Future.value(false);
+        }
+        return Future.value(true);
+      } else {
+        Future.delayed(Duration(milliseconds: 1), () {
+          changeSelectedListItem.clearselectedItemsList();
+
+          selectListItem.isSelecting = false;
+          return false;
+        });
+      }
     }
-    return Scaffold(
-      drawerEnableOpenDragGesture: true,
-      key: _scaffoldKey,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      resizeToAvoidBottomPadding: false,
-      floatingActionButton: FloatingActionButton(
-        // backgroundColor: Colors.green,
-        onPressed: () {
-          print('newNote..done.................' + nomode.notesmode.toString());
 
-          // nmode = noteMode.newNote;
-          nomode.notesmode = noteMode.newNote;
-          // .notesmode(noteMode.newNote);
-          Navigator.push(
-            context,
-            // Pageroutebuilder for implementing different a transition between screens
-            PageRouteBuilder(
-              //Navigating to the addnte screen when FAB is pressed
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  // AddNote(userRepository: widget.userRepository),
-                  ZefyrNote(
-                databaseService: DatabaseService(uid: uid),
-                userRepository: widget.userRepository,
-              ),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                var begin = Offset(0.5, 0.5);
-                var end = Offset.zero;
-                var curve = Curves.easeInOutQuad;
-                // var tween = Tween(begin: begin, end: end)
-                //     .chain(CurveTween(curve: curve));
+    return WillPopScope(
+      // onWillPop: selectListItem.isSelecting == true
+      //     ? () => Future.delayed(Duration(milliseconds: 1), () {
+      //           selectListItem.isSelecting = false;
 
-                var tween =
-                    Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
-                // return SlideTransition(
-                //     position: animation.drive(tween), child: child);
-                return FadeTransition(
-                    opacity: animation.drive(tween), child: child);
-              },
-            ),
-          );
-        },
-        child: Icon(Icons.add),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        // color: Colors.white,
-        notchMargin: 8.0,
-        shape: CircularNotchedRectangle(),
-        child: Padding(
-          padding: EdgeInsets.all(5.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    height: 45,
-                    child: IconButton(
-                      tooltip: 'Change view',
-                      icon: AnimatedIcon(
-                        icon: AnimatedIcons.list_view,
-                        progress: viewController,
-                        size: homeScreenIconSize * height,
-                      ),
-                      onPressed: () {
-                        islistView
-                            ? viewController.forward()
-                            : viewController.reverse();
-                        islistView = !islistView;
-                        if (!islistView)
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text(
-                                  'The app is currently in development mode, please wait while we cook the recipe for this.')));
-                      },
-                    ),
-                  ),
-                  Container(
-                    height: 45,
-                    child: IconButton(
-                      tooltip: 'Handwritten notes',
-                      icon: Icon(Icons.brush),
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (BuildContext context) {
-                          return DrawScreen(
-                              userRepository: widget.userRepository);
-                        }));
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                height: 45,
-                padding: EdgeInsets.all(7),
-                child: DropdownButton<String>(
-                  // dropdownColor: Colors.white,
-                  underline: SizedBox(),
+      //           return false;
+      //         })
+      //     : () => Future.delayed(Duration(milliseconds: 1), () {
+      //           return false;
+      //         }),
+      onWillPop: _onBackButtonPressed,
+      child: Scaffold(
+        drawerEnableOpenDragGesture: true,
+        key: _scaffoldKey,
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        resizeToAvoidBottomPadding: false,
+        floatingActionButton: FloatingActionButton(
+          // backgroundColor: Colors.green,
+          onPressed: () {
+            print(
+                'newNote..done.................' + nomode.notesmode.toString());
 
-                  icon: Icon(
-                    Icons.more_vert,
-                    //  color: Colors.black,
-                  ),
-                  iconSize: homeScreenIconSize * height,
-                  elevation: 0,
-                  // style: TextStyle(color: Colors.green),
-                  onChanged: (String newValue) {
-                    _scaffoldKey.currentState.hideCurrentSnackBar();
-
-                    if (newValue == 'Sort by') {
-                      return showDialog(
-                        context: context,
-                        child: AlertDialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          content: SingleChildScrollView(
-                            child: ListBody(
-                              children: [
-                                RadioListTile(
-                                  value: 1,
-                                  groupValue: typeSort,
-                                  onChanged: (value) => {
-                                    setTypeSort(value),
-                                  },
-                                  activeColor: Colors.lightGreen,
-                                  title: Text('Name '),
-                                ),
-                                RadioListTile(
-                                  value: 2,
-                                  groupValue: typeSort,
-                                  onChanged: (value) => {
-                                    setTypeSort(value),
-                                  },
-                                  activeColor: Colors.lightGreen,
-                                  title: Text('Date created'),
-                                ),
-                              ],
-                            ),
-                          ),
-                          actions: [
-                            FlatButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                // _scaffoldKey.currentState
-                                //   ..hideCurrentSnackBar();
-                              },
-                              child: Text('Cancel'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                  items: <String>['Select Notes', 'Sort by']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                      onTap: null,
-                    );
-                  }).toList(),
+            // nmode = noteMode.newNote;
+            nomode.notesmode = noteMode.newNote;
+            // .notesmode(noteMode.newNote);
+            Navigator.push(
+              context,
+              // Pageroutebuilder for implementing different a transition between screens
+              PageRouteBuilder(
+                //Navigating to the addnte screen when FAB is pressed
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    // AddNote(userRepository: widget.userRepository),
+                    ZefyrNote(
+                  databaseService: DatabaseService(uid: uid),
+                  userRepository: widget.userRepository,
                 ),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  var begin = Offset(0.5, 0.5);
+                  var end = Offset.zero;
+                  var curve = Curves.easeInOutQuad;
+                  // var tween = Tween(begin: begin, end: end)
+                  //     .chain(CurveTween(curve: curve));
+
+                  var tween = Tween(begin: 0.0, end: 1.0)
+                      .chain(CurveTween(curve: curve));
+                  // return SlideTransition(
+                  //     position: animation.drive(tween), child: child);
+                  return FadeTransition(
+                      opacity: animation.drive(tween), child: child);
+                },
               ),
-            ],
+            );
+          },
+          child: Icon(Icons.add),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          // color: Colors.white,
+          notchMargin: 8.0,
+          shape: CircularNotchedRectangle(),
+          child: Padding(
+            padding: EdgeInsets.all(5.0),
+            child: selectListItem.isSelecting != false
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      IconButton(
+                        tooltip: 'Delete selected note',
+                        icon: Icon(
+                          Icons.delete_outline,
+                          color: Colors.teal,
+                        ),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        tooltip: 'Pin',
+                        icon: Icon(
+                          Icons.pin_drop_outlined,
+                          color: Colors.teal,
+                        ),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        tooltip: 'Make available offline',
+                        icon: Icon(
+                          Icons.cloud_download_outlined,
+                          color: Colors.teal,
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: 45,
+                            child: IconButton(
+                              tooltip: 'Change view',
+                              icon: AnimatedIcon(
+                                icon: AnimatedIcons.list_view,
+                                progress: viewController,
+                                size: homeScreenIconSize * height,
+                              ),
+                              onPressed: () {
+                                islistView
+                                    ? viewController.forward()
+                                    : viewController.reverse();
+                                islistView = !islistView;
+                                if (!islistView)
+                                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                      content: Text(
+                                          'The app is currently in development mode, please wait while we cook the recipe for this.')));
+                              },
+                            ),
+                          ),
+                          Container(
+                            height: 45,
+                            child: IconButton(
+                              tooltip: 'Handwritten notes',
+                              icon: Icon(Icons.brush),
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                                  return DrawScreen(
+                                      userRepository: widget.userRepository);
+                                }));
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        height: 45,
+                        padding: EdgeInsets.all(7),
+                        child: DropdownButton<String>(
+                          // dropdownColor: Colors.white,
+                          underline: SizedBox(),
+
+                          icon: Icon(
+                            Icons.more_vert,
+                            //  color: Colors.black,
+                          ),
+                          iconSize: homeScreenIconSize * height,
+                          elevation: 0,
+                          // style: TextStyle(color: Colors.green),
+                          onChanged: (String newValue) {
+                            _scaffoldKey.currentState.hideCurrentSnackBar();
+
+                            if (newValue == 'Sort by') {
+                              return showDialog(
+                                context: context,
+                                child: AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: [
+                                        RadioListTile(
+                                          value: 1,
+                                          groupValue: typeSort,
+                                          onChanged: (value) => {
+                                            setTypeSort(value),
+                                          },
+                                          activeColor: Colors.lightGreen,
+                                          title: Text('Name '),
+                                        ),
+                                        RadioListTile(
+                                          value: 2,
+                                          groupValue: typeSort,
+                                          onChanged: (value) => {
+                                            setTypeSort(value),
+                                          },
+                                          activeColor: Colors.lightGreen,
+                                          title: Text('Date created'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: [
+                                    FlatButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        // _scaffoldKey.currentState
+                                        //   ..hideCurrentSnackBar();
+                                      },
+                                      child: Text('Cancel'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          },
+                          items: <String>['Select Notes', 'Sort by']
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                              onTap: null,
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
           ),
         ),
-      ),
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.black),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        //  title: Text('My Notes', style: TextStyle(color: Colors.black)),
-        elevation: 0,
-        actions: [
-          Padding(
-            padding: EdgeInsets.all(4.0),
-            child: IconButton(
-              tooltip: 'Search',
-              icon: Icon(Icons.search),
-              onPressed: () {
-                cScreenObject.whichScreen = currentScreen.search;
-
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) {
-                      return SearchScreen(
-                        userRepository: widget.userRepository,
-                        uid: uid,
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(4.0),
-            child: GestureDetector(
-              child: photoUrl == null
-                  ? CircleAvatar(backgroundColor: Colors.green)
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Hero(
-                        tag: 'profilepic',
-                        child: Image(
-                          image: NetworkImage(
-                            photoUrl,
-                          ),
-                        ),
-                      ),
-                    ),
-              onTap: () {
-                return showDialog(
-                  context: context,
-                  child: AlertDialog(
-                    content: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.all(0),
-                        leading: Hero(
-                          tag: 'profilepic',
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(30),
-                            child: Image(
-                              image: NetworkImage(
-                                photoUrl,
-                              ),
-                            ),
-                          ),
-                        ),
-                        title: Text(
-                          displayName,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                          ),
-                        ),
-                        subtitle: Text(
-                          userEmail,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        elevation: 0.0,
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          color: Colors.white,
-          child: ListView(
-            children: [
-              Card(
-                elevation: 0.0,
-                child: Container(
-                  height: 80,
-                  child: Center(
-                    child: Text(
-                      'Notado',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 40,
-                        letterSpacing: 2,
-                        color: drawerBarColor,
-                      ),
-                    ),
-                  ),
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          //  title: Text('My Notes', style: TextStyle(color: Colors.black)),
+          elevation: 0,
+          leading: selectListItem.isSelecting == false
+              ? null
+              : IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    changeSelectedListItem.clearselectedItemsList();
+                    selectListItem.isSelecting = false;
+                  },
                 ),
-              ),
-              ListTile(
-                onTap: () => {
-                  Navigator.pop(context),
-                  if (cScreenObject.whichScreen == currentScreen.home)
-                    _scaffoldKey.currentState.showSnackBar(
-                      SnackBar(
-                        content: Text('You are already on the Home Screen'),
-                      ),
-                    ),
-                },
-                leading: Icon(Icons.note, color: drawerBarColor),
-                title: Text('My Notes'),
-              ),
-              ListTile(
-                onTap: () {
-                  Navigator.pop(context);
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(
-                          'This app is currently in development mode,\n please wait while we cook the recipe for you')));
-                },
-                leading:
-                    Icon(FontAwesomeIcons.bookReader, color: drawerBarColor),
-                title: Text('Study notes'),
-              ),
-              ListTile(
-                onTap: () {
-                  cScreenObject.whichScreen = currentScreen.trash;
-                  Navigator.push(
-                    context,
-                    buildPageRouteBuilder(
-                      TrashScreen(
-                        userRepository: widget.userRepository,
-                        databaseService: DatabaseService(uid: uid),
-                      ),
-                    ),
-                  );
-                },
-                leading: Icon(FontAwesomeIcons.trash, color: drawerBarColor),
-                title: Text('Trash'),
-              ),
-              ListTile(
-                onTap: () {
-                  cScreenObject.whichScreen = currentScreen.settings;
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (context) {
-                        return SettingsScreen(
-                          userRepository: widget.userRepository,
+          actions: selectListItem.isSelecting == false
+              ? [
+                  Padding(
+                    padding: EdgeInsets.all(4.0),
+                    child: IconButton(
+                      tooltip: 'Search',
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        cScreenObject.whichScreen = currentScreen.search;
+
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) {
+                              return SearchScreen(
+                                userRepository: widget.userRepository,
+                                uid: uid,
+                              );
+                            },
+                          ),
                         );
                       },
                     ),
-                  );
-                },
-                leading: Icon(Icons.settings, color: drawerBarColor),
-                title: Text('Settings'),
-              ),
-              ListTile(
-                onTap: () => {},
-                leading: Icon(FontAwesomeIcons.star, color: drawerBarColor),
-                title: Text('Rate us'),
-              ),
-              ListTile(
-                onTap: () => {
-                  print('Contact us pressed'),
-                  _launchUrl(
-                      'mailto:notado.care@gmail.com?subject=User Experience@Notado')
-                },
-                leading: Icon(Icons.contact_mail, color: drawerBarColor),
-                title: Text('Contact us'),
-              ),
-              ListTile(
-                onTap: () {
-                  BlocProvider.of<AuthenticationBloc>(context).add(
-                    LoggedOut(),
-                  );
-                  Navigator.pushReplacement(
-                    context,
-                    PageRouteBuilder(
-                      transitionDuration: Duration(milliseconds: 440),
-                      pageBuilder: (context, animation, secondaryAnimation) =>
-                          LoginScreen(userRepository: widget.userRepository),
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                        var begin = Offset(0, 1);
-                        var end = Offset.zero;
-                        var curve = Curves.easeInOutQuad;
-                        var tween = Tween(begin: begin, end: end)
-                            .chain(CurveTween(curve: curve));
-                        //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
-
-                        return SlideTransition(
-                            position: animation.drive(tween), child: child);
-                        //return FadeTransition(opacity: animation.drive(tween), child: child);
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(4.0),
+                    child: GestureDetector(
+                      child: photoUrl == null
+                          ? CircleAvatar(backgroundColor: Colors.green)
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(30),
+                              child: Hero(
+                                tag: 'profilepic',
+                                child: Image(
+                                  image: NetworkImage(
+                                    photoUrl,
+                                  ),
+                                ),
+                              ),
+                            ),
+                      onTap: () {
+                        return showDialog(
+                          context: context,
+                          child: AlertDialog(
+                            content: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: ListTile(
+                                contentPadding: EdgeInsets.all(0),
+                                leading: Hero(
+                                  tag: 'profilepic',
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(30),
+                                    child: Image(
+                                      image: NetworkImage(
+                                        photoUrl,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                title: Text(
+                                  displayName,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  userEmail,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
                       },
                     ),
-                  );
-                },
-                leading:
-                    Icon(FontAwesomeIcons.signOutAlt, color: drawerBarColor),
-                title: Text('Logout'),
-              ),
-            ],
-          ),
+                  ),
+                ]
+              : [
+                  IconButton(
+                    icon: Icon(Icons.share_outlined),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.select_all_outlined),
+                    onPressed: () {},
+                  ),
+                ],
         ),
-      ),
-      body: RefreshIndicator(
-        color: Colors.black,
-        onRefresh: refreshIt,
-        child: StreamBuilder(
-          stream: typeSort == 1
-              ? DatabaseService(uid: uid).notesZefyrFromNotesOrderByTitle
-              : DatabaseService(uid: uid).notesZefyrFromNotesOrderByDate,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasError)
-              return Center(child: Text('ERROR'));
-            else if (snapshot.connectionState == ConnectionState.waiting)
-              return Center(
-                  child: CircularProgressIndicator(
-                backgroundColor: Colors.green,
-              ));
-            return ListView(
-              physics: BouncingScrollPhysics(),
-              children: snapshot.data.documents.map<Widget>(
-                (document) {
-                  Iterable list = json.decode(document['contents']);
-                  print("......................................" +
-                      list.runtimeType.toString());
-                  List<Note> Cnote = list.map((i) => Note.fromMap(i)).toList();
-                  print(Cnote[0].title.toString() +
-                      ".............................noteeeee\n");
-                  print(document['searchKey'].toString() +
-                      '....search........search');
-                  return Padding(
-                    padding: EdgeInsets.all(2.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: ListTile(
-                        isThreeLine: false,
-                        tileColor: Colors.grey[100],
+        drawer: selectListItem.isSelecting == true
+            ? null
+            : Drawer(
+                elevation: 0.0,
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  color: Colors.white,
+                  child: ListView(
+                    children: [
+                      Card(
+                        elevation: 0.0,
+                        child: Container(
+                          height: 80,
+                          child: Center(
+                            child: Text(
+                              'Notado',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                fontSize: 40,
+                                letterSpacing: 2,
+                                color: drawerBarColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () => {
+                          Navigator.pop(context),
+                          if (cScreenObject.whichScreen == currentScreen.home)
+                            _scaffoldKey.currentState.showSnackBar(
+                              SnackBar(
+                                content:
+                                    Text('You are already on the Home Screen'),
+                              ),
+                            ),
+                        },
+                        leading: Icon(Icons.note, color: drawerBarColor),
+                        title: Text('My Notes'),
+                      ),
+                      ListTile(
                         onTap: () {
-                          nomode.notesmode = noteMode.editNote;
+                          Navigator.pop(context);
+                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text(
+                                  'This app is currently in development mode,\n please wait while we cook the recipe for you')));
+                        },
+                        leading: Icon(FontAwesomeIcons.bookReader,
+                            color: drawerBarColor),
+                        title: Text('Study notes'),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          cScreenObject.whichScreen = currentScreen.trash;
                           Navigator.push(
                             context,
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      ZefyrNote(
+                            buildPageRouteBuilder(
+                              TrashScreen(
                                 userRepository: widget.userRepository,
                                 databaseService: DatabaseService(uid: uid),
-                                contents: document['contents'],
-                                id: document['id'],
-                                title: document['title'],
                               ),
+                            ),
+                          );
+                        },
+                        leading:
+                            Icon(FontAwesomeIcons.trash, color: drawerBarColor),
+                        title: Text('Trash'),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          cScreenObject.whichScreen = currentScreen.settings;
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) {
+                                return SettingsScreen(
+                                  userRepository: widget.userRepository,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                        leading: Icon(Icons.settings, color: drawerBarColor),
+                        title: Text('Settings'),
+                      ),
+                      ListTile(
+                        onTap: () => {},
+                        leading:
+                            Icon(FontAwesomeIcons.star, color: drawerBarColor),
+                        title: Text('Rate us'),
+                      ),
+                      ListTile(
+                        onTap: () => {
+                          print('Contact us pressed'),
+                          _launchUrl(
+                              'mailto:notado.care@gmail.com?subject=User Experience@Notado')
+                        },
+                        leading:
+                            Icon(Icons.contact_mail, color: drawerBarColor),
+                        title: Text('Contact us'),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          BlocProvider.of<AuthenticationBloc>(context).add(
+                            LoggedOut(),
+                          );
+                          Navigator.pushReplacement(
+                            context,
+                            PageRouteBuilder(
+                              transitionDuration: Duration(milliseconds: 440),
+                              pageBuilder: (context, animation,
+                                      secondaryAnimation) =>
+                                  LoginScreen(
+                                      userRepository: widget.userRepository),
                               transitionsBuilder: (context, animation,
                                   secondaryAnimation, child) {
-                                var begin = Offset(0, 0);
+                                var begin = Offset(0, 1);
                                 var end = Offset.zero;
-                                var curve = Curves.easeInExpo;
+                                var curve = Curves.easeInOutQuad;
                                 var tween = Tween(begin: begin, end: end)
                                     .chain(CurveTween(curve: curve));
                                 //var tween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
@@ -1290,42 +1319,116 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                           );
                         },
-                        // onTap: () {
-                        //   nmode = noteMode.editNote;
-                        //   Navigator.push(context, MaterialPageRoute(
-                        //       builder: (BuildContext context) {
-                        //     return ZefyrNote(
-                        //       userRepository: widget.userRepository,
-                        //       databaseService: DatabaseService(uid: uid),
-                        //       contents: document['contents'],
-                        //       id: document['id'],
-                        //       title: document['title'],
-                        //     );
-                        //   }));
-                        // },
-                        title: Text(document['title']),
-                        subtitle: Text(
-                          document['date'],
-                          style:
-                              TextStyle(color: Colors.grey[600], fontSize: 10),
-                        ),
-                        onLongPress: () => {
-                          DatabaseService(uid: uid)
-                              .deleteZefyrUserDataFromNotes(
-                            contents: document['contents'],
-                            title: document['title'],
-                            id: document['id'],
-                            date: document['date'],
-                          ),
-                          Toast.show('Succesfully moved to trash', context),
-                        },
+                        leading: Icon(FontAwesomeIcons.signOutAlt,
+                            color: drawerBarColor),
+                        title: Text('Logout'),
                       ),
-                    ),
-                  );
-                },
-              ).toList(),
-            );
-          },
+                    ],
+                  ),
+                ),
+              ),
+        body: RefreshIndicator(
+          color: Colors.black,
+          onRefresh: refreshIt,
+          child: StreamBuilder(
+            stream: typeSort == 1
+                ? DatabaseService(uid: uid).notesZefyrFromNotesOrderByTitle
+                : DatabaseService(uid: uid).notesZefyrFromNotesOrderByDate,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasError)
+                return Center(child: Text('ERROR'));
+              else if (snapshot.connectionState == ConnectionState.waiting)
+                return Center(
+                    child: CircularProgressIndicator(
+                  backgroundColor: Colors.green,
+                ));
+              else if (!snapshot.hasData) {
+                return Center(child: Text('You haven\'t added any notes yet'));
+              }
+              return ListView(
+                physics: BouncingScrollPhysics(),
+                children: snapshot.data.documents.map<Widget>(
+                  (document) {
+                    Iterable list = json.decode(document['contents']);
+                    print("......................................" +
+                        list.runtimeType.toString());
+                    List<Note> Cnote =
+                        list.map((i) => Note.fromMap(i)).toList();
+                    print(Cnote[0].title.toString() +
+                        ".............................noteeeee\n");
+                    print(document['searchKey'].toString() +
+                        '....search........search');
+                    return Padding(
+                      padding: EdgeInsets.all(2.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: ListTile(
+                          isThreeLine: false,
+                          tileColor: Colors.grey[100],
+                          selectedTileColor: Colors.blue,
+                          selected: changeSelectedListItem.selectedItemsIDList
+                              .contains(document['id']),
+                          // trailing: selectListItem.isSelecting == true
+                          //     ? Checkbox(
+                          //         value: false,
+                          //         onChanged: (val) {},
+                          //       )
+                          //     : null,
+                          onTap: () {
+                            nomode.notesmode = noteMode.editNote;
+                            changeSelectedListItem.listItemPressed(
+                                id: document['id']);
+                            selectListItem.isSelecting == true
+                                ? null
+                                : Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          ZefyrNote(
+                                        userRepository: widget.userRepository,
+                                        databaseService:
+                                            DatabaseService(uid: uid),
+                                        contents: document['contents'],
+                                        id: document['id'],
+                                        title: document['title'],
+                                      ),
+                                    ),
+                                  );
+                          },
+                          title: Text(document['title']),
+                          subtitle: Text(
+                            document['date'],
+                            style: TextStyle(
+                                color: Colors.grey[600], fontSize: 10),
+                          ),
+                          onLongPress: () => {
+                            if (!selectListItem.isSelecting)
+                              {
+                                changeSelectedListItem.listItemPressed(
+                                    id: document['id']),
+                                selectListItem.isSelecting = true,
+                              }
+                            else
+                              {
+                                // DatabaseService(uid: uid)
+                                //     .deleteZefyrUserDataFromNotes(
+                                //   contents: document['contents'],
+                                //   title: document['title'],
+                                //   id: document['id'],
+                                //   date: document['date'],
+                                // ),
+                                // Toast.show(
+                                //     'Succesfully moved to trash', context),
+                              },
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ).toList(),
+              );
+            },
+          ),
         ),
       ),
     );

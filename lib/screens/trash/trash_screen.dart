@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:notado/authentication/authenticationBloc/authentication_bloc.dart';
 import 'package:notado/authentication/authenticationBloc/authentication_event.dart';
 import 'package:notado/constants/constants.dart';
-import 'package:notado/global_variable.dart';
+import 'package:notado/enums/enums.dart';
 import 'package:notado/models/note_model.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/screens/addnote/ZefyrEdit.dart';
@@ -134,7 +134,7 @@ class _TrashScreenState extends State<TrashScreen>
   @override
   Widget build(BuildContext context) {
     Widget content;
-    var cScreenObject = Provider.of<currentScreenProvider>(context);
+    var cScreenObject = Provider.of<CurrentScreenProvider>(context);
     print('currentScreen.......................' +
         cScreenObject.whichScreen.toString());
 

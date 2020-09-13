@@ -39,6 +39,31 @@ class DatabaseService {
     //TODO: add upload images function
   }
 
+  Future uploadFileToNote(
+      {@required List<File> images, @required String uid, @required id}) async {
+    for (int i = 0; i < images.length; i++) {
+      StorageUploadTask uploadTask = FirebaseStorage.instance
+          .ref()
+          .child('notes/$uid/$id')
+          .putFile(images[i]);
+
+      await uploadTask.onComplete;
+      print('File uploaded');
+      // FirebaseStorage.instance.ref().child('notes/$uid/$id}').getDownloadURL();
+    }
+  }
+
+  Future uploadFileToNTrash(List<File> images) async {
+    for (int i = 0; i < images.length; i++) {
+      StorageReference storageReference =
+          FirebaseStorage.instance.ref().child('');
+      StorageUploadTask uploadTask = storageReference.putFile(images[i]);
+      await uploadTask.onComplete;
+      print('File uploaded');
+      storageReference.getDownloadURL();
+    }
+  }
+
   Future<void> updateZefyrUserData({
     @required String contents,
     @required String title,
