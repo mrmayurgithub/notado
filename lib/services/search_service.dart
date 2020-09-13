@@ -8,9 +8,7 @@ class SearchService {
         .document(uid)
         .collection('userNotes')
         .where('searchKey',
-            isEqualTo: searchField.substring(0, 1).toLowerCase())
+            isEqualTo: searchField.substring(0, 1).toUpperCase())
         .getDocuments();
-    // .where('title', isEqualTo: searchField.substring(0, 1).toUpperCase())
-    // .getDocuments();
   }
 }

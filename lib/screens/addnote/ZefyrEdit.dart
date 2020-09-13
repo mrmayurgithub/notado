@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:notado/global_variable.dart';
+import 'package:notado/enums/enums.dart';
 import 'package:notado/models/note_model.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/screens/home/home_screen.dart';
@@ -300,18 +300,18 @@ class _ZefyrNoteState extends State<ZefyrNote> {
   _save() async {
     print('savvvvinggg....');
 //
-    var contents = jsonEncode(_controller.document);
-    // For this example we save our document to a temporary file.
-    final file = File(Directory.systemTemp.path + "/quick_start.json");
-    // And show a snack bar on success.
-    file.writeAsString(contents);
+    // var contents = jsonEncode(_controller.document);
+    // // For this example we save our document to a temporary file.
+    // final file = File(Directory.systemTemp.path + "/quick_start.json");
+    // // And show a snack bar on success.
+    // file.writeAsString(contents);
 //
     var datetime = new DateTime.now().toString();
 
     var dateParse = DateTime.parse(datetime);
 
     var date = "${dateParse.day}-${dateParse.month}-${dateParse.year}";
-    contents = jsonEncode(_controller.document.toJson());
+    var contents = jsonEncode(_controller.document.toJson());
     Toast.show('Saving note.', context, duration: 100);
     if (await _checkConnection()) {
       await widget.databaseService.createZefyrUserData(
@@ -327,6 +327,7 @@ class _ZefyrNoteState extends State<ZefyrNote> {
         return HomeScreen(userRepository: widget.userRepository);
       }));
     } else {
+      Navigator.pop(context);
       Toast.show('Network Error', context);
     }
   }
@@ -538,4 +539,15 @@ class MyZefyrImageDelegate implements ZefyrImageDelegate<ImageSource> {
     return file.path.toString();
     //TODO: implement image storage in cloud storage
   }
+  // @override
+  // Future<String> pickImage(ImageSource source) async {
+  //   final image = await picker.getImage(source: source);
+  //   if (image == null) return null;
+  //   String filename = DateTime.now().millisecondsSinceEpoch.toString();
+  //   final ref = FirebaseStorage.instance.ref().child(filename);
+  //   StorageUploadTask uploadTask =
+  //       ref.putFile(image, StorageMetadata(contentType: 'image/jpeg'));
+  //   StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
+  //   return getImageUrl(storageTaskSnapshot);
+  // }
 }

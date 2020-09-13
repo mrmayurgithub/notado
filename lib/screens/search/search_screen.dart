@@ -25,23 +25,21 @@ class _SearchScreenState extends State<SearchScreen> {
         tempSearchStore = [];
       });
     }
+    // print(docs.documents[i]['title'].toString() + "title....");
 
     var capitalizedValue =
-        value.substring(0, 1).toLowerCase() + value.substring(1);
-
+        value.substring(0, 1).toUpperCase() + value.substring(1);
     if (queryResultSet.length == 0 && value.length == 1) {
       SearchService()
           .searchByName(value, widget.uid)
           .then((QuerySnapshot docs) {
         for (int i = 0; i < docs.documents.length; ++i) {
           queryResultSet.add(docs.documents[i].data);
-          print(docs.documents[i]['title'].toString() + "title....");
         }
       });
     } else {
       tempSearchStore = [];
       queryResultSet.forEach((element) {
-        print(element['title'].toString() + ".............title......element");
         if (element['title'].startsWith(capitalizedValue)) {
           setState(() {
             tempSearchStore.add(element);
@@ -49,6 +47,7 @@ class _SearchScreenState extends State<SearchScreen> {
         }
       });
     }
+    // print(element['title'].toString() + ".............title......element");
 
     print(tempSearchStore.length.toString() +
         "................searchitems.............");

@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notado/authentication/authenticationBloc/authentication_event.dart';
 import 'package:notado/authentication/authentication_bloc.dart';
-import 'package:notado/global_variable.dart';
+import 'enums/enums.dart';
 import 'package:notado/packages/packages.dart';
 import 'package:notado/screens/home/home_screen.dart';
 import 'package:notado/screens/home/home_splash.dart';
@@ -59,8 +59,14 @@ class _AppState extends State<App> {
         ChangeNotifierProvider<NoteModeProvider>.value(
           value: NoteModeProvider(),
         ),
-        ChangeNotifierProvider<currentScreenProvider>.value(
-          value: currentScreenProvider(),
+        ChangeNotifierProvider<CurrentScreenProvider>.value(
+          value: CurrentScreenProvider(),
+        ),
+        ChangeNotifierProvider<SelectListTile>.value(
+          value: SelectListTile(),
+        ),
+        ChangeNotifierProvider<ChangeSelectedListItemProvider>.value(
+          value: ChangeSelectedListItemProvider(),
         ),
         //ChangeNotifierProvider(create: (context) => ThemeChanger()),
       ],
