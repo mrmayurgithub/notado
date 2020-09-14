@@ -1,118 +1,90 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notado/authentication/authenticationBloc/authentication_event.dart';
-import 'package:notado/authentication/authentication_bloc.dart';
-import 'enums/enums.dart';
-import 'package:notado/packages/packages.dart';
-import 'package:notado/screens/home/home_screen.dart';
-import 'package:notado/screens/home/home_splash.dart';
-import 'package:notado/screens/login/login_screen.dart';
-import 'package:notado/theme/themes.dart';
-import 'package:notado/user_repository/user_Repository.dart';
-import 'screens/splash/splash_screen.dart';
+import 'package:notado/auth/auth_bloc.dart';
+import 'package:notado/ui/screens/home_page/home_screen.dart';
+import 'package:notado/ui/screens/login_page/login_screen.dart';
+import 'package:notado/ui/screens/splash_page/splash_Screen.dart';
+import 'package:notado/ui/themes/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(App());
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.blue, // navigation bar color
-    statusBarColor: Colors.green, // status bar color
-  ));
+void main() async {
+  // Bloc.observer = SimpleBlocObserver();
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+    (_) => runApp(
+      BlocProvider<AuthenticationBloc>(
+        create: (context) => AuthenticationBloc()..add(AppStarted()),
+        child: App(),
+      ),
+    ),
+  );
 }
 
-class App extends StatefulWidget {
+class App extends StatelessWidget {
   @override
-  _AppState createState() => _AppState();
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ListenableProvider(
+          create: (_) => ThemeChanger(appTheme.getLightTheme()),
+        ),
+      ],
+      child: MyApp(),
+    );
+  }
 }
 
-class _AppState extends State<App> {
-  // UserRepository's instance is needed for AuthenticationBloc
-  final UserRepository _userRepository = UserRepository();
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   AuthenticationBloc _authenticationBloc;
+  var _theme;
+  Future<void> loadSavedThemeData() async {
+    var _themechangerProvider = Provider.of<ThemeChanger>(context);
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _theme = _prefs.get('themeNotado') ?? ThemeData.light();
+    _themechangerProvider.setTheme(_theme);
+    _prefs.setString('themeNotado', _theme);
+  }
 
   @override
   void initState() {
-    //Initializing _authenticationBloc
-    _authenticationBloc = AuthenticationBloc(userRepository: _userRepository);
-    // _authenticationBloc.add(AppStarted());
-    _authenticationBloc.add(AppStarted());
+    loadSavedThemeData();
+    _authenticationBloc = AuthenticationBloc();
     super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
-    // Disposing AuthenticationBloc instance when not needed
     _authenticationBloc.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ListenableProvider<ThemeChanger>(
-          create: (_) => ThemeChanger(
-            appTheme.getLightTheme(),
-          ),
+    return BlocProvider(
+      create: (BuildContext context) {},
+      child: MaterialApp(
+        routes: {},
+        theme: _theme ?? ThemeData.light(),
+        home: BlocBuilder(
+          cubit: _authenticationBloc,
+          builder: (BuildContext context, AuthenticationState state) {
+            if (state is UninitializedAuth) {
+              return SplashScreen();
+            } else if (state is AuthenticatedAuth) {
+              return HomeScreen();
+            } else if (state is UnauthenticatedAuth) {
+              return LoginScreen();
+            }
+            return Container();
+          },
         ),
-        ChangeNotifierProvider<NoteModeProvider>.value(
-          value: NoteModeProvider(),
-        ),
-        ChangeNotifierProvider<CurrentScreenProvider>.value(
-          value: CurrentScreenProvider(),
-        ),
-        ChangeNotifierProvider<SelectListTile>.value(
-          value: SelectListTile(),
-        ),
-        ChangeNotifierProvider<ChangeSelectedListItemProvider>.value(
-          value: ChangeSelectedListItemProvider(),
-        ),
-        //ChangeNotifierProvider(create: (context) => ThemeChanger()),
-      ],
-      child: Builder(
-        builder: (BuildContext context) {
-          final _theme = Provider.of<ThemeChanger>(context).getTheme();
-          return BlocProvider(
-            create: (BuildContext context) => _authenticationBloc,
-            child: MaterialApp(
-              // routes: {
-              //   './RegisterScreen': (context) =>
-              //       RegisterScreen(userRepository: _userRepository),
-              //   './LoginScreen': (context) =>
-              //       LoginScreen(userRepository: _userRepository),
-              //   './VerificationScreen': (context) =>
-              //       VerificationScreen(userRepository: _userRepository),
-              //   './HomeScreen': (context) => BlocProvider.value(
-              //         value: _authenticationBloc,
-              //         child: HomeScreen(userRepository: _userRepository),
-              //       ),
-              // },
-              // theme: ThemeData.light().copyWith(
-              //   appBarTheme: AppBarTheme().copyWith(color: Colors.purple),
-              // ),
-              theme: _theme,
-              debugShowCheckedModeBanner: false,
-              home: BlocBuilder(
-                cubit: _authenticationBloc,
-                builder: (BuildContext context, AuthenticationState state) {
-                  if (state is Uninitialized) {
-                    //Show the Splash Screen when app is being started
-                    return SplashScreen();
-                  } else if (state is Authenticated) {
-                    //Show the Home Screen when the user is Authenticated
-                    return HomeScreen(userRepository: _userRepository);
-                    // return HomeSplash(userRepository: _userRepository);
-                  } else if (state is Unauthenticated) {
-                    //Show the Login Screen when the user hasn't loggedin
-                    return LoginScreen(userRepository: _userRepository);
-                  }
-                  return Container();
-                },
-              ),
-            ),
-          );
-        },
       ),
     );
   }
