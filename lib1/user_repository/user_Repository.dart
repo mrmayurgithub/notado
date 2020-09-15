@@ -96,7 +96,7 @@ class UserRepository {
 
   Future<String> getUID() async {
     final FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    return user.uid;
+    return user._uid;
   }
 
   Future<bool> validatePassword(String password) async {

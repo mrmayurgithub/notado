@@ -140,6 +140,24 @@
       "languageVersion": "2.7"
     },
     {
+      "name": "firebase_analytics",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_analytics-5.0.16",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "firebase_analytics_platform_interface",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_analytics_platform_interface-1.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "firebase_analytics_web",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_analytics_web-0.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.7"
+    },
+    {
       "name": "firebase_auth",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth-0.16.1",
       "packageUri": "lib/",
@@ -578,7 +596,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-09-14T21:07:31.981177Z",
+  "generated": "2020-09-15T08:52:31.186790Z",
   "generator": "pub",
   "generatorVersion": "2.10.0-7.3.beta"
 }

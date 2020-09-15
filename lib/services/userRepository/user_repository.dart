@@ -4,7 +4,7 @@ import 'package:notado/models/user_model.dart';
 
 class UserRepository {
   GoogleSignIn _googleSignIn = GoogleSignIn();
-  UserModel _userModel;
+  UserModel userModel;
 
   // ignore: non_constant_identifier_names
   Future<void> LoginWithGoogle() async {
@@ -18,20 +18,7 @@ class UserRepository {
       idToken: googleSignInAuthentication.idToken,
       accessToken: googleSignInAuthentication.accessToken,
     );
-    String _uid;
-    String _email;
-    String _photoUrl;
-    String _displayName;
-    _uid = await getUID();
-    _email = await getUserEmail();
-    _photoUrl = await getPhotoUrl();
-    _displayName = await getDisplayName();
-    _userModel = UserModel(
-      uid: _uid,
-      email: _email,
-      photoUrl: _photoUrl,
-      displayName: _displayName,
-    );
+
     return await _auth.signInWithCredential(credential);
   }
 
@@ -58,10 +45,6 @@ class UserRepository {
   Future<String> getDisplayName() async {
     final FirebaseUser user = await FirebaseAuth.instance.currentUser();
     return user.displayName;
-  }
-
-  getUserModel() {
-    return _userModel;
   }
 
   Future<bool> isSignedIn() async {

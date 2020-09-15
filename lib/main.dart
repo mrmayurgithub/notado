@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notado/auth/auth_bloc.dart';
+import 'package:notado/global/providers/zefyr_providers.dart';
 import 'package:notado/ui/screens/home_page/home_screen.dart';
 import 'package:notado/ui/screens/login_page/login_screen.dart';
+import 'package:notado/ui/screens/settings_page/settings_screen.dart';
 import 'package:notado/ui/screens/splash_page/splash_Screen.dart';
+import 'package:notado/ui/screens/trash_page/trash_screen.dart';
 import 'package:notado/ui/themes/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,6 +32,9 @@ class App extends StatelessWidget {
       providers: [
         ListenableProvider(
           create: (_) => ThemeChanger(appTheme.getLightTheme()),
+        ),
+        ChangeNotifierProvider<NoteModeProvider>.value(
+          value: NoteModeProvider(),
         ),
       ],
       child: MyApp(),
@@ -70,7 +76,12 @@ class _MyAppState extends State<MyApp> {
     return BlocProvider(
       create: (BuildContext context) {},
       child: MaterialApp(
-        routes: {},
+        routes: {
+          'Home': (context) => HomeScreen(),
+          'Trash': (context) => TrashScreen(),
+          'Login': (context) => LoginPage(),
+          'Settings': (context) => SettingsScreen(),
+        },
         theme: _theme ?? ThemeData.light(),
         home: BlocBuilder(
           cubit: _authenticationBloc,
