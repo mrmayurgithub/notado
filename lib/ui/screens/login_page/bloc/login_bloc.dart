@@ -13,13 +13,14 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginInitial());
-  UserRepository _userRepository;
+  UserRepository _userRepository = UserRepository();
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
     try {
       if (event is LoginWithGoogle) {
-        _userRepository.LoginWithGoogle();
+        yield LoginInProgress();
+        await _userRepository.LoginWithGoogle();
         await FirebaseAnalytics().logLogin(loginMethod: "google_signin");
         await initializeApi;
         yield LoginSuccess();

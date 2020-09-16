@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:notado/global/database_helper/database_helper.dart';
 import 'package:notado/global/helper/global_helper.dart';
 import 'package:notado/models/note_model/note_model.dart';
 import 'package:notado/ui/components/note_tile.dart';
-
+import 'package:notado/ui/screens/add_zefyr_note/bloc/zefyr_bloc.dart';
+import 'package:zefyr/zefyr.dart';
 part 'home_state.dart';
 part 'home_event.dart';
 
@@ -31,6 +34,38 @@ class HomepageBloc extends Bloc<HomeEvent, HomeState> {
           );
         }
         yield HomepageLoaded(notelist: _noteList);
+      }
+      if (event is CreateNote) {
+        yield NewZefyrPageLoaded();
+      }
+      if (event is EditNoteRequest) {
+        var zefyrnotedata = NotusDocument.fromJson(jsonDecode(event.contents));
+        yield EditZefyrpageLoaded(
+          contents: zefyrnotedata,
+          date: event.date,
+          searchKey: event.searchKey,
+          title: event.title,
+          id: event.id,
+        );
+      }
+      if (event is NewNoteRequest) {
+        yield NewZefyrPageLoaded();
+      }
+      if (event is UpdateNote) {
+        yield UpdateLoading();
+        await DatabaseHelper.updateZefyrUserData(
+          contents: event.contents,
+          title: event.title,
+          id: event.id,
+          date: event.date,
+          searchKey: event.searchKey,
+        );
+        //TODO: by userchoice
+        await getNotesFromNotesOBName();
+        yield UpdateSuccess();
+      }
+      if (event is CancelRequest) {
+        yield Cancelled();
       }
     } on PlatformException catch (e) {
       yield (HomepageError(message: "Error: ${e.message}"));

@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:notado/global/constants.dart';
 
@@ -29,7 +27,7 @@ class _NoteTileState extends State<NoteTile> {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: buttonBorderRadius,
+        // borderRadius: buttonBorderRadius,
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).primaryColorDark.withOpacity(0.04),
@@ -40,8 +38,8 @@ class _NoteTileState extends State<NoteTile> {
         ],
       ),
       child: ListTile(
-        contentPadding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.02, vertical: screenHeight * 0.010),
+        // contentPadding: EdgeInsets.symmetric(
+        //     horizontal: screenWidth * 0.02, vertical: screenHeight * 0.010),
         title: Text(
           widget.title,
           style: TextStyle(fontSize: 18),

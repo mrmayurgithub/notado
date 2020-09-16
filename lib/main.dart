@@ -8,7 +8,7 @@ import 'package:notado/ui/screens/login_page/login_screen.dart';
 import 'package:notado/ui/screens/settings_page/settings_screen.dart';
 import 'package:notado/ui/screens/splash_page/splash_Screen.dart';
 import 'package:notado/ui/screens/trash_page/trash_screen.dart';
-import 'package:notado/ui/themes/theme.dart';
+// import 'package:notado/ui/themes/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,9 +30,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ListenableProvider(
-          create: (_) => ThemeChanger(appTheme.getLightTheme()),
-        ),
+        // ListenableProvider(
+        //   create: (_) => ThemeChanger(appTheme.getLightTheme()),
+        // ),
         ChangeNotifierProvider<NoteModeProvider>.value(
           value: NoteModeProvider(),
         ),
@@ -49,20 +49,26 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   AuthenticationBloc _authenticationBloc;
-  var _theme;
-  Future<void> loadSavedThemeData() async {
-    var _themechangerProvider = Provider.of<ThemeChanger>(context);
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    _theme = _prefs.get('themeNotado') ?? ThemeData.light();
-    _themechangerProvider.setTheme(_theme);
-    _prefs.setString('themeNotado', _theme);
-  }
+  // var _theme;
+  // Future<void> loadSavedThemeData() async {
+  //   var _themechangerProvider = Provider.of<ThemeChanger>(context);
+  //   SharedPreferences _prefs = await SharedPreferences.getInstance();
+  //   _theme = _prefs.get('themeNotado') ?? ThemeData.light();
+  //   _themechangerProvider.setTheme(_theme);
+  //   _prefs.setString('themeNotado', _theme);
+  // }
 
   @override
   void initState() {
-    loadSavedThemeData();
+    // loadSavedThemeData();
     _authenticationBloc = AuthenticationBloc();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
   }
 
   @override
@@ -79,15 +85,15 @@ class _MyAppState extends State<MyApp> {
         routes: {
           'Home': (context) => HomeScreen(),
           'Trash': (context) => TrashScreen(),
-          'Login': (context) => LoginPage(),
+          'Login': (context) => LoginScreen(),
           'Settings': (context) => SettingsScreen(),
         },
-        theme: _theme ?? ThemeData.light(),
-        home: BlocBuilder(
+        // theme: _theme ?? ThemeData.light(),
+        home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           cubit: _authenticationBloc,
           builder: (BuildContext context, AuthenticationState state) {
             if (state is UninitializedAuth) {
-              return SplashScreen();
+              return LoginScreen();
             } else if (state is AuthenticatedAuth) {
               return HomeScreen();
             } else if (state is UnauthenticatedAuth) {
