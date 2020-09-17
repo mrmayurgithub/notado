@@ -28,8 +28,16 @@ class HomepageSuccess extends HomeState {
   List<Object> get props => [];
 }
 
+// class HomepageLoaded extends HomeState {
+//   final List<NoteTile> notelist;
+
+//   HomepageLoaded({@required this.notelist});
+//   @override
+//   List<Object> get props => [notelist];
+// }
+
 class HomepageLoaded extends HomeState {
-  final List<NoteTile> notelist;
+  final List<Note> notelist;
 
   HomepageLoaded({@required this.notelist});
   @override
@@ -82,3 +90,13 @@ class CreateSuccess extends HomeState {
   @override
   List<Object> get props => [];
 }
+
+class DeletingNotes extends HomeState {
+  @override
+  List<Object> get props => [];
+}
+
+// class DeleteNotesSuccess extends HomeState {
+//   @override
+//   List<Object> get props => [];
+// }

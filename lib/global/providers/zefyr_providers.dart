@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:notado/global/enums/enums.dart';
+import 'package:notado/models/note_model/note_model.dart';
 
 class NoteModeProvider with ChangeNotifier {
   zefyrNoteMode _notemode = zefyrNoteMode.newNote;
@@ -24,6 +25,26 @@ class NotesViewProvider with ChangeNotifier {
   notesView get view => _view;
   set view(notesView val) {
     _view = val;
+    notifyListeners();
+  }
+}
+
+class SelectedTileProvider with ChangeNotifier {
+  List<Note> _selectedOnes = [];
+  List<Note> get selectedOnes => _selectedOnes;
+  // set selectedOnes(String val) {}
+  tilePressed({@required Note note}) {
+    if (_selectedOnes.contains(note)) {
+      _selectedOnes.remove(note);
+      notifyListeners();
+    } else {
+      _selectedOnes.add(note);
+      notifyListeners();
+    }
+  }
+
+  clearSelectedOnes() {
+    _selectedOnes.clear();
     notifyListeners();
   }
 }

@@ -27,6 +27,7 @@ class CreateNote extends HomeEvent {
     @required this.searchKey,
     @required this.title,
   });
+  @override
   List<Object> get props => [contents, title, date, searchKey];
 }
 
@@ -43,6 +44,7 @@ class EditNoteRequest extends HomeEvent {
     @required this.searchKey,
     @required this.title,
   });
+  @override
   List<Object> get props => [contents, title, date, id, searchKey];
 }
 
@@ -59,7 +61,15 @@ class UpdateNote extends HomeEvent {
     @required this.searchKey,
     @required this.title,
   });
+  @override
   List<Object> get props => [contents, title, date, id, searchKey];
+}
+
+class DeleteNotesRequest extends HomeEvent {
+  final List<Note> deleteNotesList;
+  DeleteNotesRequest(this.deleteNotesList);
+  @override
+  List<Object> get props => [deleteNotesList];
 }
 
 class CancelRequest extends HomeEvent {}

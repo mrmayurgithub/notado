@@ -33,6 +33,9 @@ class App extends StatelessWidget {
         // ListenableProvider(
         //   create: (_) => ThemeChanger(appTheme.getLightTheme()),
         // ),
+        ChangeNotifierProvider<SelectedTileProvider>.value(
+          value: SelectedTileProvider(),
+        ),
         ChangeNotifierProvider<NoteModeProvider>.value(
           value: NoteModeProvider(),
         ),
@@ -82,6 +85,7 @@ class _MyAppState extends State<MyApp> {
     return BlocProvider(
       create: (BuildContext context) {},
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         routes: {
           'Home': (context) => HomeScreen(),
           'Trash': (context) => TrashScreen(),
