@@ -18,7 +18,11 @@ class GoogleButton extends StatelessWidget {
       child: RaisedButton(
         onPressed: onPressed,
         elevation: 0.0,
-        padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01500953),
+        // padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01500953),
+
+        padding: EdgeInsets.symmetric(
+            vertical: SizeConfig.screenHeight * 0.01500953),
+
         color: Theme.of(context).scaffoldBackgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: buttonBorderRadius,
@@ -34,16 +38,20 @@ class GoogleButton extends StatelessWidget {
               'assets/icons/google.svg',
               alignment: Alignment.center,
               fit: BoxFit.contain,
-              height: screenWidth * 0.068055556,
-              width: screenWidth * 0.068055556,
+              height: SizeConfig.screenWidth * 0.068055556,
+              width: SizeConfig.screenWidth * 0.068055556,
+              // height: screenWidth * 0.068055556,
+              // width: screenWidth * 0.068055556,
             ),
             SizedBox(
-              width: screenWidth * 0.051041667,
+              // width: screenWidth * 0.051041667,
+
+              width: SizeConfig.screenWidth * 0.051041667,
             ),
             Text(
               title,
               style: Theme.of(context).textTheme.caption.copyWith(
-                    fontSize: screenHeight * 0.017789072,
+                    fontSize: SizeConfig.screenHeight * 0.017789072,
                   ),
             ),
           ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notado/auth/auth_bloc.dart';
+import 'package:notado/global/constants.dart';
 import 'package:notado/global/providers/zefyr_providers.dart';
 import 'package:notado/ui/screens/home_page/home_screen.dart';
 import 'package:notado/ui/screens/login_page/login_screen.dart';
@@ -96,6 +97,7 @@ class _MyAppState extends State<MyApp> {
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           cubit: _authenticationBloc,
           builder: (BuildContext context, AuthenticationState state) {
+            SizeConfig().init(context);
             if (state is UninitializedAuth) {
               return LoginScreen();
             } else if (state is AuthenticatedAuth) {

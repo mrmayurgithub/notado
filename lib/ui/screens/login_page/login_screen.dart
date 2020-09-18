@@ -46,11 +46,11 @@ class LoginPage extends StatelessWidget {
           return ListView(
             children: [
               SizedBox(
-                height: screenHeight * 0.142312579,
+                height: SizeConfig.screenHeight * 0.142312579,
               ),
               Container(
-                margin:
-                    EdgeInsets.symmetric(horizontal: screenWidth * 0.072916667),
+                margin: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.screenWidth * 0.072916667),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -59,11 +59,11 @@ class LoginPage extends StatelessWidget {
                     Text(
                       "Welcome",
                       style: Theme.of(context).textTheme.headline1.copyWith(
-                            fontSize: screenHeight * 0.042249047,
+                            fontSize: SizeConfig.screenHeight * 0.042249047,
                           ),
                     ),
                     SizedBox(
-                      height: screenHeight * 0.036689962,
+                      height: SizeConfig.screenHeight * 0.036689962,
                     ),
                     GoogleButton(
                       title: 'Continue with Google',

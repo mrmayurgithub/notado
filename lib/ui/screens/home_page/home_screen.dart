@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gradients/flutter_gradients.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:notado/global/constants.dart';
+import 'package:notado/global/enums/enums.dart';
 import 'package:notado/global/helper/global_helper.dart';
 import 'package:notado/global/providers/zefyr_providers.dart';
 import 'package:notado/models/note_model/note_model.dart';
@@ -14,6 +17,9 @@ import 'package:notado/ui/screens/add_zefyr_note/add_zefyr_note.dart';
 import 'package:notado/ui/screens/home_page/bloc/home_bloc.dart';
 import 'package:notado/ui/components/snackbar.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:zefyr/zefyr.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -37,8 +43,31 @@ class HomeScreenNoteList extends StatefulWidget {
 
 class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
   // List<String> _selectedTiles = [];
+  bool _showNetworkError = false;
+  var h = 1001.0694778740428;
+  final w = 462.03206671109666;
+  final padV60 = 60 / 1001.0694778740428;
+  final padH10 = 10 / 462.03206671109666;
+
+  Future<bool> _checkConnection() async {
+    if (await DataConnectionChecker().hasConnection) {
+      setState(() {
+        _showNetworkError = false;
+      });
+      return true;
+    } else {
+      setState(() {
+        print('netwrok error');
+        _showNetworkError = true;
+      });
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    var notemodeC = Provider.of<NoteModeProvider>(context);
     return WillPopScope(
       onWillPop: () async {
         DateTime currentBackPressTime;
@@ -122,6 +151,10 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
                 return Scaffold(
                   appBar: sTileP.selectedOnes.length != 0
                       ? AppBar(
+                          iconTheme: Theme.of(context)
+                              .iconTheme
+                              .copyWith(color: Colors.black),
+                          backgroundColor: Colors.white,
                           leading: IconButton(
                             icon: Icon(Icons.arrow_back),
                             onPressed: () {
@@ -158,6 +191,7 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
                           //     ),
                           //   ),
                           // ),
+
                           iconTheme: Theme.of(context).iconTheme.copyWith(
                                 color: Colors.black,
                               ),
@@ -227,15 +261,288 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
                             // ),
                           ],
                         ),
-                  drawer: sTileP.selectedOnes.length != 0 ? null : Drawer(),
+                  drawer: sTileP.selectedOnes.length != 0
+                      ? null
+                      : Drawer(
+                          child: Container(
+                            // color: Colors.blueGrey[900],
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                // colors: [
+                                //   Colors.blueGrey[700],
+                                //   Colors.blueGrey[700],
+                                //   Colors.blueGrey[800],
+                                //   Colors.blueGrey[900],
+                                // ],
+                                colors: [
+                                  Colors.deepPurple[500],
+                                  Colors.deepPurple[500],
+                                  Colors.deepPurple[700],
+                                  Colors.purple[900],
+                                ],
+                              ),
+                            ),
+                            // color: Colors.deepPurple,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: padV60 * size.height,
+                                horizontal: padH10 * size.width,
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Container(
+                                      child: ListTile(
+                                        leading: CircleAvatar(
+                                          child: Image.network(
+                                              globalUser.photoUrl),
+                                        ),
+                                        title: Text(
+                                          globalUser.displayName,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                          globalUser.email,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Divider(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Container(
+                                      child: ListTile(
+                                        leading: Icon(
+                                          Icons.home_outlined,
+                                          color: Colors.white,
+                                        ),
+                                        title: Text(
+                                          'My Notes',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Container(
+                                      child: ListTile(
+                                        leading: Icon(
+                                          FontAwesomeIcons.bookOpen,
+                                          color: Colors.white,
+                                        ),
+                                        title: Text(
+                                          'Study Notes',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Container(
+                                      child: ListTile(
+                                        leading: Icon(
+                                          Icons.settings_outlined,
+                                          color: Colors.white,
+                                        ),
+                                        title: Text(
+                                          'Settings',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Divider(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Container(
+                                      child: ListTile(
+                                        leading: Icon(
+                                          Icons.share_outlined,
+                                          color: Colors.white,
+                                        ),
+                                        title: Text(
+                                          'Share App',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Container(
+                                      child: ListTile(
+                                        leading: Icon(
+                                          Icons.star_border_outlined,
+                                          color: Colors.white,
+                                        ),
+                                        title: Text(
+                                          'Rate Us',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Container(
+                                      child: ListTile(
+                                        leading: Icon(
+                                          Icons.support_outlined,
+                                          color: Colors.white,
+                                        ),
+                                        title: Text(
+                                          'Support Developers',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Container(
+                                      child: ListTile(
+                                        onTap: () async {
+                                          String url =
+                                              ' mailto:notado.care@gmail.com?subject=User Experience@Notado';
+
+                                          if (await canLaunch(url) &&
+                                              await _checkConnection()) {
+                                            _checkConnection();
+                                            launch(url);
+                                          } else {
+                                            // setState(() {
+                                            //   print('netwrok error');
+                                            //   _showNetworkError = true;
+                                            // });
+                                            Toast.show(
+                                              'Network Error',
+                                              context,
+                                              backgroundColor: Colors.grey[300],
+                                              textColor: Colors.black,
+                                            );
+                                            Navigator.of(context).pop();
+                                          }
+                                        },
+                                        leading: Icon(
+                                          Icons.contact_mail_outlined,
+                                          color: Colors.white,
+                                        ),
+                                        title: Text(
+                                          'Contact Us',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Divider(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Text(
+                                          'Made with ❤️ in India',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Copyright © 2020 Dot.Studios LLC',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                   floatingActionButton: FloatingActionButton(
-                    onPressed: () => BlocProvider.of<HomepageBloc>(context)
-                        .add(NewNoteRequest()),
+                    onPressed: () {
+                      notemodeC.notemode = zefyrNoteMode.newNote;
+                      logger.v('Current Note Mode ${notemodeC.notemode}');
+                      // BlocProvider.of<HomepageBloc>(context)
+                      //     .add(NewNoteRequest());
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (BuildContext context) {
+                            return ZefyrNote();
+                          },
+                        ),
+                      );
+                    },
                     child: Icon(
                       Icons.add,
                       // color: Colors.brown,
                     ),
-                    backgroundColor: Colors.teal,
+                    // backgroundColor: Colors.blueGrey[900],
+                    backgroundColor: Colors.deepPurple,
                   ),
                   bottomNavigationBar: BottomAppBar(),
                   body: Container(
@@ -249,7 +556,6 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
                     //     ],
                     //   ),
                     // ),
-                    color: Colors.white,
                     child: RefreshIndicator(
                       onRefresh: () async {
                         await initializeApi;
@@ -327,6 +633,30 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
                                                     0)
                                                   sTileP.tilePressed(
                                                       note: element);
+                                                else {
+                                                  notemodeC.notemode =
+                                                      zefyrNoteMode.editNote;
+                                                  Navigator.of(context).push(
+                                                    CupertinoPageRoute(
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return ZefyrNote(
+                                                          contents:
+                                                              NotusDocument
+                                                                  .fromJson(
+                                                            jsonDecode(element
+                                                                .contents),
+                                                          ),
+                                                          title: element.title,
+                                                          id: element.id,
+                                                          searchKey:
+                                                              element.searchKey,
+                                                          date: element.date,
+                                                        );
+                                                      },
+                                                    ),
+                                                  );
+                                                }
                                               },
                                               onLongPress: () {
                                                 logger.v('Note Long Pressed');
