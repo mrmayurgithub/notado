@@ -1,12 +1,15 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:ui';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gradients/flutter_gradients.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logger/logger.dart';
+import 'package:notado/auth/auth_bloc.dart';
 import 'package:notado/global/constants.dart';
 import 'package:notado/global/enums/enums.dart';
 import 'package:notado/global/helper/global_helper.dart';
@@ -41,13 +44,15 @@ class HomeScreenNoteList extends StatefulWidget {
   _HomeScreenNoteListState createState() => _HomeScreenNoteListState();
 }
 
-class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
+class _HomeScreenNoteListState extends State<HomeScreenNoteList>
+    with SingleTickerProviderStateMixin {
   // List<String> _selectedTiles = [];
   bool _showNetworkError = false;
   var h = 1001.0694778740428;
   final w = 462.03206671109666;
   final padV60 = 60 / 1001.0694778740428;
   final padH10 = 10 / 462.03206671109666;
+  AnimationController _fabController;
 
   Future<bool> _checkConnection() async {
     if (await DataConnectionChecker().hasConnection) {
@@ -62,6 +67,13 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
       });
       return false;
     }
+  }
+
+  @override
+  void initState() {
+    _fabController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    super.initState();
   }
 
   @override
@@ -149,12 +161,14 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
               builder: (context, sTileP, child) {
                 print('rebuildddddddddddddddddddddd........');
                 return Scaffold(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   appBar: sTileP.selectedOnes.length != 0
                       ? AppBar(
                           iconTheme: Theme.of(context)
                               .iconTheme
                               .copyWith(color: Colors.black),
-                          backgroundColor: Colors.white,
+                          backgroundColor:
+                              Theme.of(context).scaffoldBackgroundColor,
                           leading: IconButton(
                             icon: Icon(Icons.arrow_back),
                             onPressed: () {
@@ -196,7 +210,8 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
                                 color: Colors.black,
                               ),
                           // backgroundColor: Colors.blueGrey[100],
-                          backgroundColor: Colors.white,
+                          backgroundColor:
+                              Theme.of(context).scaffoldBackgroundColor,
                           elevation: 0.0,
                           actions: <Widget>[
                             IconButton(
@@ -371,11 +386,54 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
                                     child: Container(
                                       child: ListTile(
                                         leading: Icon(
+                                          FontAwesomeIcons.trash,
+                                          color: Colors.white,
+                                        ),
+                                        title: Text(
+                                          'Trash',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Container(
+                                      child: ListTile(
+                                        leading: Icon(
                                           Icons.settings_outlined,
                                           color: Colors.white,
                                         ),
                                         title: Text(
                                           'Settings',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: (padV60 / 6) * size.height,
+                                    ),
+                                    child: Container(
+                                      child: ListTile(
+                                        onTap: () {
+                                          BlocProvider.of<AuthenticationBloc>(
+                                                  context)
+                                              .add(LoggedOut());
+                                        },
+                                        leading: Icon(
+                                          Icons.logout,
+                                          color: Colors.white,
+                                        ),
+                                        title: Text(
+                                          'Logout',
                                           style: TextStyle(
                                             color: Colors.white,
                                           ),
@@ -523,26 +581,56 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
                             ),
                           ),
                         ),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () {
-                      notemodeC.notemode = zefyrNoteMode.newNote;
-                      logger.v('Current Note Mode ${notemodeC.notemode}');
-                      // BlocProvider.of<HomepageBloc>(context)
-                      //     .add(NewNoteRequest());
-                      Navigator.of(context).push(
-                        CupertinoPageRoute(
-                          builder: (BuildContext context) {
-                            return ZefyrNote();
-                          },
-                        ),
-                      );
-                    },
-                    child: Icon(
-                      Icons.add,
-                      // color: Colors.brown,
-                    ),
-                    // backgroundColor: Colors.blueGrey[900],
-                    backgroundColor: Colors.deepPurple,
+                  // floatingActionButton: FloatingActionButton(
+                  //   onPressed: () {
+                  //     notemodeC.notemode = zefyrNoteMode.newNote;
+                  //     logger.v('Current Note Mode ${notemodeC.notemode}');
+                  //     // BlocProvider.of<HomepageBloc>(context)
+                  //     //     .add(NewNoteRequest());
+                  //     Navigator.of(context).push(
+                  //       CupertinoPageRoute(
+                  //         builder: (BuildContext context) {
+                  //           return ZefyrNote();
+                  //         },
+                  //       ),
+                  //     );
+                  //   },
+                  //   child: Icon(
+                  //     Icons.add,
+                  //     // color: Colors.brown,
+                  //   ),
+                  //   // backgroundColor: Colors.blueGrey[900],
+                  //   backgroundColor: Colors.deepPurple,
+                  // ),
+                  floatingActionButton: SpeedDial(
+                    // overlayColor: Colors.black12,
+                    backgroundColor: Colors.purple,
+                    child: Icon(Icons.add_outlined),
+                    children: [
+                      SpeedDialChild(
+                        backgroundColor: Colors.purple[500],
+                        onTap: () {
+                          notemodeC.notemode = zefyrNoteMode.newNote;
+                          logger.v('Current Note Mode ${notemodeC.notemode}');
+                          // BlocProvider.of<HomepageBloc>(context)
+                          //     .add(NewNoteRequest());
+                          Navigator.of(context).push(
+                            CupertinoPageRoute(
+                              builder: (BuildContext context) {
+                                return ZefyrNote();
+                              },
+                            ),
+                          );
+                        },
+                        label: 'Add Note',
+                        child: Icon(Icons.note_add_outlined),
+                      ),
+                      SpeedDialChild(
+                        backgroundColor: Colors.purple[500],
+                        label: 'Handwriting',
+                        child: Icon(Icons.brush_outlined),
+                      ),
+                    ],
                   ),
                   bottomNavigationBar: BottomAppBar(),
                   body: Container(
@@ -564,37 +652,40 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
                       },
                       child: SingleChildScrollView(
                         physics: BouncingScrollPhysics(),
-                        child: Column(
-                          children: <Widget>[
-                            state.notelist.length > 0
-                                ? Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: state.notelist.map(
-                                      (element) {
-                                        Iterable list =
-                                            json.decode(element.contents);
-                                        List Cnote = list
-                                            .map((i) => i['insert'])
-                                            .toList();
-                                        List<String> mainContent =
-                                            Cnote[0].toString().split('\n');
-                                        return Padding(
-                                          padding: EdgeInsets.only(bottom: 0.5),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: <BoxShadow>[
-                                                BoxShadow(
-                                                  color: Colors.grey[100],
-                                                  // .withOpacity(1),
-                                                  offset: Offset(0.0, 5.0),
-                                                  blurRadius: 10,
-                                                  spreadRadius: 0.1,
-                                                ),
-                                              ],
-                                            ),
+                        child: state.notelist.length > 0
+                            ? Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: state.notelist.map(
+                                    (element) {
+                                      Iterable list =
+                                          json.decode(element.contents);
+                                      List Cnote =
+                                          list.map((i) => i['insert']).toList();
+                                      List<String> mainContent =
+                                          Cnote[0].toString().split('\n');
+                                      return Padding(
+                                        padding: EdgeInsets.only(bottom: 5),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            boxShadow: <BoxShadow>[
+                                              BoxShadow(
+                                                color: Theme.of(context)
+                                                    .scaffoldBackgroundColor,
+                                                // .withOpacity(1),
+                                                offset: Offset(0.0, 5.0),
+                                                blurRadius: 10,
+                                                spreadRadius: 0.1,
+                                              ),
+                                            ],
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
                                             child: ListTile(
+                                              tileColor: Colors.white,
                                               // trailing: _selectedTiles
                                               //         .contains(element.id)
                                               //     ? Icon(Icons.check_box)
@@ -683,24 +774,23 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList> {
                                               ),
                                             ),
                                           ),
-                                        );
-                                      },
-                                      //  Padding(
-                                      //   padding: EdgeInsets.only(bottom: 0.5),
-                                      //   child: FlatButton(
-                                      //     onPressed: null,
-                                      //     onLongPress: () {},
-                                      //     child: element,
-                                      //   ),
-                                      // ),
-                                    ).toList(),
-                                  )
-                                : Center(
-                                    child:
-                                        Text('You haven\' added any notes yet'),
-                                  ),
-                          ],
-                        ),
+                                        ),
+                                      );
+                                    },
+                                    //  Padding(
+                                    //   padding: EdgeInsets.only(bottom: 0.5),
+                                    //   child: FlatButton(
+                                    //     onPressed: null,
+                                    //     onLongPress: () {},
+                                    //     child: element,
+                                    //   ),
+                                    // ),
+                                  ).toList(),
+                                ),
+                              )
+                            : Center(
+                                child: Text('You haven\' added any notes yet'),
+                              ),
                       ),
                     ),
                   ),

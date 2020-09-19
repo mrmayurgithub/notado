@@ -5,13 +5,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:notado/global/constants.dart';
+import 'package:notado/global/helper/global_helper.dart';
 import 'package:notado/services/userRepository/user_repository.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  UserRepository _userRepository;
+  // UserRepository _userRepository;
 
   AuthenticationBloc() : super(UnauthenticatedAuth());
 
@@ -22,7 +23,7 @@ class AuthenticationBloc
       if (event is AppStarted) {
         yield AuthInProgress();
         logger.i('Auth in Progress....');
-        final isSignedIn = await _userRepository.isSignedIn();
+        final isSignedIn = await UserRepository().isSignedIn();
         if (isSignedIn) {
           logger.i(isSignedIn.toString());
           yield AuthenticatedAuth();
@@ -34,7 +35,8 @@ class AuthenticationBloc
       } else if (event is LoggedOut) {
         yield (AuthInProgress());
         logger.i('Authentication in progress');
-        await _userRepository.signOut();
+        await UserRepository().signOut();
+        await disposeApi;
         yield UnauthenticatedAuth();
       }
     } on PlatformException catch (e) {

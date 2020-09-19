@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:notado/global/enums/enums.dart';
 import 'package:notado/global/helper/global_helper.dart';
@@ -99,9 +102,55 @@ class _ZefyrNoteState extends State<ZefyrNote> {
     return NotusDocument.fromDelta(delta);
   }
 
-  _save() {}
+  bool _showNetworkError = false;
 
-  _update() {}
+  Future<bool> _checkConnection() async {
+    if (await DataConnectionChecker().hasConnection) {
+      setState(() {
+        _showNetworkError = false;
+      });
+      return true;
+    } else {
+      setState(() {
+        _showNetworkError = true;
+      });
+      return false;
+    }
+  }
+
+  _save() async {
+    var dateTime = DateTime.now().toString();
+    var dateParse = DateTime.parse(dateTime);
+    var date = "${dateParse.day}-${dateParse.month}-${dateParse.year}";
+    var contents = jsonDecode(_controller.document.toJson());
+    Toast.show('Saving note', context, duration: 100);
+    if (await _checkConnection()) {
+      //TODO: createdatabase
+      Toast.show('Note Saved', context);
+      getNotesFromNotesOBName();
+      Navigator.of(context).pushReplacementNamed('Home');
+    } else {
+      Navigator.of(context).pop();
+      Toast.show('Network Error', context);
+    }
+  }
+
+  _update() async {
+    var datetime = DateTime.now().toString();
+    var dateParse = DateTime.parse(datetime);
+    var date = "${dateParse.day}-${dateParse.month}-${dateParse.year}";
+    var contents = jsonEncode(_controller.document.toJson());
+    Toast.show('Updating note', context, duration: 100);
+    if (await _checkConnection()) {
+      //TODO: implement update note
+      Toast.show('Note updated', context);
+      getNotesFromNotesOBName();
+      Navigator.of(context).pushReplacementNamed('Home');
+    } else {
+      Navigator.of(context).pop();
+      Toast.show('Network Error', context);
+    }
+  }
 
   Future<bool> _onBackPressed() {
     // if (_controller.document == null) {
@@ -157,20 +206,25 @@ class _ZefyrNoteState extends State<ZefyrNote> {
 
   @override
   Widget build(BuildContext context) {
-    var noteMode = Provider.of<NoteModeProvider>(context, listen: false);
+    var noteModeEEE = Provider.of<NoteModeProvider>(context, listen: false);
 
     final Widget body = (_controller == null)
         ? Center(child: CircularProgressIndicator())
         : ZefyrTheme(
             data: ZefyrThemeData(
+              // defaultLineTheme: LineTheme(
+              //   textStyle: TextStyle(
+              //     color: Colors.white,
+              //   ),
+              // ),
               toolbarTheme: ToolbarTheme.fallback(context).copyWith(
-                color: Colors.white,
-                iconColor: Colors.purple,
-              ),
+                  // color: Colors.black,
+                  // iconColor: Colors.white,
+                  ),
             ),
             child: ZefyrScaffold(
               child: ZefyrEditor(
-                autofocus: false,
+                // autofocus: false,
                 physics: BouncingScrollPhysics(),
                 imageDelegate: MyZefyrImageDelegate(),
                 controller: _controller,
@@ -181,8 +235,34 @@ class _ZefyrNoteState extends State<ZefyrNote> {
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
+        backgroundColor: Colors.white,
         key: _scaffoldkey,
-        appBar: AppBar(),
+        appBar: AppBar(
+          actionsIconTheme:
+              Theme.of(context).iconTheme.copyWith(color: Colors.black),
+          elevation: 0.0,
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
+          title: TextFormField(
+            decoration: InputDecoration.collapsed(
+              hintText: 'Title',
+              hintStyle: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            IconButton(
+              tooltip: 'Save Note',
+              icon: noteModeEEE == zefyrNoteMode.newNote
+                  ? Icon(Icons.check)
+                  : Icon(Icons.done),
+              onPressed: () {
+                _save();
+              },
+            ),
+          ],
+        ),
         body: body,
       ),
     );
@@ -202,10 +282,25 @@ class MyZefyrImageDelegate implements ZefyrImageDelegate<ImageSource> {
   @override
   ImageSource get gallerySource => ImageSource.gallery;
 
+  // @override
+  // Future<String> pickImage(ImageSource source) async {
+  //   final file = await picker.getImage(source: source);
+  //   if (file == null) return null;
+  //   return file.path.toString();
+  // }
   @override
   Future<String> pickImage(ImageSource source) async {
-    final file = await picker.getImage(source: source);
-    if (file == null) return null;
-    return file.path.toString();
+    final image = await picker.getImage(source: source) as File;
+    if (image == null) return null;
+    String filename = DateTime.now().millisecondsSinceEpoch.toString();
+    final ref = FirebaseStorage.instance.ref().child(filename);
+    StorageUploadTask uploadTask =
+        ref.putFile(image, StorageMetadata(contentType: 'image/jpeg'));
+    StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
+    return getImageUrl(storageTaskSnapshot);
+  }
+
+  Future getImageUrl(StorageTaskSnapshot snapshot) {
+    return snapshot.ref.getDownloadURL().then((value) => value);
   }
 }

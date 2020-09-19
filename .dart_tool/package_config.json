@@ -2,6 +2,12 @@
   "configVersion": 2,
   "packages": [
     {
+      "name": "animations",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/animations-1.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.2"
+    },
+    {
       "name": "async",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.5.0-nullsafety",
       "packageUri": "lib/",
@@ -434,6 +440,12 @@
       "languageVersion": "2.0"
     },
     {
+      "name": "quick_actions",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/quick_actions-0.4.0+8",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "quill_delta",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/quill_delta-1.0.2",
       "packageUri": "lib/",
@@ -608,7 +620,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-09-17T19:18:12.768348Z",
+  "generated": "2020-09-19T20:45:39.837315Z",
   "generator": "pub",
   "generatorVersion": "2.10.0-7.3.beta"
 }
