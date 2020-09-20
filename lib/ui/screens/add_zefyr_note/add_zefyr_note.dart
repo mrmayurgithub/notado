@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:notado/global/database_helper/database_helper.dart';
 import 'package:notado/global/enums/enums.dart';
 import 'package:notado/global/helper/global_helper.dart';
 import 'package:notado/global/providers/zefyr_providers.dart';
 import 'package:notado/models/note_model/note_model.dart';
 import 'package:notado/ui/screens/add_zefyr_note/bloc/zefyr_bloc.dart';
+import 'package:notado/ui/screens/home_page/bloc/home_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:toast/toast.dart';
@@ -122,12 +124,26 @@ class _ZefyrNoteState extends State<ZefyrNote> {
     var dateTime = DateTime.now().toString();
     var dateParse = DateTime.parse(dateTime);
     var date = "${dateParse.day}-${dateParse.month}-${dateParse.year}";
-    var contents = jsonDecode(_controller.document.toJson());
+    var contents = jsonEncode(_controller.document.toJson());
     Toast.show('Saving note', context, duration: 100);
     if (await _checkConnection()) {
       //TODO: createdatabase
+      // BlocProvider.of<HomepageBloc>(context).add(
+      //   CreateNote(
+      //     contents: contents,
+      //     date: date,
+      //     searchKey: _titleController.text[0],
+      //     title: _titleController.text,
+      //   ),
+      // );
+      DatabaseHelper.createZefyrUserData(
+        contents: contents,
+        title: _titleController.text,
+        date: date,
+        searchKey: _titleController.text[0],
+      );
       Toast.show('Note Saved', context);
-      getNotesFromNotesOBName();
+      await getNotesFromNotesOBName();
       Navigator.of(context).pushReplacementNamed('Home');
     } else {
       Navigator.of(context).pop();
@@ -143,8 +159,24 @@ class _ZefyrNoteState extends State<ZefyrNote> {
     Toast.show('Updating note', context, duration: 100);
     if (await _checkConnection()) {
       //TODO: implement update note
+      // BlocProvider.of<HomepageBloc>(context).add(
+      //   UpdateNote(
+      //     contents: contents,
+      //     date: date,
+      //     id: widget.id,
+      //     searchKey: _titleController.text[0],
+      //     title: _titleController.text,
+      //   ),
+      // );
+      DatabaseHelper.updateZefyrUserData(
+        contents: contents,
+        title: _titleController.text,
+        date: date,
+        searchKey: _titleController.text[0],
+        id: widget.id,
+      );
       Toast.show('Note updated', context);
-      getNotesFromNotesOBName();
+      await getNotesFromNotesOBName();
       Navigator.of(context).pushReplacementNamed('Home');
     } else {
       Navigator.of(context).pop();
@@ -244,6 +276,7 @@ class _ZefyrNoteState extends State<ZefyrNote> {
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           title: TextFormField(
+            controller: _titleController,
             decoration: InputDecoration.collapsed(
               hintText: 'Title',
               hintStyle: TextStyle(
@@ -254,11 +287,13 @@ class _ZefyrNoteState extends State<ZefyrNote> {
           actions: <Widget>[
             IconButton(
               tooltip: 'Save Note',
-              icon: noteModeEEE == zefyrNoteMode.newNote
+              icon: noteModeEEE.notemode == zefyrNoteMode.newNote
                   ? Icon(Icons.check)
                   : Icon(Icons.done),
               onPressed: () {
-                _save();
+                noteModeEEE.notemode == zefyrNoteMode.newNote
+                    ? _save()
+                    : _update();
               },
             ),
           ],

@@ -15,6 +15,7 @@ MERGED from [:firebase_core] C:\apps\notado\build\firebase_core\intermediates\li
 MERGED from [:firebase_core_web] C:\apps\notado\build\firebase_core_web\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:image_picker] C:\apps\notado\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-22:12
 MERGED from [:flutter_plugin_android_lifecycle] C:\apps\notado\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
+MERGED from [:quick_actions] C:\apps\notado\build\quick_actions\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-8:12
 MERGED from [:url_launcher] C:\apps\notado\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-14:12
 MERGED from [:firebase_analytics] C:\apps\notado\build\firebase_analytics\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-19:12
 MERGED from [:shared_preferences] C:\apps\notado\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
@@ -213,6 +214,8 @@ MERGED from [:image_picker] C:\apps\notado\build\image_picker\intermediates\libr
 MERGED from [:image_picker] C:\apps\notado\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_plugin_android_lifecycle] C:\apps\notado\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_plugin_android_lifecycle] C:\apps\notado\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:quick_actions] C:\apps\notado\build\quick_actions\intermediates\library_manifest\debug\AndroidManifest.xml:6:5-44
+MERGED from [:quick_actions] C:\apps\notado\build\quick_actions\intermediates\library_manifest\debug\AndroidManifest.xml:6:5-44
 MERGED from [:url_launcher] C:\apps\notado\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:url_launcher] C:\apps\notado\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:firebase_analytics] C:\apps\notado\build\firebase_analytics\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44

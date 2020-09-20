@@ -40,6 +40,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<NoteModeProvider>.value(
           value: NoteModeProvider(),
         ),
+        ChangeNotifierProvider<NotesViewProvider>.value(
+          value: NotesViewProvider(),
+        ),
       ],
       child: MyApp(),
     );

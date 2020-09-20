@@ -17,6 +17,7 @@ import 'package:notado/global/providers/zefyr_providers.dart';
 import 'package:notado/models/note_model/note_model.dart';
 import 'package:notado/ui/components/CircularProgress.dart';
 import 'package:notado/ui/screens/add_zefyr_note/add_zefyr_note.dart';
+import 'package:notado/ui/screens/handwritten_note_screen/handwritten_note.dart';
 import 'package:notado/ui/screens/home_page/bloc/home_bloc.dart';
 import 'package:notado/ui/components/snackbar.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +53,7 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
   final w = 462.03206671109666;
   final padV60 = 60 / 1001.0694778740428;
   final padH10 = 10 / 462.03206671109666;
-  AnimationController _fabController;
+  AnimationController viewController;
 
   Future<bool> _checkConnection() async {
     if (await DataConnectionChecker().hasConnection) {
@@ -71,7 +72,7 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
 
   @override
   void initState() {
-    _fabController =
+    viewController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     super.initState();
   }
@@ -223,56 +224,56 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                 );
                               },
                             ),
-                            // IconButton(
-                            //   icon: Icon(Icons.settings),
-                            //   onPressed: () {},
-                            // ),
-                            PopupMenuButton(
-                              //TODO: isn't working
-                              onSelected: (value) {
-                                print(value.toString());
-                              },
-                              itemBuilder: (BuildContext context) {
-                                return <PopupMenuItem>[
-                                  PopupMenuItem<String>(
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.sort),
-                                        SizedBox(width: 5),
-                                        Text('Sort by'),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem<String>(
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.error_outline),
-                                        SizedBox(width: 5),
-                                        Text('Account Info'),
-                                      ],
-                                    ),
-                                  ),
-                                ];
+                            IconButton(
+                              icon: AnimatedIcon(
+                                icon: AnimatedIcons.list_view,
+                                progress: viewController,
+                              ),
+                              onPressed: () {
+                                if (Provider.of<NotesViewProvider>(context,
+                                            listen: false)
+                                        .view ==
+                                    notesView.list) {
+                                  viewController.forward();
+                                  Provider.of<NotesViewProvider>(context,
+                                          listen: false)
+                                      .view = notesView.grid;
+                                } else {
+                                  viewController.reverse();
+                                  Provider.of<NotesViewProvider>(context,
+                                          listen: false)
+                                      .view = notesView.list;
+                                  ;
+                                }
                               },
                             ),
-                            // DropdownButton<String>(
-                            //   // isExpanded: true,
-                            //   underline: SizedBox(),
-                            //   icon: Icon(Icons.more_vert),
-                            //   items: <String>[
-                            //     'Sort By',
-                            //     'Settings',
-                            //     'Account Info'
-                            //   ].map<DropdownMenuItem<String>>((String val) {
-                            //     return DropdownMenuItem<String>(
-                            //       child: Text(val),
-                            //       value: val,
-                            //       onTap: () {
-                            //         //TODO: implement
-                            //       },
-                            //     );
-                            //   }).toList(),
-                            //   onChanged: (val) {},
+                            // PopupMenuButton(
+                            //   //TODO: isn't working
+                            //   onSelected: (value) {
+                            //     print(value.toString());
+                            //   },
+                            //   itemBuilder: (BuildContext context) {
+                            //     return <PopupMenuItem>[
+                            //       PopupMenuItem<String>(
+                            //         child: Row(
+                            //           children: [
+                            //             Icon(Icons.sort),
+                            //             SizedBox(width: 5),
+                            //             Text('Sort by'),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //       PopupMenuItem<String>(
+                            //         child: Row(
+                            //           children: [
+                            //             Icon(Icons.error_outline),
+                            //             SizedBox(width: 5),
+                            //             Text('Account Info'),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ];
+                            //   },
                             // ),
                           ],
                         ),
@@ -626,13 +627,40 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                         child: Icon(Icons.note_add_outlined),
                       ),
                       SpeedDialChild(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (BuildContext context) {
+                              return DrawScreen();
+                            }),
+                          );
+                        },
                         backgroundColor: Colors.purple[500],
-                        label: 'Handwriting',
+                        label: 'Handwritten Note',
                         child: Icon(Icons.brush_outlined),
+                      ),
+                      SpeedDialChild(
+                        onTap: () {
+                          //TODO: implement
+                        },
+                        backgroundColor: Colors.purple[500],
+                        label: 'Insert Image',
+                        child: Icon(Icons.add_a_photo_outlined),
+                      ),
+                      SpeedDialChild(
+                        onTap: () {
+                          //TODO: implement
+                        },
+                        backgroundColor: Colors.purple[500],
+                        label: 'Insert Audio',
+                        child: Icon(Icons.mic_outlined),
                       ),
                     ],
                   ),
-                  bottomNavigationBar: BottomAppBar(),
+                  bottomNavigationBar: BottomAppBar(
+                    child: Row(
+                      children: <Widget>[],
+                    ),
+                  ),
                   body: Container(
                     // decoration: BoxDecoration(
                     //   gradient: LinearGradient(
@@ -653,140 +681,159 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                       child: SingleChildScrollView(
                         physics: BouncingScrollPhysics(),
                         child: state.notelist.length > 0
-                            ? Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: state.notelist.map(
-                                    (element) {
-                                      Iterable list =
-                                          json.decode(element.contents);
-                                      List Cnote =
-                                          list.map((i) => i['insert']).toList();
-                                      List<String> mainContent =
-                                          Cnote[0].toString().split('\n');
-                                      return Padding(
-                                        padding: EdgeInsets.only(bottom: 5),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            boxShadow: <BoxShadow>[
-                                              BoxShadow(
-                                                color: Theme.of(context)
-                                                    .scaffoldBackgroundColor,
-                                                // .withOpacity(1),
-                                                offset: Offset(0.0, 5.0),
-                                                blurRadius: 10,
-                                                spreadRadius: 0.1,
-                                              ),
-                                            ],
-                                          ),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            child: ListTile(
-                                              tileColor: Colors.white,
-                                              // trailing: _selectedTiles
-                                              //         .contains(element.id)
-                                              //     ? Icon(Icons.check_box)
-                                              //     : null,
-                                              // onTap: () {
-                                              //   logger.v('Note Pressed');
-                                              //   if (_selectedTiles.length != 0) {
-                                              //     if (_selectedTiles
-                                              //         .contains(element.id)) {
-                                              //       setState(() {
-                                              //         _selectedTiles
-                                              //             .remove(element.id);
-                                              //       });
-                                              //     } else {
-                                              //       setState(() {
-                                              //         _selectedTiles
-                                              //             .add(element.id);
-                                              //       });
-                                              //     }
-                                              //   }
-                                              // },
-                                              // onLongPress: () {
-                                              //   logger.v('Note Long Pressed');
-                                              //   setState(() {
-                                              //     if (!_selectedTiles
-                                              //         .contains(element.id))
-                                              //       _selectedTiles.add(element.id);
-                                              //   });
-                                              // },
-                                              //  selected: _selectedTiles
-                                              //   .contains(element.id),
-                                              onTap: () {
-                                                logger.v('Note Pressed');
-                                                if (sTileP
-                                                        .selectedOnes.length !=
-                                                    0)
-                                                  sTileP.tilePressed(
-                                                      note: element);
-                                                else {
-                                                  notemodeC.notemode =
-                                                      zefyrNoteMode.editNote;
-                                                  Navigator.of(context).push(
-                                                    CupertinoPageRoute(
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return ZefyrNote(
-                                                          contents:
-                                                              NotusDocument
-                                                                  .fromJson(
-                                                            jsonDecode(element
-                                                                .contents),
-                                                          ),
-                                                          title: element.title,
-                                                          id: element.id,
-                                                          searchKey:
-                                                              element.searchKey,
-                                                          date: element.date,
-                                                        );
-                                                      },
+                            ? Consumer<NotesViewProvider>(
+                                builder: (context, notView, child) {
+                                  if (notView.view == notesView.list)
+                                    return Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: state.notelist.map(
+                                          (element) {
+                                            Iterable list =
+                                                json.decode(element.contents);
+                                            List Cnote = list
+                                                .map((i) => i['insert'])
+                                                .toList();
+                                            List<String> mainContent =
+                                                Cnote[0].toString().split('\n');
+                                            return Padding(
+                                              padding:
+                                                  EdgeInsets.only(bottom: 5),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  boxShadow: <BoxShadow>[
+                                                    BoxShadow(
+                                                      color: Theme.of(context)
+                                                          .scaffoldBackgroundColor,
+                                                      // .withOpacity(1),
+                                                      offset: Offset(0.0, 5.0),
+                                                      blurRadius: 10,
+                                                      spreadRadius: 0.1,
                                                     ),
-                                                  );
-                                                }
-                                              },
-                                              onLongPress: () {
-                                                logger.v('Note Long Pressed');
-                                                sTileP.tilePressed(
-                                                    note: element);
-                                              },
+                                                  ],
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: ListTile(
+                                                    tileColor: Colors.white,
+                                                    // trailing: _selectedTiles
+                                                    //         .contains(element.id)
+                                                    //     ? Icon(Icons.check_box)
+                                                    //     : null,
+                                                    // onTap: () {
+                                                    //   logger.v('Note Pressed');
+                                                    //   if (_selectedTiles.length != 0) {
+                                                    //     if (_selectedTiles
+                                                    //         .contains(element.id)) {
+                                                    //       setState(() {
+                                                    //         _selectedTiles
+                                                    //             .remove(element.id);
+                                                    //       });
+                                                    //     } else {
+                                                    //       setState(() {
+                                                    //         _selectedTiles
+                                                    //             .add(element.id);
+                                                    //       });
+                                                    //     }
+                                                    //   }
+                                                    // },
+                                                    // onLongPress: () {
+                                                    //   logger.v('Note Long Pressed');
+                                                    //   setState(() {
+                                                    //     if (!_selectedTiles
+                                                    //         .contains(element.id))
+                                                    //       _selectedTiles.add(element.id);
+                                                    //   });
+                                                    // },
+                                                    //  selected: _selectedTiles
+                                                    //   .contains(element.id),
+                                                    onTap: () {
+                                                      logger.v('Note Pressed');
+                                                      if (sTileP.selectedOnes
+                                                              .length !=
+                                                          0)
+                                                        sTileP.tilePressed(
+                                                            note: element);
+                                                      else {
+                                                        notemodeC.notemode =
+                                                            zefyrNoteMode
+                                                                .editNote;
+                                                        Navigator.of(context)
+                                                            .push(
+                                                          CupertinoPageRoute(
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return ZefyrNote(
+                                                                contents:
+                                                                    NotusDocument
+                                                                        .fromJson(
+                                                                  jsonDecode(element
+                                                                      .contents),
+                                                                ),
+                                                                title: element
+                                                                    .title,
+                                                                id: element.id,
+                                                                searchKey: element
+                                                                    .searchKey,
+                                                                date: element
+                                                                    .date,
+                                                              );
+                                                            },
+                                                          ),
+                                                        );
+                                                      }
+                                                    },
+                                                    onLongPress: () {
+                                                      logger.v(
+                                                          'Note Long Pressed');
+                                                      sTileP.tilePressed(
+                                                          note: element);
+                                                    },
 
-                                              selected: sTileP.selectedOnes
-                                                  .contains(element),
-                                              selectedTileColor:
-                                                  Colors.blueGrey[200],
-                                              dense: false,
-                                              title: Text(
-                                                element.title.toString(),
-                                                overflow: TextOverflow.ellipsis,
+                                                    selected: sTileP
+                                                        .selectedOnes
+                                                        .contains(element),
+                                                    selectedTileColor:
+                                                        Colors.blueGrey[200],
+                                                    dense: false,
+                                                    title: Text(
+                                                      element.title.toString(),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    // subtitle: Text(element.date),
+                                                    isThreeLine: true,
+                                                    subtitle: Text(
+                                                      mainContent[0] +
+                                                          '...\n' +
+                                                          element.date,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                              // subtitle: Text(element.date),
-                                              isThreeLine: true,
-                                              subtitle: Text(
-                                                mainContent[0] +
-                                                    '...\n' +
-                                                    element.date,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    //  Padding(
-                                    //   padding: EdgeInsets.only(bottom: 0.5),
-                                    //   child: FlatButton(
-                                    //     onPressed: null,
-                                    //     onLongPress: () {},
-                                    //     child: element,
-                                    //   ),
-                                    // ),
-                                  ).toList(),
-                                ),
+                                            );
+                                          },
+                                          //  Padding(
+                                          //   padding: EdgeInsets.only(bottom: 0.5),
+                                          //   child: FlatButton(
+                                          //     onPressed: null,
+                                          //     onLongPress: () {},
+                                          //     child: element,
+                                          //   ),
+                                          // ),
+                                        ).toList(),
+                                      ),
+                                    );
+                                  else {}
+                                },
                               )
                             : Center(
                                 child: Text('You haven\' added any notes yet'),

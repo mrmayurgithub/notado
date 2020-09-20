@@ -1,4 +1,4 @@
-#Sat Sep 19 20:35:09 IST 2020
+#Sun Sep 20 23:52:22 IST 2020
 base.2=C\:\\apps\\notado\\build\\app\\intermediates\\dex\\debug\\mergeExtDexDebug\\out\\classes2.dex
 base.1=C\:\\apps\\notado\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\out\\classes.dex
 base.0=C\:\\apps\\notado\\build\\app\\intermediates\\dex\\debug\\mergeExtDexDebug\\out\\classes.dex
@@ -21,12 +21,15 @@ path.1=classes.dex
 renamed.2=classes3.dex
 path.0=classes.dex
 renamed.1=classes2.dex
+renamed.16=classes17.dex
 renamed.0=classes.dex
 renamed.15=classes16.dex
 renamed.14=classes15.dex
 renamed.13=classes14.dex
 renamed.12=classes13.dex
 renamed.11=classes12.dex
+path.16=classes_13.dex
+base.16=C\:\\apps\\notado\\build\\app\\intermediates\\dex\\debug\\mergeLibDexDebug\\out\\classes_13.dex
 renamed.10=classes11.dex
 path.15=classes_12.dex
 base.15=C\:\\apps\\notado\\build\\app\\intermediates\\dex\\debug\\mergeLibDexDebug\\out\\classes_12.dex
