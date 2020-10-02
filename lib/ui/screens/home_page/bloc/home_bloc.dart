@@ -11,6 +11,7 @@ import 'package:notado/global/helper/global_helper.dart';
 import 'package:notado/models/note_model/note_model.dart';
 import 'package:notado/ui/components/note_tile.dart';
 import 'package:notado/ui/screens/add_zefyr_note/bloc/zefyr_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:zefyr/zefyr.dart';
 part 'home_state.dart';
 part 'home_event.dart';
@@ -38,7 +39,7 @@ class HomepageBloc extends Bloc<HomeEvent, HomeState> {
         logger.v('Notes Requested');
         yield HomepageLoaded(notelist: savedNotes);
       }
-      if (event is CreateNote) {
+      if (event is SaveNewNote) {
         yield NewZefyrPageLoaded();
       }
       if (event is EditNoteRequest) {

@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gradients/flutter_gradients.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -20,6 +21,8 @@ import 'package:notado/ui/screens/add_zefyr_note/add_zefyr_note.dart';
 import 'package:notado/ui/screens/handwritten_note_screen/handwritten_note.dart';
 import 'package:notado/ui/screens/home_page/bloc/home_bloc.dart';
 import 'package:notado/ui/components/snackbar.dart';
+import 'package:notado/ui/screens/login_page/login_screen.dart';
+import 'package:notado/ui/themes/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -70,6 +73,44 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
     }
   }
 
+  Future<bool> _onBackPressed() async {
+    DateTime currentBackPressTime;
+    var deTl = Provider.of<SelectedTileProvider>(context);
+    if (deTl.selectedOnes.length == 0) {
+      DateTime now = DateTime.now();
+      if (currentBackPressTime == null ||
+          now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+        currentBackPressTime = now;
+        Toast.show('Press again to exit', context);
+        return Future.value(false);
+      }
+      return Future.value(true);
+    } else {
+      Future.delayed(Duration(milliseconds: 1), () {
+        deTl.clearSelectedOnes();
+        return false;
+      });
+    }
+    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////
+    // if (!selectListItem.isSelecting) {
+    //   DateTime now = DateTime.now();
+    //   if (currentBackPressTime == null ||
+    //       now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+    //     currentBackPressTime = now;
+    //     Toast.show('Press again to exit', context);
+    //     return Future.value(false);
+    //   }
+    //   return Future.value(true);
+    // } else {
+    //   Future.delayed(Duration(milliseconds: 1), () {
+    //     changeSelectedListItem.clearselectedItemsList();
+    //     selectListItem.isSelecting = false;
+    //     return false;
+    //   });
+    // }
+  }
+
   @override
   void initState() {
     viewController =
@@ -79,95 +120,79 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
 
   @override
   Widget build(BuildContext context) {
+    bool status = Theme.of(context).brightness == Brightness.dark;
+    ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
     final size = MediaQuery.of(context).size;
     var notemodeC = Provider.of<NoteModeProvider>(context);
-    return WillPopScope(
-      onWillPop: () async {
-        DateTime currentBackPressTime;
-        // if (!selectListItem.isSelecting) {
-        //   DateTime now = DateTime.now();
-        //   if (currentBackPressTime == null ||
-        //       now.difference(currentBackPressTime) > Duration(seconds: 2)) {
-        //     currentBackPressTime = now;
-        //     Toast.show('Press again to exit', context);
-        //     return Future.value(false);
-        //   }
-        //   return Future.value(true);
-        // } else {
-        //   Future.delayed(Duration(milliseconds: 1), () {
-        //     changeSelectedListItem.clearselectedItemsList();
-        //     selectListItem.isSelecting = false;
-        //     return false;
-        //   });
-        // }
+    return BlocConsumer<HomepageBloc, HomeState>(
+      listener: (context, state) {
+        if (state is HomeInitial) {
+          return Center(child: CircularProgressIndicator());
+        }
+        // if (state is HomepageLoaded) {}
+        if (state is HomepageError) {
+          context.showSnackBar(state.message);
+        }
+        if (state is HomepageLoading) {
+          showProgress(context);
+        }
+        if (state is HomepageSuccess) {
+          Navigator.of(context).pop();
+          BlocProvider.of<HomepageBloc>(context).add(NotesRequested());
+        }
+        if (state is NewZefyrPageLoaded) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (BuildContext context) {
+              return ZefyrNote();
+            }),
+          );
+        }
+        if (state is EditZefyrpageLoaded) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (BuildContext context) {
+              return ZefyrNote(
+                contents: state.contents,
+                title: state.title,
+                id: state.id,
+                date: state.date,
+                searchKey: state.searchKey,
+              );
+            }),
+          );
+        }
+        if (state is CreateLoading) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (state is UpdateLoading) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (state is DeletingNotes) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (state is Cancelled) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return HomeScreen();
+              },
+            ),
+          );
+        }
       },
-      child: BlocConsumer<HomepageBloc, HomeState>(
-        listener: (context, state) {
-          if (state is HomeInitial) {
-            return Center(child: CircularProgressIndicator());
-          }
-          // if (state is HomepageLoaded) {}
-          if (state is HomepageError) {
-            context.showSnackBar(state.message);
-          }
-          if (state is HomepageLoading) {
-            showProgress(context);
-          }
-          if (state is HomepageSuccess) {
-            Navigator.of(context).pop();
-            BlocProvider.of<HomepageBloc>(context).add(NotesRequested());
-          }
-          if (state is NewZefyrPageLoaded) {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (BuildContext context) {
-                return ZefyrNote();
-              }),
-            );
-          }
-          if (state is EditZefyrpageLoaded) {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (BuildContext context) {
-                return ZefyrNote(
-                  contents: state.contents,
-                  title: state.title,
-                  id: state.id,
-                  date: state.date,
-                  searchKey: state.searchKey,
-                );
-              }),
-            );
-          }
-          if (state is CreateLoading) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (state is UpdateLoading) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (state is DeletingNotes) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (state is Cancelled) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (BuildContext context) {
-                  return HomeScreen();
-                },
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is HomepageLoaded) {
-            return Consumer<SelectedTileProvider>(
+      builder: (context, state) {
+        if (state is HomepageLoaded) {
+          return WillPopScope(
+            onWillPop: _onBackPressed,
+            child: Consumer<SelectedTileProvider>(
               builder: (context, sTileP, child) {
-                print('rebuildddddddddddddddddddddd........');
+                logger.v('Rebuilding');
                 return Scaffold(
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   appBar: sTileP.selectedOnes.length != 0
                       ? AppBar(
-                          iconTheme: Theme.of(context)
-                              .iconTheme
-                              .copyWith(color: Colors.black),
+                          iconTheme: Theme.of(context).iconTheme.copyWith(
+                                color: Theme.of(context).iconTheme.color,
+                              ),
                           backgroundColor:
                               Theme.of(context).scaffoldBackgroundColor,
                           leading: IconButton(
@@ -193,7 +218,20 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                             ),
                             IconButton(
                               icon: Icon(Icons.select_all_outlined),
-                              onPressed: () {},
+                              onPressed: () {
+                                if (sTileP.selectedOnes.length ==
+                                    state.notelist.length) {
+                                  sTileP.clearSelectedOnes();
+                                } else {
+                                  sTileP.clearSelectedOnes();
+
+                                  for (var i = 0;
+                                      i < state.notelist.length;
+                                      i++) {
+                                    sTileP.tilePressed(note: state.notelist[i]);
+                                  }
+                                }
+                              },
                             ),
                           ],
                         )
@@ -208,7 +246,7 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                           // ),
 
                           iconTheme: Theme.of(context).iconTheme.copyWith(
-                                color: Colors.black,
+                                color: Theme.of(context).iconTheme.color,
                               ),
                           // backgroundColor: Colors.blueGrey[100],
                           backgroundColor:
@@ -220,31 +258,107 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                               onPressed: () {
                                 showSearch(
                                   context: context,
-                                  delegate: DataSearch(),
+                                  delegate:
+                                      DataSearch(allNotes: state.notelist),
                                 );
                               },
                             ),
-                            IconButton(
-                              icon: AnimatedIcon(
-                                icon: AnimatedIcons.list_view,
-                                progress: viewController,
-                              ),
-                              onPressed: () {
-                                if (Provider.of<NotesViewProvider>(context,
-                                            listen: false)
-                                        .view ==
-                                    notesView.list) {
-                                  viewController.forward();
-                                  Provider.of<NotesViewProvider>(context,
-                                          listen: false)
-                                      .view = notesView.grid;
-                                } else {
-                                  viewController.reverse();
-                                  Provider.of<NotesViewProvider>(context,
-                                          listen: false)
-                                      .view = notesView.list;
-                                  ;
-                                }
+                            // IconButton(
+                            //   icon: AnimatedIcon(
+                            //     icon: AnimatedIcons.list_view,
+                            //     progress: viewController,
+                            //   ),
+                            //   onPressed: () {
+                            //     if (Provider.of<NotesViewProvider>(context,
+                            //                 listen: false)
+                            //             .view ==
+                            //         notesView.list) {
+                            //       viewController.forward();
+                            //       Provider.of<NotesViewProvider>(context,
+                            //               listen: false)
+                            //           .view = notesView.grid;
+                            //     } else {
+                            //       viewController.reverse();
+                            //       Provider.of<NotesViewProvider>(context,
+                            //               listen: false)
+                            //           .view = notesView.list;
+                            //     }
+                            //   },
+                            // ),
+                            PopupMenuButton(
+                              itemBuilder: (BuildContext context) {
+                                return <PopupMenuItem>[
+                                  PopupMenuItem<String>(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        logger.v('Sort By');
+                                        return showDialog(
+                                          context: context,
+                                          child: AlertDialog(
+                                            title: Text('Sort by'),
+                                            content: ListView(
+                                              shrinkWrap: true,
+                                              children: <Widget>[
+                                                ListTile(
+                                                  leading: Radio(
+                                                    value: null,
+                                                    groupValue: null,
+                                                    onChanged: null,
+                                                  ),
+                                                  title: Text('Name'),
+                                                ),
+                                                ListTile(
+                                                  leading: Radio(
+                                                    value: null,
+                                                    groupValue: null,
+                                                    onChanged: null,
+                                                  ),
+                                                  title: Text('Date Modified'),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        child: Text('Sort by'),
+                                      ),
+                                    ),
+                                  ),
+                                  PopupMenuItem<String>(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        logger.v('view');
+                                        if (Provider.of<NotesViewProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .view ==
+                                            notesView.list) {
+                                          Provider.of<NotesViewProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .view = notesView.grid;
+                                          Navigator.of(context).pop();
+                                        } else {
+                                          Provider.of<NotesViewProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .view = notesView.list;
+                                          Navigator.of(context).pop();
+                                        }
+                                      },
+                                      child: Container(
+                                        child: Provider.of<NotesViewProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .view ==
+                                                notesView.list
+                                            ? Text('Grid View')
+                                            : Text('List View'),
+                                      ),
+                                    ),
+                                  ),
+                                ];
                               },
                             ),
                             // PopupMenuButton(
@@ -306,7 +420,8 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                 vertical: padV60 * size.height,
                                 horizontal: padH10 * size.width,
                               ),
-                              child: Column(
+                              child: ListView(
+                                shrinkWrap: true,
                                 children: <Widget>[
                                   Padding(
                                     padding: EdgeInsets.symmetric(
@@ -367,25 +482,7 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                     ),
                                     child: Container(
                                       child: ListTile(
-                                        leading: Icon(
-                                          FontAwesomeIcons.bookOpen,
-                                          color: Colors.white,
-                                        ),
-                                        title: Text(
-                                          'Study Notes',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: (padV60 / 6) * size.height,
-                                    ),
-                                    child: Container(
-                                      child: ListTile(
+                                        onTap: () {},
                                         leading: Icon(
                                           FontAwesomeIcons.trash,
                                           color: Colors.white,
@@ -406,14 +503,25 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                     child: Container(
                                       child: ListTile(
                                         leading: Icon(
-                                          Icons.settings_outlined,
+                                          FontAwesomeIcons.themeisle,
                                           color: Colors.white,
                                         ),
                                         title: Text(
-                                          'Settings',
+                                          'Dark Mode',
                                           style: TextStyle(
                                             color: Colors.white,
                                           ),
+                                        ),
+                                        trailing: Switch(
+                                          value: status,
+                                          onChanged: (value) {
+                                            status = value;
+                                            status == true
+                                                ? _themeChanger
+                                                    .setTheme(ThemeData.dark())
+                                                : _themeChanger.setTheme(
+                                                    ThemeData.light());
+                                          },
                                         ),
                                       ),
                                     ),
@@ -428,6 +536,7 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                           BlocProvider.of<AuthenticationBloc>(
                                                   context)
                                               .add(LoggedOut());
+                                          //TODO: implement going to login screen here
                                         },
                                         leading: Icon(
                                           Icons.logout,
@@ -556,26 +665,24 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                       color: Colors.white,
                                     ),
                                   ),
-                                  Flexible(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text(
-                                          'Made with ❤️ in India',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            color: Colors.white,
-                                          ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text(
+                                        'Made with ❤️ in India',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          color: Colors.white,
                                         ),
-                                        Text(
-                                          'Copyright © 2020 Dot.Studios LLC',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            color: Colors.white,
-                                          ),
+                                      ),
+                                      Text(
+                                        'Copyright © 2020 Dot.Studios LLC',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          color: Colors.white,
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -720,7 +827,9 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                                   borderRadius:
                                                       BorderRadius.circular(10),
                                                   child: ListTile(
-                                                    tileColor: Colors.white,
+                                                    tileColor: status != true
+                                                        ? Colors.white
+                                                        : Colors.black,
                                                     // trailing: _selectedTiles
                                                     //         .contains(element.id)
                                                     //     ? Icon(Icons.check_box)
@@ -795,17 +904,30 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                                       sTileP.tilePressed(
                                                           note: element);
                                                     },
-
+                                                    trailing: sTileP
+                                                            .selectedOnes
+                                                            .contains(element)
+                                                        ? Icon(
+                                                            Icons.check_circle,
+                                                          )
+                                                        : null,
                                                     selected: sTileP
                                                         .selectedOnes
                                                         .contains(element),
                                                     selectedTileColor:
-                                                        Colors.blueGrey[200],
+                                                        status != true
+                                                            ? Colors.grey[200]
+                                                            : Colors.black54,
                                                     dense: false,
                                                     title: Text(
                                                       element.title.toString(),
                                                       overflow:
                                                           TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        color: status != true
+                                                            ? Colors.black
+                                                            : Colors.white,
+                                                      ),
                                                     ),
                                                     // subtitle: Text(element.date),
                                                     isThreeLine: true,
@@ -815,6 +937,11 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                                           element.date,
                                                       overflow:
                                                           TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        color: status != true
+                                                            ? Colors.black
+                                                            : Colors.white,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -832,7 +959,79 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                         ).toList(),
                                       ),
                                     );
-                                  else {}
+                                  else {
+                                    return GridView.count(
+                                      scrollDirection: Axis.vertical,
+                                      physics: BouncingScrollPhysics(),
+                                      shrinkWrap: true,
+                                      crossAxisCount: 2,
+                                      children: state.notelist.map((element) {
+                                        Iterable list =
+                                            json.decode(element.contents);
+                                        List Cnote = list
+                                            .map((i) => i['insert'])
+                                            .toList();
+                                        List<String> mainContent =
+                                            Cnote[0].toString().split('\n');
+                                        return Padding(
+                                          padding: EdgeInsets.only(
+                                            bottom: 5,
+                                            left: 5,
+                                          ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              boxShadow: <BoxShadow>[
+                                                BoxShadow(
+                                                  color: Theme.of(context)
+                                                      .scaffoldBackgroundColor,
+                                                  // .withOpacity(1),
+                                                  offset: Offset(0.0, 5.0),
+                                                  blurRadius: 10,
+                                                  spreadRadius: 0.1,
+                                                ),
+                                              ],
+                                            ),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: Card(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.all(2),
+                                                      child: Text(
+                                                        element.title
+                                                            .toString(),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.all(2),
+                                                      child: Text(mainContent[0]
+                                                          .toString()),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.all(2),
+                                                      child: Text(element.date
+                                                          .toString()),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    );
+                                  }
                                 },
                               )
                             : Center(
@@ -843,11 +1042,11 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                   ),
                 );
               },
-            );
-          }
-          return Container();
-        },
-      ),
+            ),
+          );
+        }
+        return Container();
+      },
     );
   }
 }
@@ -862,6 +1061,9 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
 // }
 
 class DataSearch extends SearchDelegate<String> {
+  final allNotes;
+
+  DataSearch({@required this.allNotes});
   @override
   List<Widget> buildActions(BuildContext context) {
     //actions for appBar
@@ -894,7 +1096,7 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestionList = query.isEmpty ? recentNotes : ['dhfdj'];
+    final suggestionList = query.isEmpty ? allNotes : [];
     return ListView.builder(
       itemCount: suggestionList.length,
       itemBuilder: (context, index) => ListTile(
@@ -920,9 +1122,3 @@ class DataSearch extends SearchDelegate<String> {
     );
   }
 }
-
-final recentNotes = [
-  'Note 1',
-  'Note 2',
-  'Note 3',
-];

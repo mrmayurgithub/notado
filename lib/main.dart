@@ -9,6 +9,7 @@ import 'package:notado/ui/screens/login_page/login_screen.dart';
 import 'package:notado/ui/screens/settings_page/settings_screen.dart';
 import 'package:notado/ui/screens/splash_page/splash_Screen.dart';
 import 'package:notado/ui/screens/trash_page/trash_screen.dart';
+import 'package:notado/ui/themes/theme.dart';
 // import 'package:notado/ui/themes/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,9 +32,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // ListenableProvider(
-        //   create: (_) => ThemeChanger(appTheme.getLightTheme()),
-        // ),
+        ListenableProvider<ThemeChanger>(
+          create: (_) => ThemeChanger(appTheme.getLightTheme()),
+        ),
         ChangeNotifierProvider<SelectedTileProvider>.value(
           value: SelectedTileProvider(),
         ),
@@ -86,9 +87,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final _theme = Provider.of<ThemeChanger>(context).getTheme();
+
     return BlocProvider(
       create: (BuildContext context) {},
       child: MaterialApp(
+        theme: _theme,
         debugShowCheckedModeBanner: false,
         routes: {
           'Home': (context) => HomeScreen(),

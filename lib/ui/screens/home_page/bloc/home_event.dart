@@ -16,12 +16,12 @@ class NewNoteRequest extends HomeEvent {
   List<Object> get props => [];
 }
 
-class CreateNote extends HomeEvent {
+class SaveNewNote extends HomeEvent {
   final String contents;
   final String title;
   final String date;
   final String searchKey;
-  CreateNote({
+  SaveNewNote({
     @required this.contents,
     @required this.date,
     @required this.searchKey,

@@ -12,3 +12,5 @@ enum currentScreen {
 }
 
 enum notesView { list, grid }
+
+enum currentTheme { light, dark }
