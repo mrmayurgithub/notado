@@ -10,17 +10,17 @@ class MainTheme {
     canvasColor: Color(0xff3a376c),
     accentColor: Colors.purple[100],
     iconTheme: IconThemeData(color: Colors.white),
-    splashColor: Colors.purple[400],
-    highlightColor: Color(0xffac8ae8),
-    focusColor: Color.fromARGB(150, 80, 53, 232),
-    hintColor: Color.fromARGB(100, 154, 109, 252),
-    hoverColor: Color(0xff9479be),
+    splashColor: Colors.green[400],
+    hoverColor: Colors.green,
+    highlightColor: Colors.green[200],
     cardColor: Colors.black,
     scaffoldBackgroundColor: Colors.black,
     textTheme: ThemeData.dark().textTheme.copyWith(
-        headline5: TextStyle(color: Colors.white),
-        headline6: TextStyle(color: Colors.white),
-        caption: TextStyle(color: Colors.white)),
+          headline5: TextStyle(color: Colors.white),
+          headline6: TextStyle(color: Colors.grey[400]),
+          caption: TextStyle(color: Colors.white),
+          bodyText2: TextStyle(color: Colors.green),
+        ),
   );
 
   ThemeData _lightTheme = ThemeData.light().copyWith(
@@ -30,18 +30,20 @@ class MainTheme {
     primaryColor: Color(0xfffbfbfb),
     canvasColor: Color(0xfff5f5f5),
     accentColor: Color(0xffd6cef3),
-    iconTheme: IconThemeData(color: Color(0xff333237)),
-    splashColor: Colors.purple[500],
+    iconTheme: IconThemeData(color: Colors.blueGrey),
+    splashColor: Colors.green[500],
     highlightColor: Colors.purple[300],
     focusColor: Color(0xff5035e4),
     hintColor: Colors.purple[400],
     hoverColor: Colors.purple[200],
     floatingActionButtonTheme: FloatingActionButtonThemeData()
         .copyWith(backgroundColor: Colors.purple),
-    textTheme: ThemeData.dark().textTheme.copyWith(
-        headline5: TextStyle(color: Colors.blueGrey),
-        headline6: TextStyle(color: Colors.blueGrey),
-        caption: TextStyle(color: Colors.blueGrey)),
+    textTheme: ThemeData.light().textTheme.copyWith(
+          headline5: TextStyle(color: Colors.blueGrey),
+          headline6: TextStyle(color: Colors.white60),
+          caption: TextStyle(color: Colors.blueGrey),
+          bodyText2: TextStyle(color: Colors.green),
+        ),
   );
 
   ThemeData getDarkTheme() {

@@ -46,3 +46,14 @@ class DeleteFromTrashSuccess extends TrashState {
   @override
   List<Object> get props => [];
 }
+
+
+class RestoringNotesFromTrash extends TrashState{
+  @override
+  List<Object> get props => [];
+}
+
+class RestoringNotesFromTrashSuccess extends TrashState{
+  @override
+  List<Object> get props => [];
+}

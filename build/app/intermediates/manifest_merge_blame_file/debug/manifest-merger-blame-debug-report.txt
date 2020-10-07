@@ -48,7 +48,7 @@
 31        android:debuggable="true"
 32        android:icon="@mipmap/ic_launcher"
 32-->C:\apps\notado\android\app\src\main\AndroidManifest.xml:11:9-43
-33        android:label="notado" >
+33        android:label="Notado" >
 33-->C:\apps\notado\android\app\src\main\AndroidManifest.xml:10:9-31
 34        <activity
 34-->C:\apps\notado\android\app\src\main\AndroidManifest.xml:12:9-40:20
