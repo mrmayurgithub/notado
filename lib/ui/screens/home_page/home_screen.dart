@@ -198,9 +198,12 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   appBar: sTileP.selectedOnes.length != 0
                       ? AppBar(
+                          toolbarHeight: 80.0,
+                          automaticallyImplyLeading: false,
                           title: Text(
-                            'HOME',
+                            'Select Notes',
                             style: TextStyle(
+                              fontSize: 25,
                               letterSpacing: 1.0,
                               color:
                                   Theme.of(context).textTheme.headline5.color,
@@ -261,9 +264,13 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                           //     ),
                           //   ),
                           // ),
+                          toolbarHeight: 80.0,
+                          automaticallyImplyLeading: false,
+
                           title: Text(
                             'HOME',
                             style: TextStyle(
+                              fontSize: 25,
                               letterSpacing: 1.0,
                               color:
                                   Theme.of(context).textTheme.headline5.color,
@@ -287,7 +294,6 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                 );
                               },
                             ),
-
                             // PopupMenuButton(
                             //   itemBuilder: (BuildContext context) {
                             //     return <PopupMenuItem>[
@@ -298,7 +304,15 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                             //             return showDialog(
                             //               context: context,
                             //               child: AlertDialog(
-                            //                 title: Text('Sort by'),
+                            //                 title: Text(
+                            //                   'Sort by',
+                            //                   style: TextStyle(
+                            //                     color: Theme.of(context)
+                            //                         .textTheme
+                            //                         .headline5
+                            //                         .color,
+                            //                   ),
+                            //                 ),
                             //                 content: ListView(
                             //                   shrinkWrap: true,
                             //                   children: <Widget>[
@@ -308,7 +322,15 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                             //                         groupValue: null,
                             //                         onChanged: null,
                             //                       ),
-                            //                       title: Text('Name'),
+                            //                       title: Text(
+                            //                         'Name',
+                            //                         style: TextStyle(
+                            //                           color: Theme.of(context)
+                            //                               .textTheme
+                            //                               .headline5
+                            //                               .color,
+                            //                         ),
+                            //                       ),
                             //                     ),
                             //                     ListTile(
                             //                       leading: Radio(
@@ -316,7 +338,15 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                             //                         groupValue: null,
                             //                         onChanged: null,
                             //                       ),
-                            //                       title: Text('Date Modified'),
+                            //                       title: Text(
+                            //                         'Date Modified',
+                            //                         style: TextStyle(
+                            //                           color: Theme.of(context)
+                            //                               .textTheme
+                            //                               .headline5
+                            //                               .color,
+                            //                         ),
+                            //                       ),
                             //                     ),
                             //                   ],
                             //                 ),
@@ -324,7 +354,15 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                             //             );
                             //           },
                             //           child: Container(
-                            //             child: Text('Sort by'),
+                            //             child: Text(
+                            //               'Sort by',
+                            //               style: TextStyle(
+                            //                 color: Theme.of(context)
+                            //                     .textTheme
+                            //                     .headline5
+                            //                     .color,
+                            //               ),
+                            //             ),
                             //           ),
                             //         ),
                             //       ),
@@ -356,22 +394,54 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                             //                             listen: false)
                             //                         .view ==
                             //                     notesView.list
-                            //                 ? Text('Grid View')
-                            //                 : Text('List View'),
+                            //                 ? Text(
+                            //                     'Grid View',
+                            //                     style: TextStyle(
+                            //                       color: Theme.of(context)
+                            //                           .textTheme
+                            //                           .headline5
+                            //                           .color,
+                            //                     ),
+                            //                   )
+                            //                 : Text(
+                            //                     'List View',
+                            //                     style: TextStyle(
+                            //                       color: Theme.of(context)
+                            //                           .textTheme
+                            //                           .headline5
+                            //                           .color,
+                            //                     ),
+                            //                   ),
                             //           ),
                             //         ),
                             //       ),
                             //       PopupMenuItem<String>(
                             //         child: GestureDetector(
-                            //           onTap: () {},
+                            //           onTap: () {
+                            //             Navigator.of(context).push(
+                            //               CupertinoPageRoute(
+                            //                   builder: (BuildContext context) {
+                            //                 return SettingsScreen();
+                            //               }),
+                            //             );
+                            //           },
                             //           child: Container(
-                            //             child: Text('App Info'),
+                            //             child: Text(
+                            //               'Settings',
+                            //               style: TextStyle(
+                            //                 color: Theme.of(context)
+                            //                     .textTheme
+                            //                     .headline5
+                            //                     .color,
+                            //               ),
+                            //             ),
                             //           ),
                             //         ),
                             //       ),
                             //     ];
                             //   },
                             // ),
+
                             IconButton(
                               icon: Icon(
                                 Icons.settings_outlined,
@@ -712,6 +782,7 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                   //   // backgroundColor: Colors.blueGrey[900],
                   //   backgroundColor: Colors.deepPurple,
                   // ),
+
                   floatingActionButton: SpeedDial(
                     overlayColor: Colors.black12,
                     backgroundColor: Colors.green,
@@ -815,7 +886,7 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                                 Cnote[0].toString().split('\n');
                                             return Padding(
                                               padding:
-                                                  EdgeInsets.only(bottom: 5),
+                                                  EdgeInsets.only(bottom: 0),
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   boxShadow: <BoxShadow>[
@@ -829,128 +900,153 @@ class _HomeScreenNoteListState extends State<HomeScreenNoteList>
                                                     ),
                                                   ],
                                                 ),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  child: ListTile(
-                                                    tileColor: status != true
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                    // trailing: _selectedTiles
-                                                    //         .contains(element.id)
-                                                    //     ? Icon(Icons.check_box)
-                                                    //     : null,
-                                                    // onTap: () {
-                                                    //   logger.v('Note Pressed');
-                                                    //   if (_selectedTiles.length != 0) {
-                                                    //     if (_selectedTiles
-                                                    //         .contains(element.id)) {
-                                                    //       setState(() {
-                                                    //         _selectedTiles
-                                                    //             .remove(element.id);
-                                                    //       });
-                                                    //     } else {
-                                                    //       setState(() {
-                                                    //         _selectedTiles
-                                                    //             .add(element.id);
-                                                    //       });
-                                                    //     }
-                                                    //   }
-                                                    // },
-                                                    // onLongPress: () {
-                                                    //   logger.v('Note Long Pressed');
-                                                    //   setState(() {
-                                                    //     if (!_selectedTiles
-                                                    //         .contains(element.id))
-                                                    //       _selectedTiles.add(element.id);
-                                                    //   });
-                                                    // },
-                                                    //  selected: _selectedTiles
-                                                    //   .contains(element.id),
-                                                    onTap: () {
-                                                      logger.v('Note Pressed');
-                                                      if (sTileP.selectedOnes
-                                                              .length !=
-                                                          0)
-                                                        sTileP.tilePressed(
-                                                            note: element);
-                                                      else {
-                                                        notemodeC.notemode =
-                                                            zefyrNoteMode
-                                                                .editNote;
-                                                        Navigator.of(context)
-                                                            .push(
-                                                          CupertinoPageRoute(
-                                                            builder:
-                                                                (BuildContext
-                                                                    context) {
-                                                              return ZefyrNote(
-                                                                contents:
-                                                                    NotusDocument
-                                                                        .fromJson(
-                                                                  jsonDecode(element
-                                                                      .contents),
-                                                                ),
-                                                                title: element
-                                                                    .title,
-                                                                id: element.id,
-                                                                searchKey: element
-                                                                    .searchKey,
-                                                                date: element
-                                                                    .date,
-                                                              );
-                                                            },
-                                                          ),
-                                                        );
-                                                      }
-                                                    },
-                                                    onLongPress: () {
-                                                      logger.v(
-                                                          'Note Long Pressed');
-                                                      sTileP.tilePressed(
-                                                          note: element);
-                                                    },
-                                                    trailing: sTileP
+                                                child: Column(
+                                                  children: [
+                                                    ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      child: ListTile(
+                                                        tileColor:
+                                                            status != true
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                        // trailing: _selectedTiles
+                                                        //         .contains(element.id)
+                                                        //     ? Icon(Icons.check_box)
+                                                        //     : null,
+                                                        // onTap: () {
+                                                        //   logger.v('Note Pressed');
+                                                        //   if (_selectedTiles.length != 0) {
+                                                        //     if (_selectedTiles
+                                                        //         .contains(element.id)) {
+                                                        //       setState(() {
+                                                        //         _selectedTiles
+                                                        //             .remove(element.id);
+                                                        //       });
+                                                        //     } else {
+                                                        //       setState(() {
+                                                        //         _selectedTiles
+                                                        //             .add(element.id);
+                                                        //       });
+                                                        //     }
+                                                        //   }
+                                                        // },
+                                                        // onLongPress: () {
+                                                        //   logger.v('Note Long Pressed');
+                                                        //   setState(() {
+                                                        //     if (!_selectedTiles
+                                                        //         .contains(element.id))
+                                                        //       _selectedTiles.add(element.id);
+                                                        //   });
+                                                        // },
+                                                        //  selected: _selectedTiles
+                                                        //   .contains(element.id),
+                                                        onTap: () {
+                                                          logger.v(
+                                                              'Note Pressed');
+                                                          if (sTileP
+                                                                  .selectedOnes
+                                                                  .length !=
+                                                              0)
+                                                            sTileP.tilePressed(
+                                                                note: element);
+                                                          else {
+                                                            notemodeC.notemode =
+                                                                zefyrNoteMode
+                                                                    .editNote;
+                                                            Navigator.of(
+                                                                    context)
+                                                                .push(
+                                                              CupertinoPageRoute(
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return ZefyrNote(
+                                                                    contents:
+                                                                        NotusDocument
+                                                                            .fromJson(
+                                                                      jsonDecode(
+                                                                          element
+                                                                              .contents),
+                                                                    ),
+                                                                    title: element
+                                                                        .title,
+                                                                    id: element
+                                                                        .id,
+                                                                    searchKey:
+                                                                        element
+                                                                            .searchKey,
+                                                                    date: element
+                                                                        .date,
+                                                                  );
+                                                                },
+                                                              ),
+                                                            );
+                                                          }
+                                                        },
+                                                        onLongPress: () {
+                                                          logger.v(
+                                                              'Note Long Pressed');
+                                                          sTileP.tilePressed(
+                                                              note: element);
+                                                        },
+                                                        trailing: sTileP
+                                                                .selectedOnes
+                                                                .contains(
+                                                                    element)
+                                                            ? Icon(
+                                                                Icons
+                                                                    .check_circle,
+                                                                color: Colors
+                                                                    .green,
+                                                              )
+                                                            : null,
+                                                        selected: sTileP
                                                             .selectedOnes
-                                                            .contains(element)
-                                                        ? Icon(
-                                                            Icons
-                                                                .check_circle_outline,
-                                                          )
-                                                        : null,
-                                                    selected: sTileP
-                                                        .selectedOnes
-                                                        .contains(element),
-                                                    selectedTileColor:
-                                                        status != true
-                                                            ? Colors.grey[200]
-                                                            : Colors.black54,
-                                                    dense: false,
-                                                    title: Text(
-                                                      element.title.toString(),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                        color: status != true
-                                                            ? Colors.black
-                                                            : Colors.white,
+                                                            .contains(element),
+                                                        selectedTileColor:
+                                                            status != true
+                                                                ? Colors
+                                                                    .grey[200]
+                                                                : Colors
+                                                                    .black54,
+                                                        dense: false,
+                                                        title: Text(
+                                                          element.title
+                                                              .toString(),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                            color: status !=
+                                                                    true
+                                                                ? Colors.black
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
+                                                        // subtitle: Text(element.date),
+                                                        isThreeLine: true,
+                                                        subtitle: Text(
+                                                          mainContent[0] +
+                                                              '...\n' +
+                                                              element.date,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                            color: status !=
+                                                                    true
+                                                                ? Colors.black
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                    // subtitle: Text(element.date),
-                                                    isThreeLine: true,
-                                                    subtitle: Text(
-                                                      mainContent[0] +
-                                                          '...\n' +
-                                                          element.date,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                        color: status != true
-                                                            ? Colors.black
-                                                            : Colors.white,
-                                                      ),
+                                                    Divider(
+                                                      height: 1.0,
+                                                      indent: 1.0,
+                                                      color: Colors.grey,
                                                     ),
-                                                  ),
+                                                  ],
                                                 ),
                                               ),
                                             );
@@ -1103,23 +1199,52 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestionList = query.isEmpty ? allNotes : [];
+    final List<Note> suggestionList = query.isEmpty
+        ? allNotes
+        : allNotes.where((Note p) => p.title.contains(query)).toList();
+    if (query.isEmpty) {
+      return Center(
+        child: Text('Search for the notes here'),
+      );
+    }
     return ListView.builder(
       itemCount: suggestionList.length,
       itemBuilder: (context, index) => ListTile(
-        leading: Icon(Icons.note_outlined),
-        // title: Text(suggestionList[index]),
+        onTap: () {
+          Navigator.of(context).push(
+            CupertinoPageRoute(
+              builder: (BuildContext context) {
+                return ZefyrNote(
+                  contents: NotusDocument.fromJson(
+                    jsonDecode(suggestionList[index].contents),
+                  ),
+                  title: suggestionList[index].title,
+                  id: suggestionList[index].id,
+                  searchKey: suggestionList[index].searchKey,
+                  date: suggestionList[index].date,
+                );
+              },
+            ),
+          );
+        },
+        leading: Icon(
+          Icons.article_outlined,
+          color: Colors.green,
+        ),
         title: RichText(
           text: TextSpan(
-            text: suggestionList[index].substring(0, query.length),
+            text: suggestionList[index].title.substring(0, query.length),
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.green,
+              fontWeight: FontWeight.bold,
             ),
             children: [
               TextSpan(
-                text: suggestionList[index].substring(query.length),
+                text: suggestionList[index].title.substring(
+                    query.length, suggestionList[index].title.length),
                 style: TextStyle(
-                  color: Colors.grey,
+                  color: Theme.of(context).textTheme.headline5.color,
+                  fontWeight: FontWeight.w300,
                 ),
               ),
             ],
@@ -1127,6 +1252,29 @@ class DataSearch extends SearchDelegate<String> {
         ),
       ),
     );
+    // return ListView.builder(
+    //   itemCount: suggestionList.length,
+    //   itemBuilder: (context, index) => ListTile(
+    //     leading: Icon(Icons.note_outlined),
+    //     // title: Text(suggestionList[index]),
+    //     title: RichText(
+    //       text: TextSpan(
+    //         text: suggestionList[index].substring(0, query.length),
+    //         style: TextStyle(
+    //           color: Colors.black,
+    //         ),
+    //         children: [
+    //           TextSpan(
+    //             text: suggestionList[index].substring(query.length),
+    //             style: TextStyle(
+    //               color: Colors.grey,
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }
 

@@ -1,13 +1,16 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:notado/global/constants.dart';
+import 'package:notado/global/helper/global_helper.dart';
 import 'package:notado/ui/screens/settings_page/settings_constants.dart';
 import 'package:notado/ui/screens/settings_page/terms_and_privacy_policy.dart';
 import 'package:notado/ui/themes/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share/share.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -72,6 +75,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 ListTile(
+                  leading: Icon(Icons.perm_identity_outlined),
+                  title: Text(
+                    'Name',
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.headline5.color,
+                    ),
+                  ),
+                  subtitle: Text(globalUser.displayName),
+                ),
+                ListTile(
+                  leading: Icon(Icons.email_outlined),
+                  title: Text(
+                    'Email',
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.headline5.color,
+                    ),
+                  ),
+                  subtitle: Text(globalUser.email),
+                ),
+                ListTile(
+                  title: Text(
+                    'General',
+                    style: TextStyle(
+                      color: typeColor,
+                    ),
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(Icons.sort_outlined),
+                  title: Text(
+                    'Sort Notes',
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.headline5.color,
+                    ),
+                  ),
+                  subtitle: Text('by Name, date'),
+                ),
+                ListTile(
+                  leading: Icon(Icons.list_outlined),
+                  title: Text(
+                    'Notes View',
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.headline5.color,
+                    ),
+                  ),
+                  subtitle: Text('List View, Grid View'),
+                ),
+                ListTile(
+                  onTap: () {},
                   leading: Icon(Icons.login_outlined),
                   title: Text(
                     'Logout',
@@ -220,6 +272,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     }
                   },
                 ),
+
                 ListTile(
                   leading: Icon(Icons.star_outline_outlined),
                   title: Text(
@@ -230,6 +283,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 ListTile(
+                  leading: Icon(Icons.share_outlined),
+                  title: Text(
+                    'Share App',
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.headline5.color,
+                    ),
+                  ),
+                  onTap: () async {
+                    // await FlutterShare.share(
+                    //   title: 'Notado',
+                    //   linkUrl:
+                    //       "https://play.google.com/store/apps/details?id=dot.studios.contri_app.notado",
+                    // );
+                  },
+                ),
+                ListTile(
                   leading: Icon(Icons.help_outline),
                   title: Text(
                     'Help',
@@ -238,6 +307,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
+
                 // Column(
                 //   mainAxisAlignment: MainAxisAlignment.end,
                 //   children: <Widget>[
@@ -274,6 +344,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   subtitle: Text('1.0.0'),
+                ),
+                ListTile(
+                  leading: Icon(Icons.info_outline),
+                  title: Text(
+                    'App Info',
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.headline5.color,
+                    ),
+                  ),
+                  onTap: () {
+                    showAboutDialog(
+                        context: context,
+                        applicationName: 'Notado',
+                        applicationVersion: 'v1.0.1');
+                  },
                 ),
               ],
             ),

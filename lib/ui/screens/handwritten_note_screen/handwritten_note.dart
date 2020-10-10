@@ -65,16 +65,21 @@ class _DrawScreenState extends State<DrawScreen> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: AlertDialog(
-          title: Text('Enter the title'),
-          content: Padding(
-            padding: EdgeInsets.all(8.0),
+          title: Text(
+            'Enter the title',
+            style: TextStyle(
+              color: Theme.of(context).textTheme.headline5.color,
+            ),
+          ),
+          content: Form(
             child: TextFormField(
-              decoration: InputDecoration.collapsed(
-                hintText: 'Title',
+              decoration: InputDecoration(
+                labelText: 'Title',
+                labelStyle: TextStyle(
+                    color: Theme.of(context).textTheme.bodyText2.color),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
-                    width: 1.0,
-                    color: Colors.black,
+                    color: Theme.of(context).textTheme.headline5.color,
                   ),
                 ),
               ),
@@ -85,13 +90,21 @@ class _DrawScreenState extends State<DrawScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyText2.color),
+              ),
             ),
             FlatButton(
               onPressed: () {
                 //TODO: implement it
               },
-              child: Text('Save'),
+              child: Text(
+                'Save',
+                style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyText2.color),
+              ),
             ),
           ],
         ),
@@ -112,7 +125,7 @@ class _DrawScreenState extends State<DrawScreen> {
                 actionsIconTheme:
                     Theme.of(context).iconTheme.copyWith(color: Colors.black),
                 elevation: 0.0,
-                backgroundColor: Colors.white,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 automaticallyImplyLeading: false,
                 leading: IconButton(
                   icon: Icon(
@@ -303,6 +316,7 @@ class Speeddial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SpeedDial(
+      backgroundColor: Theme.of(context).textTheme.bodyText2.color,
       child: Icon(Icons.edit),
       overlayColor: Colors.black,
       overlayOpacity: 0.5,

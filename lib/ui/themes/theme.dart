@@ -14,7 +14,7 @@ class MainTheme {
     hoverColor: Colors.green,
     highlightColor: Colors.green[200],
     cardColor: Colors.black,
-    scaffoldBackgroundColor: Colors.black,
+    scaffoldBackgroundColor: Colors.blueGrey[900],
     textTheme: ThemeData.dark().textTheme.copyWith(
           headline5: TextStyle(color: Colors.white),
           headline6: TextStyle(color: Colors.grey[400]),
@@ -32,17 +32,19 @@ class MainTheme {
     accentColor: Color(0xffd6cef3),
     iconTheme: IconThemeData(color: Colors.blueGrey),
     splashColor: Colors.green[500],
-    highlightColor: Colors.purple[300],
+    highlightColor: Colors.green[300],
     focusColor: Color(0xff5035e4),
-    hintColor: Colors.purple[400],
-    hoverColor: Colors.purple[200],
-    floatingActionButtonTheme: FloatingActionButtonThemeData()
-        .copyWith(backgroundColor: Colors.purple),
+    hintColor: Colors.green[400],
+    hoverColor: Colors.green[200],
+    scaffoldBackgroundColor: Colors.white,
+    floatingActionButtonTheme:
+        FloatingActionButtonThemeData().copyWith(backgroundColor: Colors.green),
     textTheme: ThemeData.light().textTheme.copyWith(
           headline5: TextStyle(color: Colors.blueGrey),
           headline6: TextStyle(color: Colors.white60),
           caption: TextStyle(color: Colors.blueGrey),
           bodyText2: TextStyle(color: Colors.green),
+          bodyText1: TextStyle(color: Colors.blueGrey),
         ),
   );
 

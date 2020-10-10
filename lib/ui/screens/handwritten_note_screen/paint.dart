@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notado/global/constants.dart';
 import 'package:notado/ui/screens/handwritten_note_screen/handwritten_note.dart';
 
 class Draw extends CustomPainter {
@@ -10,7 +11,8 @@ class Draw extends CustomPainter {
       ..color = brushColor
       ..strokeCap = StrokeCap.round
       ..strokeWidth = brushWidth;
-    for (int i = 0; i < points.length; i++) {
+    for (int i = 0; i < points.length - 1; i++) {
+      logger.v('darwWWWWWWWWWWWWWWW');
       if (points[i] != null && points[i + 1] != null) {
         canvas.drawLine(points[i], points[i + 1], paint);
       }

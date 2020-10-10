@@ -17,10 +17,11 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocProvider(
       create: (context) => LoginBloc(),
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: LoginPage(),
       ),
     );
-  }
+  } 
 }
 
 class LoginPage extends StatelessWidget {
@@ -43,45 +44,72 @@ class LoginPage extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return ListView(
-            children: [
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.142312579,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: SizeConfig.screenWidth * 0.072916667),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Welcome",
-                      style: Theme.of(context).textTheme.headline1.copyWith(
-                            fontSize: SizeConfig.screenHeight * 0.042249047,
-                          ),
-                    ),
-                    SizedBox(
-                      height: SizeConfig.screenHeight * 0.036689962,
-                    ),
-                    GoogleButton(
-                      title: 'Continue with Google',
-                      onPressed: () {
-                        BlocProvider.of<LoginBloc>(context)
-                            .add(LoginWithGoogle());
-                        Scaffold.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Google Sign In"),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Welcome",
+                  style: Theme.of(context).textTheme.headline1.copyWith(
+                        fontSize: SizeConfig.screenHeight * 0.042249047,
+                      ),
                 ),
-              ),
-            ],
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.036689962,
+                ),
+                GoogleButton(
+                  title: 'Continue with Google',
+                  onPressed: () {
+                    BlocProvider.of<LoginBloc>(context).add(LoginWithGoogle());
+                    Scaffold.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Google Sign In"),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           );
+          // return ListView(
+          //   children: [
+          //     Container(
+          //       margin: EdgeInsets.symmetric(
+          //         horizontal: SizeConfig.screenWidth * 0.072916667,
+          //       ),
+          //       child: Column(
+          //         mainAxisAlignment: MainAxisAlignment.end,
+          //         mainAxisSize: MainAxisSize.min,
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Text(
+          //             "Welcome",
+          //             style: Theme.of(context).textTheme.headline1.copyWith(
+          //                   fontSize: SizeConfig.screenHeight * 0.042249047,
+          //                 ),
+          //           ),
+          //           SizedBox(
+          //             height: SizeConfig.screenHeight * 0.036689962,
+          //           ),
+          //           GoogleButton(
+          //             title: 'Continue with Google',
+          //             onPressed: () {
+          //               BlocProvider.of<LoginBloc>(context)
+          //                   .add(LoginWithGoogle());
+          //               Scaffold.of(context).showSnackBar(
+          //                 SnackBar(
+          //                   content: Text("Google Sign In"),
+          //                 ),
+          //               );
+          //             },
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ],
+          // );
         },
       ),
     );
