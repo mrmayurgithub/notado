@@ -8,20 +8,24 @@
         "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\6eb14f512292913515d869914807ad40\\play-services-base-17.1.0\\res\\drawable-xhdpi-v4\\common_google_signin_btn_icon_light_normal_background.9.png"
     },
     {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\drawable-xxxhdpi\\ic_launcher_foreground.png"
+    },
+    {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-watch-v20_common_google_signin_btn_text_dark_normal.xml.flat",
         "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\0f446c56f16aeebe2251e8270bf4b75c\\jetified-play-services-auth-16.0.1\\res\\drawable-watch-v20\\common_google_signin_btn_text_dark_normal.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_notification_bg_low_normal.9.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-hdpi-v4\\notification_bg_low_normal.9.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-hdpi-v4\\notification_bg_low_normal.9.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-v21_notification_action_background.xml.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-v21\\notification_action_background.xml"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-v21\\notification_action_background.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_notification_bg_low_pressed.9.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-mdpi-v4\\notification_bg_low_pressed.9.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-mdpi-v4\\notification_bg_low_pressed.9.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher.png.flat",
@@ -40,6 +44,10 @@
         "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\6eb14f512292913515d869914807ad40\\play-services-base-17.1.0\\res\\drawable\\common_google_signin_btn_icon_dark_normal.xml"
     },
     {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\drawable-xxhdpi\\ic_launcher_foreground.png"
+    },
+    {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_launcher.png.flat",
         "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher.png"
     },
@@ -48,12 +56,20 @@
         "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\0f446c56f16aeebe2251e8270bf4b75c\\jetified-play-services-auth-16.0.1\\res\\drawable-watch-v20\\common_google_signin_btn_text_light_normal.xml"
     },
     {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_ic_launcher_background.png.flat",
+        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\drawable-xxhdpi\\ic_launcher_background.png"
+    },
+    {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_notification_bg_low_normal.9.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-xhdpi-v4\\notification_bg_low_normal.9.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-xhdpi-v4\\notification_bg_low_normal.9.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\layout_notification_template_part_time.xml.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\layout\\notification_template_part_time.xml"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\layout\\notification_template_part_time.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_common_google_signin_btn_text_light_normal_background.9.png.flat",
@@ -69,7 +85,7 @@
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\layout-v21_notification_action.xml.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\layout-v21\\notification_action.xml"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\layout-v21\\notification_action.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_common_google_signin_btn_text_dark_normal_background.9.png.flat",
@@ -85,7 +101,7 @@
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_notify_panel_notification_icon_bg.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-hdpi-v4\\notify_panel_notification_icon_bg.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-hdpi-v4\\notify_panel_notification_icon_bg.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xxhdpi-v4_googleg_disabled_color_18.png.flat",
@@ -96,12 +112,20 @@
         "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\6eb14f512292913515d869914807ad40\\play-services-base-17.1.0\\res\\drawable\\common_google_signin_btn_text_dark.xml"
     },
     {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi_ic_launcher_background.png.flat",
+        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\drawable-hdpi\\ic_launcher_background.png"
+    },
+    {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable_logoimage.png.flat",
+        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\drawable\\logoimage.png"
+    },
+    {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_notification_bg_low_pressed.9.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-hdpi-v4\\notification_bg_low_pressed.9.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-hdpi-v4\\notification_bg_low_pressed.9.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_notification_bg_normal.9.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-mdpi-v4\\notification_bg_normal.9.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-mdpi-v4\\notification_bg_normal.9.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher.png.flat",
@@ -112,12 +136,16 @@
         "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\6eb14f512292913515d869914807ad40\\play-services-base-17.1.0\\res\\color\\common_google_signin_btn_tint.xml"
     },
     {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\xml_flutter_share_file_paths.xml.flat",
+        "source": "C:\\apps\\notado\\build\\share\\intermediates\\packaged_res\\debug\\xml\\flutter_share_file_paths.xml"
+    },
+    {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\xml_flutter_image_picker_file_paths.xml.flat",
         "source": "C:\\apps\\notado\\build\\image_picker\\intermediates\\packaged_res\\debug\\xml\\flutter_image_picker_file_paths.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_notification_bg_normal.9.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-xhdpi-v4\\notification_bg_normal.9.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-xhdpi-v4\\notification_bg_normal.9.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable_common_google_signin_btn_text_dark_normal.xml.flat",
@@ -128,12 +156,20 @@
         "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\0f446c56f16aeebe2251e8270bf4b75c\\jetified-play-services-auth-16.0.1\\res\\drawable-watch-v20\\common_google_signin_btn_text_disabled.xml"
     },
     {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-mdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\drawable-mdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xxxhdpi_ic_launcher_background.png.flat",
+        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\drawable-xxxhdpi\\ic_launcher_background.png"
+    },
+    {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\layout_notification_template_part_chronometer.xml.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\layout\\notification_template_part_chronometer.xml"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\layout\\notification_template_part_chronometer.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\layout-v21_notification_template_icon_group.xml.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\layout-v21\\notification_template_icon_group.xml"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\layout-v21\\notification_template_icon_group.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable_common_google_signin_btn_text_light.xml.flat",
@@ -145,15 +181,15 @@
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_notify_panel_notification_icon_bg.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-xhdpi-v4\\notify_panel_notification_icon_bg.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-xhdpi-v4\\notify_panel_notification_icon_bg.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable_notification_bg_low.xml.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable\\notification_bg_low.xml"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable\\notification_bg_low.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\layout_custom_dialog.xml.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\layout\\custom_dialog.xml"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\layout\\custom_dialog.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_googleg_disabled_color_18.png.flat",
@@ -165,7 +201,7 @@
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_notification_bg_low_normal.9.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-mdpi-v4\\notification_bg_low_normal.9.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-mdpi-v4\\notification_bg_low_normal.9.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_common_google_signin_btn_icon_dark_normal_background.9.png.flat",
@@ -184,6 +220,10 @@
         "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher.png"
     },
     {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\drawable-xhdpi\\ic_launcher_foreground.png"
+    },
+    {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_googleg_standard_color_18.png.flat",
         "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\6eb14f512292913515d869914807ad40\\play-services-base-17.1.0\\res\\drawable-hdpi-v4\\googleg_standard_color_18.png"
     },
@@ -193,15 +233,11 @@
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\layout-v21_notification_template_custom_big.xml.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\layout-v21\\notification_template_custom_big.xml"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\layout-v21\\notification_template_custom_big.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable_common_google_signin_btn_text_dark_focused.xml.flat",
         "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\6eb14f512292913515d869914807ad40\\play-services-base-17.1.0\\res\\drawable\\common_google_signin_btn_text_dark_focused.xml"
-    },
-    {
-        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable_notado.png.flat",
-        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\drawable\\notado.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xxhdpi-v4_common_google_signin_btn_text_dark_normal_background.9.png.flat",
@@ -209,7 +245,7 @@
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_notification_bg_normal_pressed.9.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-xhdpi-v4\\notification_bg_normal_pressed.9.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-xhdpi-v4\\notification_bg_normal_pressed.9.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\color_common_google_signin_btn_text_dark.xml.flat",
@@ -221,7 +257,7 @@
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\layout-v21_notification_action_tombstone.xml.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\layout-v21\\notification_action_tombstone.xml"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\layout-v21\\notification_action_tombstone.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_common_full_open_on_phone.png.flat",
@@ -249,7 +285,7 @@
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_notification_bg_normal.9.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-hdpi-v4\\notification_bg_normal.9.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-hdpi-v4\\notification_bg_normal.9.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xxhdpi-v4_common_google_signin_btn_text_light_normal_background.9.png.flat",
@@ -257,11 +293,11 @@
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable_notification_tile_bg.xml.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable\\notification_tile_bg.xml"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable\\notification_tile_bg.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable_notification_bg.xml.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable\\notification_bg.xml"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable\\notification_bg.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xxhdpi-v4_googleg_standard_color_18.png.flat",
@@ -269,15 +305,23 @@
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_notify_panel_notification_icon_bg.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-mdpi-v4\\notify_panel_notification_icon_bg.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-mdpi-v4\\notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-mdpi_ic_launcher_background.png.flat",
+        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\drawable-mdpi\\ic_launcher_background.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_notification_bg_normal_pressed.9.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-mdpi-v4\\notification_bg_normal_pressed.9.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-mdpi-v4\\notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi_ic_launcher_background.png.flat",
+        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\drawable-xhdpi\\ic_launcher_background.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_notification_bg_normal_pressed.9.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-hdpi-v4\\notification_bg_normal_pressed.9.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-hdpi-v4\\notification_bg_normal_pressed.9.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable_common_google_signin_btn_icon_dark.xml.flat",
@@ -297,15 +341,19 @@
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_notification_bg_low_pressed.9.png.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable-xhdpi-v4\\notification_bg_low_pressed.9.png"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable-xhdpi-v4\\notification_bg_low_pressed.9.png"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_common_google_signin_btn_icon_dark_normal_background.9.png.flat",
         "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\6eb14f512292913515d869914807ad40\\play-services-base-17.1.0\\res\\drawable-mdpi-v4\\common_google_signin_btn_icon_dark_normal_background.9.png"
     },
     {
+        "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\apps\\notado\\android\\app\\src\\main\\res\\drawable-hdpi\\ic_launcher_foreground.png"
+    },
+    {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable_notification_icon_background.xml.flat",
-        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\3aaf6e5219b7f981ec263df919098c6f\\core-1.1.0\\res\\drawable\\notification_icon_background.xml"
+        "source": "C:\\Users\\mrmay\\.gradle\\caches\\transforms-2\\files-2.1\\20524ebcfbfb226395d832f3856e6cf1\\core-1.3.1\\res\\drawable\\notification_icon_background.xml"
     },
     {
         "merged": "C:\\apps\\notado\\build\\app\\intermediates\\res\\merged\\debug\\drawable_common_google_signin_btn_icon_light_focused.xml.flat",
