@@ -1,6 +1,7 @@
 # notado
 ## In Development mode
 Features - 
+- Used BLOC Pattern
 - Add audio notes
 - Add image notes
 - Add text notes
