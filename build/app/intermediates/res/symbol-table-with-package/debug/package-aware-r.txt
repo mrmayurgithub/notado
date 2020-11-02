@@ -17,6 +17,8 @@ attr imageAspectRatio
 attr imageAspectRatioAdjust
 attr scopeUris
 attr ttcIndex
+color androidx_core_ripple_material_light
+color androidx_core_secondary_text_default_material_light
 color common_google_signin_btn_text_dark
 color common_google_signin_btn_text_dark_default
 color common_google_signin_btn_text_dark_disabled
@@ -30,8 +32,6 @@ color common_google_signin_btn_text_light_pressed
 color common_google_signin_btn_tint
 color notification_action_color_filter
 color notification_icon_bg_color
-color ripple_material_light
-color secondary_text_default_material_light
 dimen compat_button_inset_horizontal_material
 dimen compat_button_inset_vertical_material
 dimen compat_button_padding_horizontal_material
@@ -75,8 +75,10 @@ drawable common_google_signin_btn_text_light_normal
 drawable common_google_signin_btn_text_light_normal_background
 drawable googleg_disabled_color_18
 drawable googleg_standard_color_18
+drawable ic_launcher_background
+drawable ic_launcher_foreground
 drawable launch_background
-drawable notado
+drawable logoimage
 drawable notification_action_background
 drawable notification_bg
 drawable notification_bg_low
@@ -219,3 +221,4 @@ styleable GradientColorItem android_color android_offset
 styleable LoadingImageView circleCrop imageAspectRatio imageAspectRatioAdjust
 styleable SignInButton buttonSize colorScheme scopeUris
 xml flutter_image_picker_file_paths
+xml flutter_share_file_paths
